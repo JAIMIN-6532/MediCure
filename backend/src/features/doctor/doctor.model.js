@@ -1,13 +1,21 @@
+import e from "express";
 import mongoose from "mongoose";
 
 const doctorSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  phone: { type: String },
-  specialization: { type: String },
-  experience: { type: Number }, // In years
-  consultationFee: { type: Number },
+  phone: { type: String },   //second
+  gender:{type:String , enum : ["Male" , "Female"]  },  //second
+  clinicaddress : {type:String}, //second
+  pincode : {type:Number},   //second
+  specialization: { type: String ,
+     enum: ["Cardiologist", "Dermatologist", "Endocrinologist", "Gastroenterologist", "Gynecologist", "Hematologist", 
+      "Infectious Disease Specialist", "Nephrologist", "Neurologist", "Oncologist",
+       "Others"]
+    }, //second
+  experience: { type: Number }, // In years  //second
+  consultationFee: { type: Number }, 
   availability: [
     {
       day: { type: String }, // e.g., Monday
@@ -16,7 +24,7 @@ const doctorSchema = new mongoose.Schema({
   ],
   serviceType: {
     type: String,
-    enum: ["Online", "Offline", "Both"], // Options for the type of service
+    enum: ["Online", "Offline", "Both"], // Options for the type of service  
   },
   idproofUrl: { type: String },
   profileImageUrl: { type: String }, // URL for the uploaded profile image}

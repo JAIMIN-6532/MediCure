@@ -12,5 +12,20 @@ doctorRouter.post('/:doctorId/uploaddoc1', uploadFiles  ,(req, res, next) => {
     doctorController.uploadDocument(req, res, next);
   });
 
+doctorRouter.post('/:doctorId/uploaddoc2',(req, res, next) => {
+    doctorController.uploadDocument2(req, res, next);
+  });
+
+doctorRouter.post('/:doctorId/uploaddoc3',(req, res, next) => {
+    doctorController.uploadDocument3(req, res, next);
+  });
+
+  doctorRouter.get('/getAllDoctors', (req, res, next) => {
+    doctorController.getAllDoctors(req, res, next);
+  });
+
+    doctorRouter.get('/doctorinfo/:doctorId', (req, res, next) => {
+      doctorController.getDoctorById(req, res, next);
+    });
 
 export default doctorRouter;
