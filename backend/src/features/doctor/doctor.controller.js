@@ -1,13 +1,18 @@
 import DoctorRepository from "./doctor.repository.js";
 import OtpController from "../otp/otp.controller.js";
 import bcrypt from "bcryptjs";
-import { upload, uploadFiles } from "../../middleware/uploadfile.middleware.js";
+import DoctorModel from "./doctor.model.js";
+import cloudinary from "../../config/cloudinaryconfig.js";
 
+// import { upload, uploadFiles } from "../../middleware/uploadfile.middleware.js";
+import fs from "fs";
 export default class DoctorController {
   constructor() {
     this.doctorRepository = new DoctorRepository();
     this.otpController = new OtpController();
   }
+
+
 
   signUp = async (req, res, next) => {
     try {
@@ -32,44 +37,106 @@ export default class DoctorController {
     }
   };
 
-  uploadDocument = async (req, res, next) => {
-    try {
-      if (
-        !req.files ||
-        !req.files["images"] ||
-        !req.files["id"] ||
-        !req.files["degree"]
-      ) {
-        return res.status(400).json({ message: "All files are required" });
-      }
+  // uploadDocument = async (req, res, next) => {
+  //   try {
+  //     if (
+  //       !req.files ||
+  //       !req.files["images"] ||
+  //       !req.files["id"] ||
+  //       !req.files["degree"]
+  //     ) {
+  //       return res.status(400).json({ message: "All files are required" });
+  //     }
 
-      // URLs of uploaded files
-      const imageUrl = `/uploads/images/${req.files["images"][0].filename}`;
-      const idPdfUrl = `/uploads/id/${req.files["id"][0].filename}`;
-      const degreePdfUrl = `/uploads/degree/${req.files["degree"][0].filename}`;
+  //     // URLs of uploaded files
+  //     const imageUrl = `/uploads/images/${req.files["images"][0].filename}`;
+  //     const idPdfUrl = `/uploads/id/${req.files["id"][0].filename}`;
+  //     const degreePdfUrl = `/uploads/degree/${req.files["degree"][0].filename}`;
 
-      // Assuming `doctorId` is passed in the URL parameter
-      const doctorId = req.params.doctorId;
-      console.log("doctorId constroller", doctorId);
-      console.log(req.params.doctorId);
-      // Update the doctor document with the file URLs
-      const updatedDoctor = await this.doctorRepository.uploadDocument({
-        doctorId,
-        imageUrl,
-        idPdfUrl,
-        degreePdfUrl,
-      });
+  //     // Assuming `doctorId` is passed in the URL parameter
+  //     const doctorId = req.params.doctorId;
+  //     console.log("doctorId constroller", doctorId);
+  //     console.log(req.params.doctorId);
+  //     // Update the doctor document with the file URLs
+  //     const updatedDoctor = await this.doctorRepository.uploadDocument({
+  //       doctorId,
+  //       imageUrl,
+  //       idPdfUrl,
+  //       degreePdfUrl,
+  //     });
 
-      console.log(updatedDoctor);
-      return res.status(201).json({
-        message: "Documents uploaded successfully",
-        doctor: updatedDoctor,
-      });
-    } catch (err) {
-      console.error("errrrrrrrrrrrrrrrr", err.message);
-      next(err);
+  //     console.log(updatedDoctor);
+  //     return res.status(201).json({
+  //       message: "Documents uploaded successfully",
+  //       doctor: updatedDoctor,
+  //     });
+  //   } catch (err) {
+  //     console.error("errrrrrrrrrrrrrrrr", err.message);
+  //     next(err);
+  //   }
+  // };
+
+
+// Function to upload files to Cloudinary
+ uploadToCloudinary = (filePath) => {
+  return new Promise((resolve, reject) => {
+    cloudinary.v2.uploader.upload(filePath, (error, result) => {
+      if (error) reject(error);
+      else resolve(result);
+    });
+  });
+};
+
+ uploadDocument = async (req, res, next) => {
+  try {
+    // Ensure the required files are uploaded
+    if (!req.files || !req.files["images"] || !req.files["id"] || !req.files["degree"]) {
+      return res.status(400).json({ message: "All files are required" });
     }
-  };
+
+    // Upload each file to Cloudinary and get the URLs
+    const imageUploadResult = await this.uploadToCloudinary(req.files["images"][0].path);
+    const idUploadResult = await this.uploadToCloudinary(req.files["id"][0].path);
+    const degreeUploadResult = await this.uploadToCloudinary(req.files["degree"][0].path);
+
+    // Get URLs from the Cloudinary response
+    const imageUrl = imageUploadResult.secure_url;
+    const idPdfUrl = idUploadResult.secure_url;
+    const degreePdfUrl = degreeUploadResult.secure_url;
+
+    // Assuming `doctorId` is passed in the URL parameter
+    const doctorId = req.params.doctorId;
+
+    // Update the doctor document with the file URLs
+    const updatedDoctor = await DoctorModel.findByIdAndUpdate(
+      doctorId,
+      { profileImageUrl:imageUrl, idproofUrl: idPdfUrl, degreeDocumentUrl: degreePdfUrl },
+      { new: true } // To return the updated document
+    );
+
+    if (!updatedDoctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
+    // Send success response
+    return res.status(201).json({
+      message: "Documents uploaded successfully",
+      doctor: updatedDoctor,
+    });
+  } catch (err) {
+    console.error("Error uploading documents:", err.message);
+    next(err);
+  } finally {
+    // Clean up the temporary files on disk after uploading them to Cloudinary
+    if (req.files) {
+      req.files["images"] && fs.unlinkSync(req.files["images"][0].path);
+      req.files["id"] && fs.unlinkSync(req.files["id"][0].path);
+      req.files["degree"] && fs.unlinkSync(req.files["degree"][0].path);
+    }
+  }
+};
+
+
 
   uploadDocument2 = async (req, res, next) => {
     const doctorId = req.params.doctorId;

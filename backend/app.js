@@ -43,7 +43,7 @@ app.use((req, res, next) => {
   
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
+app.use(express.static('uploads'));
 app.use("/api/patient",patientRouter);
 app.use("/api/doctor" , doctorRouter)
 app.use("/api/otp",OtpRouter);
