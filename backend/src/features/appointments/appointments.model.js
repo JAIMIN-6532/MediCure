@@ -1,5 +1,4 @@
-const mongoose = require('mongoose');
-
+import mongoose from 'mongoose';
 const appointmentSchema = new mongoose.Schema({
   patient: { 
     type: mongoose.Schema.Types.ObjectId, 
@@ -16,7 +15,7 @@ const appointmentSchema = new mongoose.Schema({
   type: { 
     type: String, 
     enum: ['Online', 'Offline'], 
-    required: true 
+   
   },
   status: { 
     type: String, 
@@ -27,4 +26,6 @@ const appointmentSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('Appointment', appointmentSchema);
+const AppointmentModel = mongoose.model('Appointment', appointmentSchema);
+
+export default AppointmentModel;

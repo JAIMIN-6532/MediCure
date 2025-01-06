@@ -104,6 +104,9 @@ export default class PatientController{
       
       async getUserById(req, res, next) {
         try {
+          // req.user = {
+          //   userID: req.params.userId,
+          // }; 
           const userId = req.params.userId;    // in routes :userId that's why req.params.userId
           console.log(userId);
           const user = await this.patientRepository.getUserById(userId);

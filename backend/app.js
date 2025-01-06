@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser';
 import OtpRouter from "./src/features/otp/otp.routes.js";
 import patientRouter from "./src/features/patient/patient.routes.js";
 import doctorRouter from "./src/features/doctor/doctor.routes.js";
+import appointmentRouter from "./src/features/appointments/appointment.routes.js";
 
 // import { ApplicationError } from "./src/error-handler/Applicationerror.js";
 
@@ -46,6 +47,8 @@ app.use(express.static('public'));
 app.use("/api/patient",patientRouter);
 app.use("/api/doctor" , doctorRouter)
 app.use("/api/otp",OtpRouter);
+
+app.use("/api/appointment",appointmentRouter);
 // app.use("/api/service/",serviceRouter);
 
 
