@@ -19,6 +19,12 @@ const patientSchema = new mongoose.Schema({
       ref: 'Appointment',
     },
   ],
+  feedbacks: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Feedback',
+    },
+  ],
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });

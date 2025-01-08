@@ -37,6 +37,12 @@ const doctorSchema = new mongoose.Schema({
     enum: ["Pending", "Verified", "Rejected"],
     default: "Pending",
   }, // Status of verification
+  feedbacks: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Feedback",
+    },
+  ],
   appointments: [
     {
       type: mongoose.Schema.Types.ObjectId,

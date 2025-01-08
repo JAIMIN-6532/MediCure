@@ -10,6 +10,8 @@ const appointmentController = new AppointmentController();
 //     appointmentController.bookAppointment(req,res,next);
 // });
 
+
+
 appointmentRouter.get('/availableslots/:doctorId', (req,res,next)=>{
     appointmentController.getAvailableSlots(req,res,next);
 });

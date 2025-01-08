@@ -26,13 +26,13 @@ export default class DoctorController {
           email,
           password: hashedPassword,
         });
-        console.log("doctorrrrr", doctor);
+        console.log("newdoctor:", doctor);
         return res.status(201).json(doctor);
       } else {
         return res.status(400).send("Invalid OTP");
       }
     } catch (err) {
-      console.log("errrrr", err);
+      console.log(err);
       next(err);
     }
   };
@@ -216,6 +216,16 @@ export default class DoctorController {
     }
   }
 
+  getFeedbackByDoctorId = async (req, res, next) => {
+    try {
+      const doctorId = req.params.doctorId;
+      const feedbacks = await this.doctorRepository.getFeedbackByDoctorId(doctorId);
+      return res.status(200).json( feedbacks.feedbacks);
+    } catch (err) {
+      console.log("inside DC getFeedbackByDoctorId", err);
+      next(err);
+    }
+  }
   
 
 

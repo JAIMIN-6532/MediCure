@@ -17,11 +17,20 @@ patientRouter.post('/logout',(req,res,next)=>{
     patientController.userLogout(req,res,next)
 });
 
+patientRouter.get('/getpatient/:id',(req,res,next)=>{
+    patientController.getPatientById(req,res,next)
+});
+
 // userRouter.get("/user/details",(req,res,next)=>{
 //     userController.getUserDetails(req,res,next)
 // });
-patientRouter.get("/get-details/:userId",(req,res,next)=>{
+patientRouter.get("/get-details",jwtAuth,(req,res,next)=>{
+    console.log(req.userID)
     patientController.getUserById(req,res,next)
+});
+
+patientRouter.get("/getfeedback/:id", (req,res,next)=>{
+    patientController.getFeedbackByPatientId(req,res,next);
 });
 // userRouter.get("/users/get-all-details",(req,res,next)=>{
 //     userController.getAllUsers(req,res,next)

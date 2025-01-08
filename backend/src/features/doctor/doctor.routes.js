@@ -33,4 +33,8 @@ doctorRouter.post('/:doctorId/uploaddoc3',(req, res, next) => {
       doctorController.getDoctorById(req, res, next);
     });
 
+    doctorRouter.get('/getfeedback/:doctorId', (req, res, next) => {
+      doctorController.getFeedbackByDoctorId(req, res, next);
+    });
+
 export default doctorRouter;

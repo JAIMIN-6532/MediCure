@@ -13,7 +13,7 @@ export default class DoctorRepository {
       console.log(newDoctor);
       return newDoctor;
     } catch (err) {
-      console.log("repoerr", err);
+      console.log("doctor signup repo", err);
       throw err;
     }
   };
@@ -134,6 +134,16 @@ export default class DoctorRepository {
         return doctor;
         } catch (err) {
         console.log("DR get doctor by id", err);
+        throw err;
+        }
+    }
+
+    getFeedbackByDoctorId = async (doctorId) => {
+        try {
+        const doctor = await DoctorModel.findById(doctorId).populate("feedbacks").exec();
+        return doctor;
+        } catch (err) {
+        console.log("DR get feedback by doctor id", err);
         throw err;
         }
     }

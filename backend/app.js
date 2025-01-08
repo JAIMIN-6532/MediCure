@@ -9,6 +9,7 @@ import OtpRouter from "./src/features/otp/otp.routes.js";
 import patientRouter from "./src/features/patient/patient.routes.js";
 import doctorRouter from "./src/features/doctor/doctor.routes.js";
 import appointmentRouter from "./src/features/appointments/appointment.routes.js";
+import feedbackRouter from "./src/features/feedback/feedback.routes.js";
 
 // import { ApplicationError } from "./src/error-handler/Applicationerror.js";
 
@@ -48,7 +49,9 @@ app.use("/api/patient",patientRouter);
 app.use("/api/doctor" , doctorRouter)
 app.use("/api/otp",OtpRouter);
 
-app.use("/api/appointment",appointmentRouter);
+
+app.use("/api/appointment",jwtAuth,appointmentRouter);
+app.use("/api/feedback",feedbackRouter);
 // app.use("/api/service/",serviceRouter);
 
 

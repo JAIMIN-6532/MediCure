@@ -1,5 +1,7 @@
 import patientModel from "./patient.model.js";
 import { ApplicationError } from "../../errorhandler/applicationError.js";
+import AppointmentModel from "../appointments/appointments.model.js";
+import mongoose from "mongoose";
 export default class PatientRepository {
   signUp = async (name, email, password) => {
     try {
@@ -11,7 +13,7 @@ export default class PatientRepository {
       console.log(newPatient);
       return newPatient;
     } catch (error) {
-      console.error(error);
+      console.error("patient signup repo", error);
     }
   };
   async signIn(email, password) {
@@ -32,9 +34,31 @@ export default class PatientRepository {
     }
   }
 
-  async findByUserId(userId) {
+  async getUserById(userId) {
     try {
-      return await patientModel.findById(userId);
+      return await patientModel.findById(userId).populate("appointments");
+    } catch (err) {
+      console.log(err);
+      throw new ApplicationError("Something went wrong with database", 500);
+    }
+  }
+
+  async getFeedbackByPatientId(patientId) {
+    try {
+      return await patientModel
+        .findById(patientId)
+        .populate("feedbacks")
+        .exec();
+    } catch (err) {
+      console.log(err);
+      throw new ApplicationError("Something went wrong with database", 500);
+    }
+  }
+
+  async getPatientById(patientId) {
+    const ObjectId = new mongoose.Types.ObjectId(patientId);
+    try {
+      return await patientModel.findById(ObjectId);
     } catch (err) {
       console.log(err);
       throw new ApplicationError("Something went wrong with database", 500);
