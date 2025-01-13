@@ -44,7 +44,7 @@ export default class AppointmentController {
 
   try{
 
-   const newAppointment = await this.appointmentRepository.bookAppointment(req.body);
+   const newAppointment = await this.appointmentRepository.bookAppointment(req.body,res);
   
 
 //   console.log(req.user);
@@ -57,4 +57,18 @@ export default class AppointmentController {
   }
 };
 
+  getAppointmentByAId = async (req, res,next) => {
+
+    try {
+      const appointment = await this.appointmentRepository.getAppointmentByAId(req.params.aid);
+      if(appointment === null){
+          return res.status(404).json({ message: "Appointment not found" });
+      }
+      return res.status(200).json({ appointment });
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Error getting appointment" });
+  }
+
+  }
 }

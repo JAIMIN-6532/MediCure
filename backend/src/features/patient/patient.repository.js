@@ -64,4 +64,17 @@ export default class PatientRepository {
       throw new ApplicationError("Something went wrong with database", 500);
     }
   }
+
+  async getAppointmentsByPatientId(patientId) {
+    try {
+      return await patientModel
+        .findById(patientId)
+        .populate("appointments")
+        .exec();
+    } catch (err) {
+      console.log(err);
+      throw new ApplicationError("Something went wrong with database", 500);
+    }
+  }
+
 }

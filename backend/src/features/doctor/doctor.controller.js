@@ -198,6 +198,7 @@ export default class DoctorController {
   getAllDoctors = async (req, res, next) => {
     try {
       const doctors = await this.doctorRepository.getAllDoctors();
+      console.log("doctors", doctors);
       return res.status(200).json(doctors);
     } catch (err) {
       console.log("inside DC getall", err);
@@ -208,6 +209,7 @@ export default class DoctorController {
   getDoctorById = async (req, res, next) => {
     try {
       const doctorId = req.params.doctorId;
+      console.log("doctorId in inside con", doctorId);
       const doctor = await this.doctorRepository.getDoctorById(doctorId);
       return res.status(200).json(doctor);
     } catch (err) {
@@ -227,8 +229,40 @@ export default class DoctorController {
     }
   }
   
+  getAppointmentsByDoctorId = async (req, res, next) => {
+    try {
+      const doctorId = req.params.did;
+      const appointments = await this.doctorRepository.getAppointmentsByDoctorId(doctorId);
+      console.log("appointments", appointments);
+      console.log("avalibility", appointments.availability);
+      return res.status(200).json(appointments.availability);
+    } catch (err) {
+      console.log("inside DC getAppointmentsByDoctorId", err);
+      next(err);
+    }
+  }
 
 
+  addavailability = async (req, res, next) => {
+    try {
+      const doctorId = req.params.did;
+      const {  availability , consultationFee} = req.body;
+      console.log("availability", availability);
+      console.log("consultationFee", consultationFee);
+      const updatedDoctor = await this.doctorRepository.addavailability(
+        doctorId,
+        availability,
+        consultationFee,
+      );
+      return res.status(201).json({
+        message: "availability added successfully",
+        doctor: updatedDoctor,
+      });
+    } catch (err) {
+      console.log("inside DC addavailability", err);
+      next(err);
+    }
+  }
 
 
 }

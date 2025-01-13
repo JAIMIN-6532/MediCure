@@ -119,7 +119,7 @@ export default class DoctorRepository {
 
     getAllDoctors = async () => {
         try {
-        const doctors = await DoctorModel.find();
+        const doctors = await DoctorModel.find().populate("feedbacks").exec();
         return doctors;
         } catch (err) {
         console.log("DR get all doctors", err);
@@ -129,8 +129,10 @@ export default class DoctorRepository {
 
     getDoctorById = async (doctorId) => { 
       const objectId = new mongoose.Types.ObjectId(doctorId);
+      // console.log("objectid ",objectId);
         try {
         const doctor = await DoctorModel.findById(objectId);
+        // console.log("doctor",doctor);
         return doctor;
         } catch (err) {
         console.log("DR get doctor by id", err);
@@ -147,4 +149,47 @@ export default class DoctorRepository {
         throw err;
         }
     }
+
+    getAppointmentsByDoctorId = async (doctorId) => {
+        try {
+        const doctor = await DoctorModel.findById(doctorId).populate("appointments").exec();
+        console.log("doctor",doctor);
+        return doctor;
+        } catch (err) {
+        console.log("DR get appointments by doctor id", err);
+        throw err;
+        }
+    }
+
+    addavailability = async ( doctorId, availability ,fees) => {
+      try {
+          const objectId = new mongoose.Types.ObjectId(doctorId);
+          const doctor = await DoctorModel.findById(objectId);
+  
+          if (!doctor) {
+              throw new Error('Doctor not found');
+          }
+  
+          const existingDay = doctor.availability.find(a => a.day === availability.day);   //doctor will not add added slot again..
+  
+          if (existingDay) {
+              existingDay.slots.push(...availability.slots);
+          } else {
+              doctor.availability.push(availability);
+          }
+
+          console.log("fees",fees);
+
+          doctor.consultationFee = fees;
+
+          console.log("Doctor",doctor);
+  
+          const updatedDoctor = await doctor.save();
+          console.log(updatedDoctor);
+          return updatedDoctor;
+      } catch (err) {
+          console.log("DR add availability", err);
+          throw err;
+      }
+  }
 }

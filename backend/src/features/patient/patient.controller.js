@@ -67,7 +67,7 @@ export default class PatientController {
         const result = await bcrypt.compare(
           password.trim(),
           user.password.trim()
-        );
+        ); 
         console.log("Password match result: ", result);
 
         if (result) {
@@ -85,14 +85,17 @@ export default class PatientController {
           );
 
           // 5. Send token.
-          console.log("Generated Token: ", token);
+          console.log("Generated Token:", token);
           const payload = token.split(".")[1];
           console.log("Payload: ", payload);
           const decodedPayload = atob(payload);
 
           console.log("Decoded Payload: ", decodedPayload);
-          await sendToken(user, token, res, 200);
-          // return res.status(200).send({ user: user, token }); // You could alternatively return user info here
+          
+          // await sendToken(user, token, res, 200);
+          // return res.status(200).cookie("token", token).send({ user, token });
+          // console.log("User: ", req.cookies["token"]);
+          return res.status(200).send({ user: user, token }); // You could alternatively return user info here
         } else {
           return res.status(400).send("Incorrect Credentials");
         }
@@ -161,4 +164,21 @@ export default class PatientController {
       return res.status(500).json({ message: "Error getting patient" });
     }
   };
+
+  getAppointmentsByPatientId = async (req, res, next) => {
+    try {
+      const patientId = req.params.pid;
+      const appointments = await this.patientRepository.getAppointmentsByPatientId(
+        patientId
+      );
+      if (appointments === null) {
+        return res.status(404).json({ message: "Appointments not found" });
+      }
+      return res.status(200).json(appointments.appointments);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Error getting appointments" });
+    }
+  };
+
 }

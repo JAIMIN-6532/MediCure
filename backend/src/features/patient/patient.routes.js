@@ -32,6 +32,10 @@ patientRouter.get("/get-details",jwtAuth,(req,res,next)=>{
 patientRouter.get("/getfeedback/:id", (req,res,next)=>{
     patientController.getFeedbackByPatientId(req,res,next);
 });
+
+patientRouter.get("/getappointment/:pid", (req,res,next)=>{
+    patientController.getAppointmentsByPatientId(req,res,next);
+});
 // userRouter.get("/users/get-all-details",(req,res,next)=>{
 //     userController.getAllUsers(req,res,next)
 // });
