@@ -5,7 +5,7 @@ import axios from 'axios';
 
 // Initial state
 const initialState = {
-  user: null,
+  user:JSON.parse(localStorage.getItem('user')) || null,
   token: localStorage.getItem('token') || null,
   loading: false,
   error: null,
@@ -88,6 +88,7 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = null;
       localStorage.removeItem('token'); // Remove token from localStorage on logout
+      localStorage.removeItem('user'); // Remove user from localStorage on logout
     },
   },
   extraReducers: (builder) => {
@@ -100,6 +101,7 @@ const authSlice = createSlice({
       state.user = action.payload.user;
       state.token = action.payload.token;
       state.error = null;
+      localStorage.setItem('user', JSON.stringify(action.payload.user)); // Save user to localStorage
       localStorage.setItem('token', action.payload.token); // Save token to localStorage
     });
     builder.addCase(doctorSignIn.rejected, (state, action) => {
@@ -130,6 +132,8 @@ const authSlice = createSlice({
       state.loading = false;
       state.user = action.payload.user;
       state.token = action.payload.token;
+      localStorage.setItem('user', JSON.stringify(action.payload.user)); // Save user to localStorage
+      localStorage.setItem('token', action.payload.token); // Save token to localStorage
       state.error = null;
     });
     builder.addCase(patientSignIn.rejected, (state, action) => {

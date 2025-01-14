@@ -147,7 +147,7 @@
 // };
 
 // export default Navbar;
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
@@ -165,6 +165,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('token'); // Remove token from localStorage
+    localStorage.removeItem('user'); // Remove user from localStorage
     dispatch(logout()); // Dispatch logout action to reset state in Redux
   };
 
@@ -193,7 +194,22 @@ const Navbar = () => {
             </NavLink>
           </div>
 
-          <div className="hidden md:flex items-center">
+          <div className="hidden md:flex items-center space-x-4">
+            {isLoggedIn && user ? (
+              <div className="flex items-center space-x-2">
+                {/* Display user's name or profile image */}
+                <span className="w-8 h-8 flex items-center justify-center rounded-full bg-primary-blue text-white font-bold">{user.name.slice(0, 2).toUpperCase() || 'User'}</span>
+                {/* If there's a profile image, display it */}
+                {/* {user.profileImageUrl && (
+                  <img
+                    src={user.profileImageUrl}
+                    alt="Profile"
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                )} */}
+              </div>
+            ) : null}
+
             {isLoggedIn ? (
               <button
                 onClick={handleLogout}
@@ -226,7 +242,7 @@ const Navbar = () => {
       {isOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 bg-light-blue">
-           <NavLink
+            <NavLink
               to="/"
               className="block px-3 py-2 hover:text-primary-blue"
               onClick={() => setIsOpen(false)}
@@ -280,3 +296,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
