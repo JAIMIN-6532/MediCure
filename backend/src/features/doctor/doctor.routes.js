@@ -10,7 +10,9 @@ doctorRouter.post("/dsignup", (req, res, next) => {
   doctorController.signUp(req, res, next);
 });
 
-//add JWTAuth to the route preferable
+doctorRouter.post("/dsignin", (req, res, next) => {
+  doctorController.signIn(req, res, next);
+});
 
 doctorRouter.post(
   "/:doctorId/uploaddoc1",

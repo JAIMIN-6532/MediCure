@@ -45,16 +45,11 @@ export default class PatientController {
   async signIn(req, res, next) {
     try {
       // 1. Get the userType from the request body, default to 'patient'
-      const { email, password, userType } = req.body;
+      const { email, password } = req.body;
 
-      // 2. Find user by email based on userType (doctor or patient)
-      let user;
-      if (userType === "doctor") {
-        // Assuming doctorRepository is available to fetch doctor details
-        user = await this.doctorRepository.findByEmail(email); // doctorRepository should handle doctor emails
-      } else {
-        user = await this.patientRepository.findByEmail(email); // Default is patient if not 'doctor'
-      }
+      
+      
+      let user = await this.patientRepository.findByEmail(email); // Default is patient if not 'doctor'
 
       console.log(user);
 
@@ -76,7 +71,7 @@ export default class PatientController {
             {
               userID: user._id,
               email: user.email,
-              userType: userType, // Include the userType in the token for easy reference
+              userType: "patient",
             },
             process.env.JWT_SECRET,
             {
