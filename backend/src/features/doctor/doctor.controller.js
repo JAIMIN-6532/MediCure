@@ -3,6 +3,7 @@ import OtpController from "../otp/otp.controller.js";
 import bcrypt from "bcryptjs";
 import DoctorModel from "./doctor.model.js";
 import cloudinary from "../../config/cloudinaryconfig.js";
+import jwt from "jsonwebtoken";
 
 // import { upload, uploadFiles } from "../../middleware/uploadfile.middleware.js";
 import fs from "fs";
@@ -264,7 +265,7 @@ export default class DoctorController {
   getAllDoctors = async (req, res, next) => {
     try {
       const doctors = await this.doctorRepository.getAllDoctors();
-      console.log("doctors", doctors);
+      // console.log("doctors", doctors);
       return res.status(200).json(doctors);
     } catch (err) {
       console.log("inside DC getall", err);
@@ -277,6 +278,7 @@ export default class DoctorController {
       const doctorId = req.params.doctorId;
       console.log("doctorId in inside con", doctorId);
       const doctor = await this.doctorRepository.getDoctorById(doctorId);
+      console.log("doctor in controller", doctor);
       return res.status(200).json(doctor);
     } catch (err) {
       console.log("inside DC getDoctorById", err);

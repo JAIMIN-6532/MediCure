@@ -39,8 +39,8 @@ doctorRouter.get("/getAllDoctors", (req, res, next) => {
   doctorController.getAllDoctors(req, res, next);
 });
 
-doctorRouter.get("/doctorinfo/:doctorId", jwtAuth ,(req, res, next) => {
-  // console.log("doctoridinparams", req.params.doctorId);
+doctorRouter.get("/doctorinfo/:doctorId" ,(req, res, next) => {
+  console.log("doctoridinparams", req.params.doctorId);
   doctorController.getDoctorById(req, res, next);
 });
 

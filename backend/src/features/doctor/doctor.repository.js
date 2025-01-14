@@ -131,7 +131,9 @@ export default class DoctorRepository {
       const objectId = new mongoose.Types.ObjectId(doctorId);
       // console.log("objectid ",objectId);
         try {
-        const doctor = await DoctorModel.findById(objectId);
+        const doctor = await DoctorModel.findById(objectId)
+        .populate('feedbacks')  // Populate the feedbacks field
+        .exec();
         // console.log("doctor",doctor);
         return doctor;
         } catch (err) {
