@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Loader } from 'lucide-react';
 import AuthLayout from './AuthLayout';
+import { useSelector,useDispatch } from 'react-redux';
+import { doctorSignIn } from '../reduxToolkit/reducers/AuthReducer.js';
+import { useEffect } from 'react';
 
 const DsignIn = () => {
   const [formData, setFormData] = useState({
@@ -9,23 +12,36 @@ const DsignIn = () => {
     password: '',
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const location = useLocation();
+  // const [loading, setLoading] = useState(false);
+  // const location = useLocation();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
+    const { loading, error, user, token } = useSelector((state) => state.auth);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    useNavigate('/doctors');
-    setLoading(true);
+    dispatch(doctorSignIn(formData));
+  }
 
-    // Handle form submission
-    setTimeout(() => {
-      setLoading(false);
-    }, 1500);
-  };
+  // Redirect if token is already in localStorage
+    useEffect(() => {
+      const savedToken = localStorage.getItem('token');
+      if (savedToken) {
+        navigate('/d-dashbord');
+      }
+    }, [navigate]);
+  
+    // Redirect and save token to localStorage if user successfully signs in
+    useEffect(() => {
+      if (user && token) {
+        localStorage.setItem('token', token); // Save token to local storage
+        navigate('/d-dashbord'); // Redirect to the home page after successful sign-in
+      }
+    }, [user, token, navigate]);
 
   return (
     <AuthLayout title="Doctor Sign In">

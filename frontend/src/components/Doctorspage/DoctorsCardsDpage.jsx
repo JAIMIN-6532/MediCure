@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { MapPin, Calendar, Video, Star } from "lucide-react";
-import Filter from "./Filter";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDoctors } from "../../reduxToolkit/reducers/DoctorReducer";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
+import Filter from "./Filter";
 
 function DoctorsCardsDpage() {
   const dispatch = useDispatch();
-  const { doctors, status, error } = useSelector((state) => state.doctors);
+  const navigate = useNavigate(); // Hook to navigate programmatically
+  const { doctors, fetchDoctorsStatus, error } = useSelector((state) => state.doctors);
 
   const [filters, setFilters] = useState({
     gender: "",
@@ -22,14 +24,21 @@ function DoctorsCardsDpage() {
   const totalPages = Math.ceil(doctors.length / doctorsPerPage);
 
   useEffect(() => {
-    if (status === "idle") {
+    console.log("In useEffect");
+    if (fetchDoctorsStatus === "idle") {
       dispatch(fetchDoctors());
     }
-  }, [dispatch, status]);
+  }, [dispatch, fetchDoctorsStatus]);
 
   const handleFilterChange = (key, value) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
     setCurrentPage(1); // Reset to the first page when filter changes
+  };
+
+  const handleDoctorClick = (doctorId) => {
+    console.log("In handleDocclick Doctor ID:", doctorId);
+    // Navigate to the profile page of the selected doctor
+    // <Link to={`/doctorprofilepatientview/${doctorId}`} />;
   };
 
   const calculateAverageRating = (feedbacks) => {
@@ -104,18 +113,22 @@ function DoctorsCardsDpage() {
               )
               .map((doctor) => {
                 const averageRating = calculateAverageRating(doctor.feedbacks);
-
+                // console.log('did',doctor._id);
                 return (
+
                   <div
-                    key={doctor.id}
-                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+                    key={doctor._id}
+                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+                    // onClick={() => handleDoctorClick(doctor._id)} // Add the onClick handler
                   >
                     <div className="flex p-6">
+                      <Link to={`/doctorprofilepatientview/${doctor._id}`}>
                       <img
                         src={doctor.profileImageUrl}
                         alt={doctor.name}
                         className="w-36 h-36 rounded-lg object-cover"
                       />
+                      </Link>
                       <div className="ml-4">
                         <h3 className="text-lg font-semibold">{doctor.name}</h3>
                         <p className="text-gray-600">{doctor.specialization}</p>
@@ -148,15 +161,14 @@ function DoctorsCardsDpage() {
                         <ServiceTypeBadge serviceType={doctor.serviceType} />
                       </div>
                       <div className="flex space-x-4 mt-[15px]">
-                      <button className="flex-1 bg-light-blue text-primary-blue px-4 py-2 rounded-full hover:bg-primary-blue hover:text-white transition-colors">
-                        View Profile
-                      </button>
-                      <button className="flex-1 bg-primary-blue text-white px-4 py-2 rounded-full hover:bg-dark-blue transition-colors">
-                        Book Now
-                      </button>
+                        <button className="flex-1 bg-light-blue text-primary-blue px-4 py-2 rounded-full hover:bg-primary-blue hover:text-white transition-colors">
+                          View Profile
+                        </button>
+                        <button className="flex-1 bg-primary-blue text-white px-4 py-2 rounded-full hover:bg-dark-blue transition-colors">
+                          Book Now
+                        </button>
+                      </div>
                     </div>
-                    </div>
-                    
                   </div>
                 );
               })}
