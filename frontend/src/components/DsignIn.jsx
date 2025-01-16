@@ -29,17 +29,20 @@ const DsignIn = () => {
 
   // Redirect if token is already in localStorage
     useEffect(() => {
-      const savedToken = localStorage.getItem('token');
+      const savedToken = token;
+      const doctorId = user?._id;
       if (savedToken) {
-        navigate('/d-dashbord');
+        navigate(`/d-dashbord/${doctorId}`);
       }
     }, [navigate]);
   
     // Redirect and save token to localStorage if user successfully signs in
     useEffect(() => {
+
       if (user && token) {
+        const doctorId = user._id;
         localStorage.setItem('token', token); // Save token to local storage
-        navigate('/d-dashbord'); // Redirect to the home page after successful sign-in
+        navigate(`/d-dashbord/${doctorId}`); // Redirect to the home page after successful sign-in
       }
     }, [user, token, navigate]);
 

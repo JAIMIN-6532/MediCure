@@ -107,7 +107,6 @@
 
 // export default Step3;
 import React from 'react';
-
 const Step3 = ({ formData, handleChange }) => {
   // Days of the week
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -116,9 +115,19 @@ const Step3 = ({ formData, handleChange }) => {
   const timeSlots = [];
   let startTime = 9;
   let endTime = 17; // 5 PM
+
+  // Function to convert 24-hour time to 12-hour format with AM/PM
+  const convertTo12HourFormat = (hour, minute) => {
+    const suffix = hour >= 12 ? 'PM' : 'AM';
+    let hour12 = hour % 12;
+    if (hour12 === 0) hour12 = 12; // Adjust 0 to 12 for 12:00 PM
+    const minuteStr = minute < 10 ? `0${minute}` : minute;
+    return `${hour12}:${minuteStr} ${suffix}`;
+  };
+
   while (startTime < endTime) {
-    timeSlots.push(`${startTime}:00`);
-    timeSlots.push(`${startTime}:30`);
+    timeSlots.push(convertTo12HourFormat(startTime, 0)); // e.g., 9:00 AM
+    timeSlots.push(convertTo12HourFormat(startTime, 30)); // e.g., 9:30 AM
     startTime++;
   }
 
@@ -227,4 +236,3 @@ const Step3 = ({ formData, handleChange }) => {
 };
 
 export default Step3;
-

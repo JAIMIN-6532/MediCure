@@ -23,7 +23,7 @@ const doctorSchema = new mongoose.Schema({
     {
       day: { type: String }, // e.g., Monday
       slots : [{type:String}] // e.g., ["10:00 AM", "11:00 AM", "12:00 PM"]
-    },
+    }, 
   ],
   serviceType: {
     type: String,

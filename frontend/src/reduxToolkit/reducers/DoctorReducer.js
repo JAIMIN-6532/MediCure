@@ -23,12 +23,26 @@ export const fetchDoctorById = createAsyncThunk(
   }
 );
 
+export const fetchDoctorAvgRatingByDoctorId = createAsyncThunk(
+  'doctors/fetchDoctorAvgRatingByDoctorId',
+  async (doctorId) => {
+    console.log("Doctor ID in fetchDoctorAvgRatingByDoctorId:", doctorId);
+    const response = await axios.get(`http://localhost:3000/api/feedback/getavgrating/${doctorId}`
+    );
+    console.log("Doctor fetched by ID:", response.data);
+    
+    return response.data; // returns the doctor's data
+  }
+);
+
 // Initial state
 const initialState = {
   doctors: [], // stores all doctors data
   selectedDoctor: {}, // stores the fetched doctor data by ID
+  avgRating: null, // Store the avgRating
   fetchDoctorsStatus: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed' for fetching doctors
   fetchDoctorByIdStatus: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed' for fetching a single doctor
+  fetchDoctorAvgRatingStatus: 'idle', // Track the fetch status for avgRating
   error: null,
 };
 
@@ -40,6 +54,8 @@ const doctorSlice = createSlice({
     resetDoctorState: (state) => {
       state.selectedDoctor = {}; // Reset the selectedDoctor data
       state.fetchDoctorByIdStatus = 'idle'; // Reset the fetching status to idle
+      state.avgRating = null; // Reset avgRating
+      state.fetchDoctorAvgRatingStatus = 'idle'; // Reset fetch status
     },
   },
   extraReducers: (builder) => {
@@ -68,6 +84,25 @@ const doctorSlice = createSlice({
       .addCase(fetchDoctorById.rejected, (state, action) => {
         state.fetchDoctorByIdStatus = 'failed';
         state.error = action.error.message;
+      })
+
+      // Fetching average rating
+      .addCase(fetchDoctorAvgRatingByDoctorId.pending, (state) => {
+        state.fetchDoctorAvgRatingStatus = 'loading';
+      })
+      .addCase(fetchDoctorAvgRatingByDoctorId.fulfilled, (state, action) => {
+        state.fetchDoctorAvgRatingStatus = 'succeeded';
+        
+        if (action.payload.avgRating.length === 0) {
+          state.avgRating = 0; // If no ratings, set avgRating to null
+        } else {
+          console.log("action.payload", action.payload.avgRating[0].avgRating);
+          state.avgRating = action.payload.avgRating[0].avgRating; // Use the first rating if available
+        }
+      })
+      .addCase(fetchDoctorAvgRatingByDoctorId.rejected, (state, action) => {
+        state.fetchDoctorAvgRatingStatus = 'failed';
+        state.error = action.error.message;
       });
   },
 });
@@ -77,7 +112,7 @@ export const selectAllDoctors = (state) => state.doctors.doctors;
 export const selectSelectedDoctor = (state) => state.doctors.selectedDoctor;
 export const selectFetchDoctorsStatus = (state) => state.doctors.fetchDoctorsStatus;
 export const selectFetchDoctorByIdStatus = (state) => state.doctors.fetchDoctorByIdStatus;
-
+export const selectAvgRating = (state) => state.doctors.avgRating;
 export const { resetDoctorState } = doctorSlice.actions;
 
 // Export the reducer to be used in the store

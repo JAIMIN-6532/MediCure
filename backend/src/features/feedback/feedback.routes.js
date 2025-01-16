@@ -13,7 +13,13 @@ feedbackRouter.get('/getfeedback/:id', (req,res,next)=>{
     feedbackController.getFeedbackById(req,res,next);
 });
 
+feedbackRouter.get('/getavgrating/:did',(req,res,next)=>{
+    feedbackController.getAvgRatingByDoctorId(req,res,next);
+})
 
+feedbackRouter.get('/getalldoctorsavgrating',(req,res,next)=>{
+    feedbackController.getAllDoctorsAvgRating(req,res,next);
+})
 
 
 export default feedbackRouter;

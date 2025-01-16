@@ -115,7 +115,8 @@ const DoctorSignUp = () => {
         setStep(3); // Move to Step 3
       } else if (step === 3) {
         const res = await uploadStep3Details(did, formData); // Step 3 API call
-        navigate('/d-dashbord'); // Redirect to dashboard after successful signup
+
+        navigate(`/d-dashbord/${did}`); // Redirect to dashboard after successful signup
         // Handle success (e.g., redirect or show success message)
       }
     } catch (error) {

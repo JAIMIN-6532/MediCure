@@ -29,4 +29,30 @@ export default class FeedbackController {
         }
     }
 
+    getAvgRatingByDoctorId = async(req, res,next)=> {
+        try {
+            const avgRating = await this.feedbackRepository.getAvgRatingByDoctorId(req.params.did);
+            if(avgRating === null){
+                return res.status(404).json({ message: "Feedback not found" });
+            }
+            return res.status(200).json({ avgRating });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: "Error getting feedback" });
+        }
+    }
+
+    getAllDoctorsAvgRating = async(req, res,next)=> {
+        try {
+            const avgRating = await this.feedbackRepository.getAllDoctorsAvgRating();
+            if(avgRating === null){
+                return res.status(404).json({ message: "Feedback not found" });
+            }
+            return res.status(200).json({ avgRating });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: "Error getting feedback" });
+        }
+    }
+
 }

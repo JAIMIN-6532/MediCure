@@ -46,7 +46,6 @@
 
 // // export default Navbar;
 
-
 // import { useState } from 'react';
 // import { NavLink } from 'react-router-dom';
 // import { FaBars, FaTimes } from 'react-icons/fa';
@@ -67,7 +66,7 @@
 //               MEDICURE
 //             </NavLink>
 //           </div>
-          
+
 //           <div className="hidden md:flex items-center space-x-8">
 //             <NavLink to="/" style={navLinkStyles} className="hover:text-primary-blue transition-colors">
 //               Home
@@ -147,49 +146,69 @@
 // };
 
 // export default Navbar;
-import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import { FaBars, FaTimes } from 'react-icons/fa';
-import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../reduxToolkit/reducers/AuthReducer'; // import the logout action
-
+import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
+import { FaBars, FaTimes } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../reduxToolkit/reducers/AuthReducer"; // import the logout action
+import { Stethoscope } from "lucide-react";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
 
   // Get user and token from Redux state
   const { user, token } = useSelector((state) => state.auth);
-
+  const isdid = localStorage.getItem("did");
   // Check if user is logged in by verifying if token exists in Redux state
   const isLoggedIn = !!token;
 
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Remove token from localStorage
-    localStorage.removeItem('user'); // Remove user from localStorage
+    localStorage.removeItem("token"); // Remove token from localStorage
+    //if localstorage have did then remove it
+    if (localStorage.getItem("did")) {
+      localStorage.removeItem("did");
+    }
+    localStorage.removeItem("user"); // Remove user from localStorage
     dispatch(logout()); // Dispatch logout action to reset state in Redux
+    window.location.href = "/"; // Redirect to the home page
   };
 
   return (
     <nav className="fixed w-full bg-light-blue shadow-md z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 ">
+          
+              
+          
             <NavLink to="/" className="text-2xl font-bold text-primary-blue">
-              MEDICURE
+            <Stethoscope className="w-8 h-7 text-blue-600 inline " /> MEDICURE
             </NavLink>
           </div>
 
           <div className="hidden md:flex items-center space-x-8">
-            <NavLink to="/" className="hover:text-primary-blue transition-colors">
+            <NavLink
+              to="/"
+              className="hover:text-primary-blue transition-colors"
+            >
               Home
             </NavLink>
-            <NavLink to="/doctors" className="hover:text-primary-blue transition-colors">
+            <NavLink
+              to="/doctors"
+              className="hover:text-primary-blue transition-colors"
+            >
               Doctors
             </NavLink>
-            <NavLink to="/about" className="hover:text-primary-blue transition-colors">
+            <NavLink
+              to="/about"
+              className="hover:text-primary-blue transition-colors"
+            >
               About Us
             </NavLink>
-            <NavLink to="/contact" className="hover:text-primary-blue transition-colors">
+            <NavLink
+              to="/contact"
+              className="hover:text-primary-blue transition-colors"
+            >
               Contact
             </NavLink>
           </div>
@@ -198,7 +217,9 @@ const Navbar = () => {
             {isLoggedIn && user ? (
               <div className="flex items-center space-x-2">
                 {/* Display user's name or profile image */}
-                <span className="w-8 h-8 flex items-center justify-center rounded-full bg-primary-blue text-white font-bold">{user.name.slice(0, 2).toUpperCase() || 'User'}</span>
+                <span className="w-8 h-8 flex items-center justify-center rounded-full bg-primary-blue text-white font-bold">
+                  {user.name.slice(0, 2).toUpperCase() || "User"}
+                </span>
                 {/* If there's a profile image, display it */}
                 {/* {user.profileImageUrl && (
                   <img
@@ -210,7 +231,7 @@ const Navbar = () => {
               </div>
             ) : null}
 
-            {isLoggedIn ? (
+            {isLoggedIn || isdid ? (
               <button
                 onClick={handleLogout}
                 className="bg-primary-blue text-white px-6 py-2 rounded-full hover:bg-dark-blue transition-colors"
@@ -219,7 +240,7 @@ const Navbar = () => {
               </button>
             ) : (
               <button
-                onClick={() => window.location.href = "/signin"}
+                onClick={() => (window.location.href = "/signin")}
                 className="bg-primary-blue text-white px-6 py-2 rounded-full hover:bg-dark-blue transition-colors"
               >
                 Login/Register
@@ -281,7 +302,7 @@ const Navbar = () => {
                 </button>
               ) : (
                 <button
-                  onClick={() => window.location.href = "/signin"}
+                  onClick={() => (window.location.href = "/signin")}
                   className="bg-primary-blue text-white px-6 py-2 rounded-full hover:bg-dark-blue transition-colors"
                 >
                   Login/Register
@@ -296,4 +317,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-

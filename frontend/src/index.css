@@ -13,3 +13,34 @@ body,html{
   height: 100%;
   width: 100%;
 }
+
+
+.nav-link {
+  @apply flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-blue-50 hover:text-primary rounded-lg transition-all duration-300;
+}
+
+.nav-link.active {
+  @apply bg-blue-50 text-primary font-medium;
+}
+
+.stats-card {
+  @apply bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ccc;
+}

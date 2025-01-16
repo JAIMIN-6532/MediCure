@@ -39,4 +39,40 @@ export default class FeedbackRepository {
       return res.status(500).json({ message: "Error getting feedback" });
     }
   };
+
+  getAvgRatingByDoctorId = async (did) => {
+    try {
+      const avgRating = await FeedbackModel.aggregate([
+        { $match: { doctor:new mongoose.Types.ObjectId(did) } },
+        {
+          $group: {
+            _id: "$doctor",
+            avgRating: { $avg: "$rating" },
+          },
+        },
+      ]);
+      return avgRating;
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Error getting feedback" });
+    }
+  };
+
+  getAllDoctorsAvgRating = async () => {
+    try {
+      const avgRating = await FeedbackModel.aggregate([
+        {
+          $group: {
+            _id: "$doctor",
+            avgRating: { $avg: "$rating" },
+          },
+        },
+      ]);
+      return avgRating;
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Error getting feedback" });
+    }
+  };
+
 }
