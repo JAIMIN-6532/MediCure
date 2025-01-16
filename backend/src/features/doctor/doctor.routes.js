@@ -22,15 +22,18 @@ doctorRouter.post(
     { name: "degree", maxCount: 1 },
   ]),
   (req, res, next) => {
+    console.log("uploaddoc1",req.body);
     doctorController.uploadDocument(req, res, next);
   }
 );
 
 doctorRouter.post("/:doctorId/uploaddoc2", (req, res, next) => {
+  console.log("uploaddoc2",req.body);
   doctorController.uploadDocument2(req, res, next);
 });
 
 doctorRouter.post("/:doctorId/uploaddoc3", (req, res, next) => {
+  console.log("uploaddoc3",req.body);
   doctorController.uploadDocument3(req, res, next);
 });
 

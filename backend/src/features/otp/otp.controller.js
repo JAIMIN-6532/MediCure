@@ -30,10 +30,12 @@ export default class OtpController {
     async verifyOtp(email,otp) {
         try {
             // const { otp } = req.body;
+            const otpnum = parseInt(otp);
+            console.log(otpnum);
             console.log(email,otp);
             // const userId = req.userID;
             // console.log(userId);
-            const isValid = await this.OtpRepository.verifyOtp(email,otp);
+            const isValid = await this.OtpRepository.verifyOtp(email,otpnum);
             if (isValid) {
                 return true;
             } else {

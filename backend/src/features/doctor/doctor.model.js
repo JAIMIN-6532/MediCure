@@ -6,9 +6,12 @@ const doctorSchema = new mongoose.Schema({
   email: { type: String, required: true}, //unique : true karvanu
   password: { type: String, required: true },
   phone: { type: String },   //second
+  steps: { type: Number, default: 1 }, // To track the registration steps
   gender:{type:String , enum : ["Male" , "Female"]  },  //second
   clinicaddress : {type:String}, //second
   pincode : {type:Number},   //second
+  city : {type:String},   //second
+  state : {type:String},  //second
   specialization: { type: String ,
      enum: ["Cardiologist", "Dermatologist", "Endocrinologist", "Gastroenterologist", "Gynecologist", "Hematologist", 
       "Infectious Disease Specialist", "Nephrologist", "Neurologist", "Oncologist",
@@ -19,7 +22,7 @@ const doctorSchema = new mongoose.Schema({
   availability: [
     {
       day: { type: String }, // e.g., Monday
-      slots: [{ type: String }], // e.g., ["9:00 AM - 10:00 AM"]
+      slots : [{type:String}] // e.g., ["10:00 AM", "11:00 AM", "12:00 PM"]
     },
   ],
   serviceType: {

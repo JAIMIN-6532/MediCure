@@ -106,8 +106,6 @@
 // };
 
 // export default Step3;
-
-
 import React from 'react';
 
 const Step3 = ({ formData, handleChange }) => {
@@ -126,18 +124,42 @@ const Step3 = ({ formData, handleChange }) => {
 
   // Handle day selection (toggle availability)
   const handleDayClick = (day) => {
-    const newAvailability = formData.availability.includes(day)
-      ? formData.availability.filter((d) => d !== day)
-      : [...formData.availability, day];
+    const newAvailability = [...formData.availability];
+
+    // Check if day is already selected
+    const dayIndex = newAvailability.findIndex((item) => item.day === day);
+    if (dayIndex >= 0) {
+      // If day is already selected, remove it
+      newAvailability.splice(dayIndex, 1);
+    } else {
+      // If day is not selected, add it with empty slots
+      newAvailability.push({ day, slots: [] });
+    }
+
+    // Update formData with new availability (just the days selected)
     handleChange({ target: { name: 'availability', value: newAvailability } });
   };
 
-  // Handle time slot selection (toggle slot for all selected days)
+  // Handle slot selection for a given day
   const handleSlotClick = (slot) => {
-    const newSlots = formData.slots.includes(slot)
-      ? formData.slots.filter((s) => s !== slot)
-      : [...formData.slots, slot];
-    handleChange({ target: { name: 'slots', value: newSlots } });
+    // If no day is selected, prevent slot selection
+    if (formData.availability.length === 0) return;
+
+    const newAvailability = formData.availability.map((item) => {
+      // For each selected day, toggle the slot
+      if (item.slots && item.slots.includes(slot)) {
+        // Remove slot if already selected
+        item.slots = item.slots.filter((s) => s !== slot);
+      } else {
+        // Add slot if not selected
+        if (!item.slots) item.slots = [];
+        item.slots.push(slot);
+      }
+      return item;
+    });
+
+    // Update formData with the updated availability (days and slots)
+    handleChange({ target: { name: 'availability', value: newAvailability } });
   };
 
   // Check if any days are selected
@@ -155,7 +177,7 @@ const Step3 = ({ formData, handleChange }) => {
               type="button"
               onClick={() => handleDayClick(day)}
               className={`px-6 py-2 rounded-full text-sm font-medium ${
-                formData.availability.includes(day)
+                formData.availability.some((item) => item.day === day)
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-200 text-gray-700 hover:bg-blue-500 hover:text-white'
               } transition-all duration-200`}
@@ -177,7 +199,7 @@ const Step3 = ({ formData, handleChange }) => {
               onClick={() => handleSlotClick(slot)}
               disabled={!areDaysSelected} // Disable slots if no days are selected
               className={`px-6 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                formData.slots.includes(slot)
+                formData.availability.some((item) => item.slots && item.slots.includes(slot))
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-200 text-gray-700 hover:bg-blue-500 hover:text-white'
               } ${!areDaysSelected ? 'opacity-50 cursor-not-allowed' : ''}`} // Style for disabled state
@@ -205,3 +227,4 @@ const Step3 = ({ formData, handleChange }) => {
 };
 
 export default Step3;
+

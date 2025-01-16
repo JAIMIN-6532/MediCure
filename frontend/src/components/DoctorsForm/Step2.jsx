@@ -32,8 +32,8 @@ const Step2 = ({ formData, handleChange }) => {
               Clinic Address
             </label>
             <textarea
-              name="clinicAddress"
-              value={formData.clinicAddress}
+              name="clinicaddress"
+              value={formData.clinicaddress}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               rows="3"
@@ -77,6 +77,40 @@ const Step2 = ({ formData, handleChange }) => {
           type="tel"
           name="phone"
           value={formData.phone}
+          onChange={handleChange}
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        />
+      </div>
+
+      {/* Specialization Dropdown */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Specialization
+        </label>
+        <select
+          name="specialization"
+          value={formData.specialization}
+          onChange={handleChange}
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        >
+          <option value="">Select specialization</option>
+          <option value="Cardiology">Cardiology</option>
+          <option value="Neurology">Neurology</option>
+          <option value="Dermatology">Dermatology</option>
+          <option value="Orthopedics">Orthopedics</option>
+          <option value="Pediatrics">Pediatrics</option>
+        </select>
+      </div>
+
+      {/* Experience Field */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Experience (in years)
+        </label>
+        <input
+          type="number"
+          name="experience"
+          value={formData.experience}
           onChange={handleChange}
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />

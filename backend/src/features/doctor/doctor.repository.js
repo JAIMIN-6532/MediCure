@@ -66,8 +66,10 @@ export default class DoctorRepository {
     doctorId,
     gender,
     phone,
+    city,
+    state,
     clinicaddress,
-    pincode,
+    serviceType,
     specialization,
     experience,
   }) => {
@@ -79,8 +81,10 @@ export default class DoctorRepository {
           $set: {
             gender: gender,
             phone: phone,
+            city: city,
+            state: state,
             clinicaddress: clinicaddress,
-            pincode: pincode,
+            serviceType: serviceType,
             specialization: specialization,
             experience: experience,
           },
@@ -95,7 +99,7 @@ export default class DoctorRepository {
     }
   };
 
-    uploadDocument3 = async ({ doctorId, consultationFee ,availability, serviceType }) => {
+    uploadDocument3 = async ({ doctorId, consultationFee ,availability }) => {
         try {
         const objectId = new mongoose.Types.ObjectId(doctorId);
         const updatedDoctor = await DoctorModel.findOneAndUpdate(
@@ -104,7 +108,8 @@ export default class DoctorRepository {
             $set: {
                 consultationFee: consultationFee,
                 availability: availability,
-                serviceType: serviceType,
+                // availability : slots,
+                
             },
             },
             { new: true }

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';  // Import useNavigate
 import { Eye, EyeOff, Loader } from 'lucide-react';
 import AuthLayout from '../../components/AuthLayout';
-
+import axios from 'axios';
 const DsignUp = () => {
   const [formData, setFormData] = useState({
     email: '',
@@ -10,19 +10,34 @@ const DsignUp = () => {
     name: '',
     otp: '',
   });
+
   const [showPassword, setShowPassword] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();  // Initialize the navigate function
-
+  const [error, setError] = useState('');
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSendOtp = async (e) => {
     e.preventDefault();
+   
     setLoading(true);
     // Simulate OTP sending
+
+    try{
+      const response = await axios.post('http://localhost:3000/api/otp/send', { email: formData.email });
+      console.log('OTP Sent:', response.data);
+      setOtpSent(true);
+
+    }catch(err){
+      console.log(err);
+      setError(err.response ? err.response.data : 'Failed to send OTP.');
+    }finally{
+      setLoading(false);
+    }
+
     setTimeout(() => {
       setOtpSent(true);
       setLoading(false);
@@ -33,6 +48,25 @@ const DsignUp = () => {
     e.preventDefault();
     setLoading(true);
     // Handle form submission here (e.g., save data to API)
+    try {
+      // Send the signup request to the server
+      const response = await axios.post('http://localhost:3000/api/doctor/dsignup', {
+        email: formData.email,
+        password: formData.password,
+        name: formData.name,
+        otp: formData.otp,
+      });
+      console.log('User Created:', response.data);
+      localStorage.setItem('did', JSON.stringify(response.data._id));
+      // alert('User successfully registered!');
+      navigate('/doctor-signup');  // Redirect to /doctor-signup after submission
+      
+    } catch (err) {
+      console.error('Signup failed:', err);
+      setError(err.response ? err.response.data : 'An error occurred.');
+    } finally {
+      setLoading(false);
+    }
     setTimeout(() => {
       setLoading(false);
       navigate('/doctor-signup');  // Redirect to /doctor-signup after submission
@@ -53,6 +87,7 @@ const DsignUp = () => {
             onChange={handleChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             placeholder="Enter your full name"
+            required
           />
         </div>
 
@@ -67,6 +102,7 @@ const DsignUp = () => {
             onChange={handleChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             placeholder="Enter your email"
+            required
           />
         </div>
 
@@ -82,6 +118,7 @@ const DsignUp = () => {
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               placeholder="Create a password"
+              required
             />
             <button
               type="button"
@@ -106,6 +143,7 @@ const DsignUp = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               placeholder="Enter OTP"
               maxLength="6"
+              required
             />
           </div>
         )}

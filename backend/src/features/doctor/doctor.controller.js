@@ -75,6 +75,8 @@ export default class DoctorController {
       const { name, email, password, otp } = req.body;
       const hashedPassword = await bcrypt.hash(password, 12);
       let isVerified = false;
+      console.log("req", req.body);
+      console.log("otp", otp);
       isVerified = await this.otpController.verifyOtp(email, otp);
       if (isVerified) {
         const doctor = await this.doctorRepository.signUp({
@@ -184,6 +186,8 @@ export default class DoctorController {
         { new: true } // To return the updated document
       );
 
+      console.log(updatedDoctor);
+
       if (!updatedDoctor) {
         return res.status(404).json({ message: "Doctor not found" });
       }
@@ -212,8 +216,10 @@ export default class DoctorController {
       const {
         gender,
         phone,
+        city,
+        state,
         clinicaddress,
-        pincode,
+        serviceType,
         specialization,
         experience,
       } = req.body;
@@ -222,8 +228,10 @@ export default class DoctorController {
         doctorId,
         gender,
         phone,
+        city,
+        state,
         clinicaddress,
-        pincode,
+        serviceType,
         specialization,
         experience,
       });
@@ -242,12 +250,13 @@ export default class DoctorController {
   uploadDocument3 = async (req, res, next) => {
     const doctorId = req.params.doctorId;
     try {
-      const { consultationFee, availability, serviceType } = req.body;
+      const { consultationFee, availability } = req.body;
+      console.log("availability in dc ", availability);
       const updatedDoctor = await this.doctorRepository.uploadDocument3({
         doctorId,
         consultationFee,
         availability,
-        serviceType,
+      
       });
 
       console.log(updatedDoctor);

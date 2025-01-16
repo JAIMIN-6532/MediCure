@@ -2,7 +2,8 @@
 import React from 'react';
 import { Upload } from 'lucide-react';
 
-const Step1 = ({ formData, handleFileChange }) => {
+const Step1 = ({ formData, handleFileChange,did }) => {
+
   const renderFilePreview = (file) => {
     if (!file) return null;
     
