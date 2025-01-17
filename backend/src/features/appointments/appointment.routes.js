@@ -14,6 +14,7 @@ const appointmentController = new AppointmentController();
 
 
 appointmentRouter.get('/availableslots/:doctorId', (req,res,next)=>{
+    console.log("inside availableslots route");
     appointmentController.getAvailableSlots(req,res,next);
 });
 

@@ -55,7 +55,7 @@ const DoctorProfile = ({ doctor }) => {
             </span>
           </div>
 
-          {/* Gallery */}
+          {/* Gallery
           <div className="flex gap-3 mt-6">
             {[1, 2, 3, 4].map((img) => (
               <div key={img} className="w-20 h-20 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
@@ -66,7 +66,7 @@ const DoctorProfile = ({ doctor }) => {
                 />
               </div>
             ))}
-          </div>
+          </div> */}
 
           {/* Services */}
           <div className="flex gap-3 mt-6">
@@ -87,10 +87,7 @@ const DoctorProfile = ({ doctor }) => {
       {/* Booking Buttons */}
       <div className="flex gap-6 mt-8">
         <button className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-4 px-6 rounded-xl font-semibold shadow-md hover:shadow-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300">
-          Book In-Person Visit
-        </button>
-        <button className="flex-1 bg-gradient-to-r from-green-500 to-green-600 text-white py-4 px-6 rounded-xl font-semibold shadow-md hover:shadow-lg hover:from-green-600 hover:to-green-700 transition-all duration-300">
-          Book Video Consultation
+          Book Appointment
         </button>
       </div>
     </div>

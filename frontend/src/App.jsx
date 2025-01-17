@@ -13,6 +13,7 @@ import DsignUp from "./components/DoctorsForm/DsignUp";
 // import DoctorDashbord from "./pages/Doctors/DoctorDashbord.jsx";
 import DoctorDashbord from "./pages/DoctorDashbord/DoctorDashbord";
 import DoctorProfilePage from "./pages/Patient/DoctorProfilePage";
+import BookAppointment from './pages/BookAppointment/BookAppointment';
 
 const App = () => {
   return (
@@ -30,6 +31,7 @@ const App = () => {
           <Route path="/doctor-signup" element={<DoctorSignUp />} />
           <Route path="/d-dashbord/:doctorId" element={<DoctorDashbord />} />
           <Route path="/doctorprofilepatientview/:doctorId" element={<DoctorProfilePage />} />
+          <Route path="/bookappointment/:doctorId" element={<BookAppointment />} />
           {/* <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} /> */}
         </Routes>

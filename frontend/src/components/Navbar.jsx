@@ -216,20 +216,21 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-4">
             {isLoggedIn && user ? (
               <div className="flex items-center space-x-2">
-                {/* Display user's name or profile image */}
-                <span className="w-8 h-8 flex items-center justify-center rounded-full bg-primary-blue text-white font-bold">
-                  {user.name.slice(0, 2).toUpperCase() || "User"}
-                </span>
-                {/* If there's a profile image, display it */}
-                {/* {user.profileImageUrl && (
-                  <img
-                    src={user.profileImageUrl}
-                    alt="Profile"
-                    className="w-8 h-8 rounded-full object-cover"
-                  />
-                )} */}
-              </div>
-            ) : null}
+                {/* Display user's profile image if available */}
+      {user.profileImageUrl ? (
+        <img
+          src={user.profileImageUrl}
+          alt="Profile"
+          className="w-11 h-11 rounded-full object-cover"
+        />
+      ) : (
+        // Fallback to initials if no profile image
+        <span className="w-8 h-8 flex items-center justify-center rounded-full bg-primary-blue text-white font-bold">
+          {user.name.slice(0, 2).toUpperCase() || "User"}
+        </span>
+      )}
+    </div>
+  ) : null}
 
             {isLoggedIn || isdid ? (
               <button

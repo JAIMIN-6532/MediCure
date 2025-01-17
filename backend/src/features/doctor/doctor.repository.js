@@ -161,7 +161,7 @@ export default class DoctorRepository {
         try {
         const doctor = await DoctorModel.findById(doctorId).populate("appointments").exec();
         console.log("doctor",doctor);
-        return doctor;
+        return doctor.appointments;
         } catch (err) {
         console.log("DR get appointments by doctor id", err);
         throw err;

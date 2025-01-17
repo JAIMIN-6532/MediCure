@@ -161,12 +161,13 @@ function DoctorsCardsDpage() {
                         <ServiceTypeBadge serviceType={doctor.serviceType} />
                       </div>
                       <div className="flex space-x-4 mt-[15px]">
-                        <button className="flex-1 bg-light-blue text-primary-blue px-4 py-2 rounded-full hover:bg-primary-blue hover:text-white transition-colors">
+                        <button className="flex-1 bg-light-blue text-primary-blue px-4 py-2 rounded-full hover:bg-primary-blue hover:text-white transition-colors" onClick={() => navigate(`/doctorprofilepatientview/${doctor._id}`)}>
                           View Profile
                         </button>
                         <button className="flex-1 bg-primary-blue text-white px-4 py-2 rounded-full hover:bg-dark-blue transition-colors">
                           Book Now
                         </button>
+                        
                       </div>
                     </div>
                   </div>

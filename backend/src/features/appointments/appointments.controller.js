@@ -4,6 +4,7 @@ import DoctorRepository from "../doctor/doctor.repository.js";
 import DoctorModel from "../doctor/doctor.model.js";
 import AppointmentModel from "./appointments.model.js";
 import PatientModel from "../patient/patient.model.js";
+import { format, addDays, startOfToday, getDay, isSameDay,parseISO } from 'date-fns';
 export default class AppointmentController {
 
     constructor(){
@@ -13,30 +14,281 @@ export default class AppointmentController {
     }
 
 // Function to fetch available slots
- getAvailableSlots = async (req, res) => {
+
+
+// getAvailableSlots = async (req, res) => {
+//   const { doctorId } = req.params;
+
+//   try {
+//     // Fetch the doctor data
+//     const doctor = await this.doctorRepository.getDoctorById(doctorId);
+
+//     if (!doctor) {
+//       return res.status(404).json({ message: "Doctor not found" });
+//     }
+
+//     // Fetch the doctor's availability
+//     const availability = doctor.availability;
+
+//     if (!availability || availability.length === 0) {
+//       return res.status(404).json({ message: "Doctor has no availability slots" });
+//     }
+
+//     // Fetch confirmed appointments for the doctor
+//     const appointments = await this.doctorRepository.getAppointmentsByDoctorId(doctorId);
+
+//     // Create a set of booked slots for the doctor (exact date and time)
+//     const bookedSlots = new Set(
+//       appointments
+//         .filter(appointment => appointment.status === 'Confirmed')  // Only confirmed appointments
+//         .map(appointment => {
+//           const appointmentDate = format(appointment.date, 'yyyy-MM-dd'); // Format the appointment date
+//           const timeSlot = appointment.timeSlot;
+//           return `${appointmentDate}-${timeSlot}`; // Combine date and timeSlot for exact matching
+//         })
+//     );
+
+//     console.log("Booked slots:", bookedSlots); // Debugging to check booked slots correctly
+
+//     // Now, process the doctor's availability and remove the booked slots
+//     const availableSlots = availability.map((day) => {
+//       // Get today's date (start of today)
+//       const today = startOfToday();
+
+//       // Find the index for the doctor's available day in the week (e.g., Mon, Tue, etc.)
+//       const dayOfWeekIndex = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(day.day);
+//       if (dayOfWeekIndex === -1) {
+//         return null; // Invalid day, ignore it
+//       }
+
+//       const currentDayIndex = new Date().getDay();
+//       let daysToAdd = dayOfWeekIndex - currentDayIndex;
+//       if (daysToAdd <= 0) {
+//         daysToAdd += 7; // Move to the next occurrence of the same weekday
+//       }
+
+//       // Calculate the next available date for this day
+//       const nextAvailableDate = addDays(today, daysToAdd);
+//       const formattedDate = format(nextAvailableDate, 'yyyy-MM-dd'); // Format the next available date
+
+//       console.log("Next Available Date:", formattedDate); // Debugging to check if the date is correct
+
+//       // Now, filter out the booked slots for this day
+//       const availableDaySlots = day.slots.filter((slot) => {
+//         const slotIdentifier = `${formattedDate}-${slot}`;
+//         return !bookedSlots.has(slotIdentifier); // Remove if the slot is booked
+//       });
+
+//       // If there are available slots left for this day, return them
+//       if (availableDaySlots.length > 0) {
+//         return {
+//           date: formattedDate,
+//           availableSlots: availableDaySlots,
+//         };
+//       } else {
+//         return null; // No available slots for this day
+//       }
+//     }).filter(day => day !== null); // Filter out days with no available slots
+
+//     console.log("Available slots:", availableSlots); // Debugging to check the available slots after filtering
+
+//     // Return the available slots
+//     return res.json({ availableSlots });
+//   } catch (error) {
+//     console.error("Error fetching available slots:", error);
+//     return res.status(500).json({ message: "Error fetching available slots", error: error.message });
+//   }
+// };
+
+
+
+
+// getAvailableSlots = async (req, res) => {
+//   const { doctorId } = req.params;
+
+//   try {
+//     // Fetch the doctor data
+//     const doctor = await this.doctorRepository.getDoctorById(doctorId);
+
+//     if (!doctor) {
+//       return res.status(404).json({ message: "Doctor not found" });
+//     }
+
+//     // Fetch the doctor's availability
+//     const availability = doctor.availability;
+
+//     if (!availability || availability.length === 0) {
+//       return res.status(404).json({ message: "Doctor has no availability slots" });
+//     }
+
+//     // Fetch confirmed appointments for the doctor
+//     const appointments = await this.doctorRepository.getAppointmentsByDoctorId(doctorId);
+
+//     // Create a set of booked slots for the doctor (date-time pair)
+//     const bookedSlots = new Set(
+//       appointments
+//         .filter(appointment => appointment.status === 'Confirmed')  // Only confirmed appointments
+//         .map(appointment => {
+//           const appointmentDate = appointment.date; // Keep the exact date-time of the appointment
+//           const timeSlot = appointment.timeSlot;
+
+//           // Combine the appointment date and time slot into a unique identifier
+//           const slotIdentifier = `${appointmentDate.toISOString()}-${timeSlot}`;
+//           return slotIdentifier;
+//         })
+//     );
+
+//     console.log("Booked slots:", bookedSlots); // Debugging to check booked slots correctly
+
+//     // Now, process the doctor's availability and remove the booked slots
+//     const availableSlots = availability.map((day) => {
+//       // Get today's date (start of today)
+//       const today = startOfToday();
+
+//       // Find the index for the doctor's available day in the week (e.g., Mon, Tue, etc.)
+//       const dayOfWeekIndex = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(day.day);
+//       if (dayOfWeekIndex === -1) {
+//         return null; // Invalid day, ignore it
+//       }
+
+//       const currentDayIndex = new Date().getDay();
+//       let daysToAdd = dayOfWeekIndex - currentDayIndex;
+//       if (daysToAdd <= 0) {
+//         daysToAdd += 7; // Move to the next occurrence of the same weekday
+//       }
+
+//       // Calculate the next available date for this day
+//       const nextAvailableDate = addDays(today, daysToAdd);
+//       const formattedDate = format(nextAvailableDate, 'yyyy-MM-dd'); // Format the next available date
+
+//       console.log("Next Available Date:", formattedDate); // Debugging to check if the date is correct
+
+//       // Now, filter out the booked slots for this day
+//       const availableDaySlots = day.slots.filter((slot) => {
+//         const slotIdentifier = `${formattedDate}T00:00:00.000Z-${slot}`; // Ensure that the time component matches the available slot
+//         return !bookedSlots.has(slotIdentifier); // Remove if the slot is booked
+//       });
+
+//       // If there are available slots left for this day, return them
+//       if (availableDaySlots.length > 0) {
+//         return {
+//           date: formattedDate,
+//           availableSlots: availableDaySlots,
+//         };
+//       } else {
+//         return null; // No available slots for this day
+//       }
+//     }).filter(day => day !== null); // Filter out days with no available slots
+
+//     console.log("Available slots after filtering:", availableSlots); // Debugging to check the available slots after filtering
+
+//     // Return the available slots
+//     return res.json({ availableSlots });
+//   } catch (error) {
+//     console.error("Error fetching available slots:", error);
+//     return res.status(500).json({ message: "Error fetching available slots", error: error.message });
+//   }
+// };
+
+
+
+
+
+
+getAvailableSlots = async (req, res) => {
   const { doctorId } = req.params;
 
   try {
-    // Find the doctor by ID
-    const doctor = await DoctorRepository.findById(doctorId); /////////////
+    // Fetch the doctor data
+    const doctor = await this.doctorRepository.getDoctorById(doctorId);
 
     if (!doctor) {
       return res.status(404).json({ message: "Doctor not found" });
     }
 
-    // Get the availability of the doctor
+    // Fetch the doctor's availability
     const availability = doctor.availability;
 
-    if (!availability) {
+    if (!availability || availability.length === 0) {
       return res.status(404).json({ message: "Doctor has no availability slots" });
     }
 
-    return res.json({ availability });
+    // Fetch confirmed appointments for the doctor
+    const appointments = await this.doctorRepository.getAppointmentsByDoctorId(doctorId);
+
+    // Create a set of booked slots for the doctor (date-time pair) based on the date only
+    const bookedSlots = new Set(
+      appointments
+        .filter(appointment => appointment.status === 'Confirmed')  // Only confirmed appointments
+        .map(appointment => {
+          const appointmentDate = appointment.date; // Keep the exact date-time of the appointment
+          const timeSlot = appointment.timeSlot;
+
+          // Use the date part only (yyyy-MM-dd format)
+          const formattedDate = format(appointmentDate, 'yyyy-MM-dd'); // Remove time component
+          const slotIdentifier = `${formattedDate}-${timeSlot}`; // Combine date and time
+
+          return slotIdentifier;
+        })
+    );
+
+    console.log("Booked slots:", bookedSlots); // Debugging to check booked slots correctly
+
+    // Now, process the doctor's availability and remove the booked slots
+    const availableSlots = availability.map((day) => {
+      // Get today's date (start of today)
+      const today = startOfToday(); // Ensure it's at the start of today
+
+      // Find the index for the doctor's available day in the week (e.g., Mon, Tue, etc.)
+      const dayOfWeekIndex = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(day.day);
+      if (dayOfWeekIndex === -1) {
+        return null; // Invalid day, ignore it
+      }
+
+      const currentDayIndex = new Date().getDay();
+      let daysToAdd = dayOfWeekIndex - currentDayIndex;
+      if (daysToAdd <= 0) {
+        daysToAdd += 7; // Move to the next occurrence of the same weekday
+      }
+
+      // Calculate the next available date for this day
+      const nextAvailableDate = addDays(today, daysToAdd);
+      const formattedDate = format(nextAvailableDate, 'yyyy-MM-dd'); // Format the next available date to yyyy-MM-dd
+
+      console.log("Next Available Date:", formattedDate); // Debugging to check if the date is correct
+
+      // Now, filter out the booked slots for this day based on the date portion
+      const availableDaySlots = day.slots.filter((slot) => {
+        const slotIdentifier = `${formattedDate}-${slot}`; // Combine date and time slot
+        return !bookedSlots.has(slotIdentifier); // Remove if the slot is booked
+      });
+
+      // If there are available slots left for this day, return them
+      if (availableDaySlots.length > 0) {
+        return {
+          date: formattedDate,
+          availableSlots: availableDaySlots,
+        };
+      } else {
+        return null; // No available slots for this day
+      }
+    }).filter(day => day !== null); // Filter out days with no available slots
+
+    console.log("Available slots after filtering:", availableSlots); // Debugging to check the available slots after filtering
+
+    // Return the available slots
+    return res.json({ availableSlots });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Error fetching doctor's availability" });
+    console.error("Error fetching available slots:", error);
+    return res.status(500).json({ message: "Error fetching available slots", error: error.message });
   }
 };
+
+
+
+
+
+
 
 // Function to book an appointment
  bookAppointment = async (req, res,next) => {
