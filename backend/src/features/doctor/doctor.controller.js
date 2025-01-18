@@ -182,6 +182,7 @@ export default class DoctorController {
           profileImageUrl: imageUrl,
           idproofUrl: idPdfUrl,
           degreeDocumentUrl: degreePdfUrl,
+          steps: 2,
         },
         { new: true } // To return the updated document
       );
@@ -256,7 +257,7 @@ export default class DoctorController {
         doctorId,
         consultationFee,
         availability,
-      
+        
       });
 
       console.log(updatedDoctor);

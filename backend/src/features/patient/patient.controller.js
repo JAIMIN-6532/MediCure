@@ -90,6 +90,7 @@ export default class PatientController {
           // await sendToken(user, token, res, 200);
           // return res.status(200).cookie("token", token).send({ user, token });
           // console.log("User: ", req.cookies["token"]);
+          
           return res.status(200).send({ user: user, token }); // You could alternatively return user info here
         } else {
           return res.status(400).send("Incorrect Credentials");

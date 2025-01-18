@@ -1,12 +1,12 @@
-import React, { useState} from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ChevronRight, ChevronLeft, Loader } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import AuthLayout from '../../components/AuthLayout';
-import Step1 from '../../components/DoctorsForm/Step1';
-import Step2 from '../../components/DoctorsForm/Step2';
-import Step3 from '../../components/DoctorsForm/Step3';
-import axios from 'axios';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ChevronRight, ChevronLeft, Loader } from "lucide-react";
+import { Link } from "react-router-dom";
+import AuthLayout from "../../components/AuthLayout";
+import Step1 from "../../components/DoctorsForm/Step1";
+import Step2 from "../../components/DoctorsForm/Step2";
+import Step3 from "../../components/DoctorsForm/Step3";
+import axios from "axios";
 
 const DoctorSignUp = () => {
   const [step, setStep] = useState(1);
@@ -15,13 +15,13 @@ const DoctorSignUp = () => {
     profileImage: null,
     idProof: null,
     degreeProof: null,
-    gender: '',
-    serviceType: '',
-    clinicaddress: '',
-    city: '',
-    state: '',
-    phone: '',
-    specialization: '',
+    gender: "",
+    serviceType: "",
+    clinicaddress: "",
+    city: "",
+    state: "",
+    phone: "",
+    specialization: "",
     experience: 1,
     selectedDays: [], // Days the user has selected
     selectedSlots: [], // Slots the user has selected
@@ -29,7 +29,19 @@ const DoctorSignUp = () => {
     consultationFee: 1,
   });
 
-  const did = JSON.parse(localStorage.getItem('did'));
+  const doctor = JSON.parse(localStorage.getItem("user"));
+  let did;
+  const did1 = JSON.parse(localStorage.getItem("did"));
+  const did2 = doctor?._id;
+  console.log(did1, did2);
+  if (did1) {
+    did = did1;
+  } else {
+    did = did2;
+  }
+
+  console.log(did);  
+
   const navigate = useNavigate();
   const handleFileChange = (e, field) => {
     setFormData({ ...formData, [field]: e.target.files[0] });
@@ -42,22 +54,22 @@ const DoctorSignUp = () => {
   // Step 1 API call
   const uploadStep1Documents = async (doctorId, formData) => {
     const formDataToSend = new FormData();
-    formDataToSend.append('images', formData.profileImage);
-    formDataToSend.append('id', formData.idProof);
-    formDataToSend.append('degree', formData.degreeProof);
+    formDataToSend.append("images", formData.profileImage);
+    formDataToSend.append("id", formData.idProof);
+    formDataToSend.append("degree", formData.degreeProof);
     try {
       const response = await axios.post(
         `http://localhost:3000/api/doctor/${doctorId}/uploaddoc1`,
         formDataToSend,
         {
           headers: {
-            'Content-Type': 'multipart/form-data',
+            "Content-Type": "multipart/form-data",
           },
         }
       );
       return response.data;
     } catch (error) {
-      console.error('Error uploading documents for Step 1', error);
+      console.error("Error uploading documents for Step 1", error);
       throw error;
     }
   };
@@ -80,7 +92,7 @@ const DoctorSignUp = () => {
       );
       return response.data;
     } catch (error) {
-      console.error('Error uploading details for Step 2', error);
+      console.error("Error uploading details for Step 2", error);
       throw error;
     }
   };
@@ -98,7 +110,7 @@ const DoctorSignUp = () => {
 
       return response.data;
     } catch (error) {
-      console.error('Error uploading details for Step 3', error);
+      console.error("Error uploading details for Step 3", error);
       throw error;
     }
   };
@@ -120,7 +132,7 @@ const DoctorSignUp = () => {
         // Handle success (e.g., redirect or show success message)
       }
     } catch (error) {
-      console.error('Error during step submission', error);
+      console.error("Error during step submission", error);
     } finally {
       setLoading(false);
     }
@@ -129,11 +141,21 @@ const DoctorSignUp = () => {
   const renderStep = () => {
     switch (step) {
       case 1:
-        return <Step1 formData={formData} handleFileChange={handleFileChange} did={did} />;
+        return (
+          <Step1
+            formData={formData}
+            handleFileChange={handleFileChange}
+            did={did}
+          />
+        );
       case 2:
-        return <Step2 formData={formData} handleChange={handleChange} did={did} />;
+        return (
+          <Step2 formData={formData} handleChange={handleChange} did={did} />
+        );
       case 3:
-        return <Step3 formData={formData} handleChange={handleChange} did={did} />;
+        return (
+          <Step3 formData={formData} handleChange={handleChange} did={did} />
+        );
       default:
         return null;
     }
@@ -144,14 +166,27 @@ const DoctorSignUp = () => {
       <div className="mb-8">
         <div className="flex justify-between items-center">
           {[1, 2, 3].map((stepNumber) => (
-            <div key={stepNumber} className={`flex items-center ${stepNumber !== 3 ? 'flex-1' : ''}`}>
+            <div
+              key={stepNumber}
+              className={`flex items-center ${
+                stepNumber !== 3 ? "flex-1" : ""
+              }`}
+            >
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= stepNumber ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'}`}
+                className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                  step >= stepNumber
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-200 text-gray-600"
+                }`}
               >
                 {stepNumber}
               </div>
               {stepNumber !== 3 && (
-                <div className={`flex-1 h-1 mx-2 ${step > stepNumber ? 'bg-blue-600' : 'bg-gray-200'}`} />
+                <div
+                  className={`flex-1 h-1 mx-2 ${
+                    step > stepNumber ? "bg-blue-600" : "bg-gray-200"
+                  }`}
+                />
               )}
             </div>
           ))}
@@ -205,8 +240,11 @@ const DoctorSignUp = () => {
 
       <div className="mt-6 text-center">
         <p className="text-sm text-gray-600">
-          Already have an account?{' '}
-          <Link to="/signin" className="text-blue-600 hover:text-blue-700 font-medium">
+          Already have an account?{" "}
+          <Link
+            to="/signin"
+            className="text-blue-600 hover:text-blue-700 font-medium"
+          >
             Sign In
           </Link>
         </p>

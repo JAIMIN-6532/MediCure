@@ -22,6 +22,9 @@ export default class DoctorRepository {
     try {
       const doctor = await DoctorModel.findOne({ email });
       return doctor;
+      // const deletedDoctor = await DoctorModel.findOne({ email }).deleteOne();
+      // return null;
+      
     } catch (err) {
       console.log(err);
       throw err;
@@ -87,6 +90,7 @@ export default class DoctorRepository {
             serviceType: serviceType,
             specialization: specialization,
             experience: experience,
+            steps: 3,
           },
         },
         { new: true }
@@ -108,6 +112,7 @@ export default class DoctorRepository {
             $set: {
                 consultationFee: consultationFee,
                 availability: availability,
+                steps: 4,
                 // availability : slots,
                 
             },
@@ -115,6 +120,7 @@ export default class DoctorRepository {
             { new: true }
         );
         console.log(updatedDoctor);
+
         return updatedDoctor;
         } catch (err) {
         console.log("DR upload document3", err);

@@ -15,7 +15,9 @@ const SignIn = () => {
   const navigate = useNavigate();
 
   // Get loading, error, and user info from Redux state
-  const { loading, error, user, token } = useSelector((state) => state.auth);
+  const { loading, error, user, token} = useSelector((state) => state.auth);
+
+  
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

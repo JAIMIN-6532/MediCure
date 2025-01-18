@@ -146,12 +146,13 @@
 // };
 
 // export default Navbar;
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../reduxToolkit/reducers/AuthReducer"; // import the logout action
 import { Stethoscope } from "lucide-react";
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
@@ -159,8 +160,31 @@ const Navbar = () => {
   // Get user and token from Redux state
   const { user, token } = useSelector((state) => state.auth);
   const isdid = localStorage.getItem("did");
+  const [userType, setUserType] = useState(null); // state to store userType from token
+
   // Check if user is logged in by verifying if token exists in Redux state
   const isLoggedIn = !!token;
+
+  // Function to decode JWT token and extract the userType
+  const decodeToken = (token) => {
+    try {
+      const base64Url = token.split('.')[1]; // Get the payload part of the token
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/'); // Replace URL-safe characters
+      const decodedPayload = JSON.parse(atob(base64)); // Decode and parse the payload
+      return decodedPayload.userType; // Return userType from the decoded payload
+    } catch (error) {
+      console.error("Token decode error", error);
+      return null;
+    }
+  };
+
+  // Set userType when token changes
+  useEffect(() => {
+    if (token) {
+      const type = decodeToken(token);
+      setUserType(type); // Set userType based on token
+    }
+  }, [token]); // Run effect when token changes
 
   const handleLogout = () => {
     localStorage.removeItem("token"); // Remove token from localStorage
@@ -173,42 +197,38 @@ const Navbar = () => {
     window.location.href = "/"; // Redirect to the home page
   };
 
+  // Handle profile click for both image and initials
+  const handleProfileClick = () => 
+    {
+      const userId = user._id;
+    if (userType === "doctor") {
+      window.location.href = `/d-dashbord/${userId}`;
+    } else if (userType === "patient") {
+      window.location.href = `/p-dashbord/${userId}`;
+    }
+  };
+
   return (
     <nav className="fixed w-full bg-light-blue shadow-md z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <div className="flex-shrink-0 ">
-          
-              
-          
             <NavLink to="/" className="text-2xl font-bold text-primary-blue">
-            <Stethoscope className="w-8 h-7 text-blue-600 inline " /> MEDICURE
+              <Stethoscope className="w-8 h-7 text-blue-600 inline " /> MEDICURE
             </NavLink>
           </div>
 
           <div className="hidden md:flex items-center space-x-8">
-            <NavLink
-              to="/"
-              className="hover:text-primary-blue transition-colors"
-            >
+            <NavLink to="/" className="hover:text-primary-blue transition-colors">
               Home
             </NavLink>
-            <NavLink
-              to="/doctors"
-              className="hover:text-primary-blue transition-colors"
-            >
+            <NavLink to="/doctors" className="hover:text-primary-blue transition-colors">
               Doctors
             </NavLink>
-            <NavLink
-              to="/about"
-              className="hover:text-primary-blue transition-colors"
-            >
+            <NavLink to="/about" className="hover:text-primary-blue transition-colors">
               About Us
             </NavLink>
-            <NavLink
-              to="/contact"
-              className="hover:text-primary-blue transition-colors"
-            >
+            <NavLink to="/contact" className="hover:text-primary-blue transition-colors">
               Contact
             </NavLink>
           </div>
@@ -217,20 +237,24 @@ const Navbar = () => {
             {isLoggedIn && user ? (
               <div className="flex items-center space-x-2">
                 {/* Display user's profile image if available */}
-      {user.profileImageUrl ? (
-        <img
-          src={user.profileImageUrl}
-          alt="Profile"
-          className="w-11 h-11 rounded-full object-cover"
-        />
-      ) : (
-        // Fallback to initials if no profile image
-        <span className="w-8 h-8 flex items-center justify-center rounded-full bg-primary-blue text-white font-bold">
-          {user.name.slice(0, 2).toUpperCase() || "User"}
-        </span>
-      )}
-    </div>
-  ) : null}
+                {user.profileImageUrl ? (
+                  <img
+                    src={user.profileImageUrl}
+                    alt="Profile"
+                    className="w-11 h-11 rounded-full object-cover cursor-pointer"
+                    onClick={handleProfileClick} // Click on image to navigate
+                  />
+                ) : (
+                  // Fallback to initials if no profile image
+                  <span
+                    onClick={handleProfileClick} // Handle the click on the circular shape
+                    className="w-8 h-8 flex items-center justify-center rounded-full bg-primary-blue text-white font-bold cursor-pointer"
+                  >
+                    {user.name.slice(0, 2).toUpperCase() || "User"}
+                  </span>
+                )}
+              </div>
+            ) : null}
 
             {isLoggedIn || isdid ? (
               <button
@@ -264,32 +288,16 @@ const Navbar = () => {
       {isOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 bg-light-blue">
-            <NavLink
-              to="/"
-              className="block px-3 py-2 hover:text-primary-blue"
-              onClick={() => setIsOpen(false)}
-            >
+            <NavLink to="/" className="block px-3 py-2 hover:text-primary-blue" onClick={() => setIsOpen(false)}>
               Home
             </NavLink>
-            <NavLink
-              to="/doctors"
-              className="block px-3 py-2 hover:text-primary-blue"
-              onClick={() => setIsOpen(false)}
-            >
+            <NavLink to="/doctors" className="block px-3 py-2 hover:text-primary-blue" onClick={() => setIsOpen(false)}>
               Doctors
             </NavLink>
-            <NavLink
-              to="/about"
-              className="block px-3 py-2 hover:text-primary-blue"
-              onClick={() => setIsOpen(false)}
-            >
+            <NavLink to="/about" className="block px-3 py-2 hover:text-primary-blue" onClick={() => setIsOpen(false)}>
               About Us
             </NavLink>
-            <NavLink
-              to="/contact"
-              className="block px-3 py-2 hover:text-primary-blue"
-              onClick={() => setIsOpen(false)}
-            >
+            <NavLink to="/contact" className="block px-3 py-2 hover:text-primary-blue" onClick={() => setIsOpen(false)}>
               Contact
             </NavLink>
 
@@ -318,3 +326,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+

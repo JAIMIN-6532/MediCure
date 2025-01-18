@@ -13,6 +13,8 @@ import AvailableTimings from '../../components/DoctorDashbord/DDTabs/AvailableTi
 const DoctorDashbord= ()=>{
   const [activeNav, setActiveNav] = useState('Dashboard');
 
+  
+
   const renderContent = () => {
     switch (activeNav) {
       case 'Dashboard':
