@@ -82,18 +82,18 @@ const { appointments, status, errorA } = useSelector((state) => state.appointmen
 
 console.log("Selected Doctor IN Bookappoin", selectedDoctor);
 console.log("appointments from BookAppin", appointments);
-//   const [prevDoctorId, setPrevDoctorId] = useState(null);
+const [prevDoctorId, setPrevDoctorId] = useState(null);
 
 
 useEffect(() => {
-    // if (doctorId !== prevDoctorId) {
+    if (doctorId !== prevDoctorId) {
       // Only reset the state if the doctorId has actually changed
-    //   dispatch(resetDoctorState());
-    //   setPrevDoctorId(doctorId); // Update the previous doctorId after resetting
+      // dispatch(resetDoctorState());
+      setPrevDoctorId(doctorId); // Update the previous doctorId after resetting
       dispatch(fetchDoctorById(doctorId)); // Fetch new doctor data
       dispatch(fetchAppointmentSlots(doctorId));
-    // }
-  }, [doctorId, dispatch]); // Run when doctorId or prevDoctorId changes
+    }
+    }, [doctorId, dispatch,prevDoctorId]); // Run when doctorId or prevDoctorId changes
 
   // Handle loading and error state
   if (fetchDoctorByIdStatus === 'loading') {

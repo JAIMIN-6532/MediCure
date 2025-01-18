@@ -191,6 +191,33 @@ export default class AppointmentController {
 // };
 
 
+separateDateAndTime(slot) {
+  // Split the input string based on the last '-' (to correctly separate date and time)
+  const parts = slot.split('-');
+  
+  // Ensure there are enough parts to separate date and time
+  if (parts.length < 2) {
+    throw new Error("Invalid slot format. Could not extract date and time.");
+  }
+
+  // The first part is the date (e.g., '2025-01-01')
+  const dateString = parts.slice(0, 3).join('-'); // Joining date parts back (e.g., '2025-01-01')
+  // The remaining part is the time (e.g., '01:00 AM')
+  const time = parts.slice(3).join(' '); // Joining time parts back (e.g., '01:00 AM')
+
+  // Parse the date part
+  const dateObj = new Date(dateString);
+  
+  // Ensure the date is valid
+  if (isNaN(dateObj)) {
+    throw new Error("Invalid date format");
+  }
+
+  // Extract the date in 'YYYY-MM-DD' format
+  const date = dateObj.toISOString().split('T')[0]; // 'YYYY-MM-DD'
+
+  return { date, time };
+}
 
 
 
@@ -216,18 +243,16 @@ getAvailableSlots = async (req, res) => {
     // Fetch confirmed appointments for the doctor
     const appointments = await this.doctorRepository.getAppointmentsByDoctorId(doctorId);
 
-    // Create a set of booked slots for the doctor (date-time pair) based on the date only
+    // Create a set of booked slots for the doctor (date-time pair) based on the date and time
     const bookedSlots = new Set(
       appointments
         .filter(appointment => appointment.status === 'Confirmed')  // Only confirmed appointments
         .map(appointment => {
-          const appointmentDate = appointment.date; // Keep the exact date-time of the appointment
+          const appointmentDate = appointment.date;
           const timeSlot = appointment.timeSlot;
 
-          // Use the date part only (yyyy-MM-dd format)
-          const formattedDate = format(appointmentDate, 'yyyy-MM-dd'); // Remove time component
-          const slotIdentifier = `${formattedDate}-${timeSlot}`; // Combine date and time
-
+          // Format the booked slot as 'YYYY-MM-DD-hh:mm AM/PM'
+          const slotIdentifier = `${appointmentDate.toISOString().split('T')[0]}-${timeSlot}`;
           return slotIdentifier;
         })
     );
@@ -257,7 +282,7 @@ getAvailableSlots = async (req, res) => {
 
       console.log("Next Available Date:", formattedDate); // Debugging to check if the date is correct
 
-      // Now, filter out the booked slots for this day based on the date portion
+      // Now, filter out the booked slots for this day based on the time only
       const availableDaySlots = day.slots.filter((slot) => {
         const slotIdentifier = `${formattedDate}-${slot}`; // Combine date and time slot
         return !bookedSlots.has(slotIdentifier); // Remove if the slot is booked
@@ -283,6 +308,9 @@ getAvailableSlots = async (req, res) => {
     return res.status(500).json({ message: "Error fetching available slots", error: error.message });
   }
 };
+
+
+
 
 
 

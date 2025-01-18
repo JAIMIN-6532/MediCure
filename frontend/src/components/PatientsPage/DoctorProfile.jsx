@@ -1,7 +1,25 @@
-import React from 'react';
-import { FaStar, FaMapMarkerAlt } from 'react-icons/fa';
-
+import React from "react";
+import { FaStar, FaMapMarkerAlt } from "react-icons/fa";
+import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 const DoctorProfile = ({ doctor }) => {
+
+  const navigate = useNavigate();
+  const { token } = useSelector((state) => state.auth);
+  const doctorId = useParams();
+
+  const handleBookAppointment = () => {
+    if (token) {
+      // If the user is logged in, navigate to the appointment booking page
+      navigate(`/bookappointment/${doctorId}`); // Replace doctorId with the actual doctor ID
+    } else {
+      // If the user is not logged in, navigate to the sign-in page
+      // Store the current page URL in localStorage or as state for later redirection
+      localStorage.setItem('redirectAfterSignIn', '/bookappointment/doctorId'); // Modify as needed
+      navigate('/signin'); // Redirect to sign-in page
+    }
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-lg p-8 transition-all duration-300 hover:shadow-xl">
       <div className="flex items-start gap-8">
@@ -18,7 +36,9 @@ const DoctorProfile = ({ doctor }) => {
         <div className="flex-grow">
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-2xl font-bold text-gray-800">{doctor.name}</h1>
+              <h1 className="text-2xl font-bold text-gray-800">
+                {doctor.name}
+              </h1>
               <p className="text-gray-600 mt-1">{doctor.specialization}</p>
               <div className="flex items-center mt-2">
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-50 text-blue-600">
@@ -30,8 +50,12 @@ const DoctorProfile = ({ doctor }) => {
             <div className="text-right">
               <div className="text-lg font-bold text-green-600">99%</div>
               <div className="text-gray-600">35 Feedback</div>
-              <div className="text-gray-600 mt-1">{doctor.clinicaddress || "New York, USA"}</div>
-              <div className="text-lg font-semibold text-blue-600 mt-1">${doctor.consultationFee || "100"} per hour</div>
+              <div className="text-gray-600 mt-1">
+                {doctor.clinicaddress || "New York, USA"}
+              </div>
+              <div className="text-lg font-semibold text-blue-600 mt-1">
+                ${doctor.consultationFee || "100"} per hour
+              </div>
             </div>
           </div>
 
@@ -49,7 +73,9 @@ const DoctorProfile = ({ doctor }) => {
           {/* Location */}
           <div className="flex items-center mt-3">
             <FaMapMarkerAlt className="text-blue-500" />
-            <span className="ml-2 text-gray-600">{doctor.clinicaddress || "New York, USA"}</span>
+            <span className="ml-2 text-gray-600">
+              {doctor.clinicaddress || "New York, USA"}
+            </span>
             <span className="ml-2 text-blue-500 hover:text-blue-600 cursor-pointer font-medium">
               - Get Directions
             </span>
@@ -86,7 +112,10 @@ const DoctorProfile = ({ doctor }) => {
 
       {/* Booking Buttons */}
       <div className="flex gap-6 mt-8">
-        <button className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-4 px-6 rounded-xl font-semibold shadow-md hover:shadow-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300">
+        <button
+          className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-4 px-6 rounded-xl font-semibold shadow-md hover:shadow-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300"
+          onClick={handleBookAppointment}
+        >
           Book Appointment
         </button>
       </div>

@@ -41,7 +41,12 @@ export default function SlotSelection({
       else if (hour24 >= 17 && hour24 < 20) evening.push(slot);   // Evening: 5:00 PM - 7:59 PM
     });
 
-    return { morning, afternoon, evening };
+    // Sort the slots in each period
+    return {
+      morning: morning.sort((a, b) => a.localeCompare(b)),
+      afternoon: afternoon.sort((a, b) => a.localeCompare(b)),
+      evening: evening.sort((a, b) => a.localeCompare(b))
+    };
   };
 
   // Find available slots for the selected date from appointmentSlots
@@ -53,6 +58,9 @@ export default function SlotSelection({
   const categorizedSlots = availableSlotsForSelectedDate
     ? categorizeSlots(availableSlotsForSelectedDate.availableSlots)
     : { morning: [], afternoon: [], evening: [] };
+
+  // Check if slots are available for the selected date
+  const noSlotsAvailableForDate = !availableSlotsForSelectedDate;
 
   const handlePrevDay = () => {
     setSelectedDate(prev => subDays(prev, 1));
@@ -116,6 +124,12 @@ export default function SlotSelection({
           <FaClock className="text-primary text-xl" />
           <h3 className="text-lg font-semibold text-gray-700">Available Slots</h3>
         </div>
+
+        {/* Show "Not Available" if no slots for selected date */}
+        {noSlotsAvailableForDate && (
+          <div className="text-center text-gray-500 mb-6">Not Available</div>
+        )}
+
         <div className="flex flex-col md:flex-row gap-6">
           {/* Morning Slots */}
           <div className="flex-1 bg-gray-50 p-4 rounded-xl">
@@ -124,21 +138,25 @@ export default function SlotSelection({
               Morning
             </h4>
             <div className="space-y-3">
-              {categorizedSlots.morning.map((time) => (
-                <button
-                  key={time}
-                  onClick={() => setSelectedSlot(time)}
-                  className={`
-                    w-full p-3 rounded-lg transition-all transform hover:scale-105
-                    ${selectedSlot === time
-                      ? 'bg-primary text-white shadow-md scale-105'
-                      : 'bg-white hover:bg-gray-100 hover:shadow-sm'
-                    }
-                  `}
-                >
-                  {time}
-                </button>
-              ))}
+              {categorizedSlots.morning.length === 0 ? (
+                <p className="text-center text-gray-500">No slots available</p>
+              ) : (
+                categorizedSlots.morning.map((time) => (
+                  <button
+                    key={time}
+                    onClick={() => setSelectedSlot(time)}
+                    className={`
+                      w-full p-3 rounded-lg transition-all transform hover:scale-105
+                      ${selectedSlot === time
+                        ? 'bg-primary text-white shadow-md scale-105'
+                        : 'bg-white hover:bg-gray-100 hover:shadow-sm'
+                      }
+                    `}
+                  >
+                    {time}
+                  </button>
+                ))
+              )}
             </div>
           </div>
 
@@ -149,21 +167,25 @@ export default function SlotSelection({
               Afternoon
             </h4>
             <div className="space-y-3">
-              {categorizedSlots.afternoon.map((time) => (
-                <button
-                  key={time}
-                  onClick={() => setSelectedSlot(time)}
-                  className={`
-                    w-full p-3 rounded-lg transition-all transform hover:scale-105
-                    ${selectedSlot === time
-                      ? 'bg-primary text-white shadow-md scale-105'
-                      : 'bg-white hover:bg-gray-100 hover:shadow-sm'
-                    }
-                  `}
-                >
-                  {time}
-                </button>
-              ))}
+              {categorizedSlots.afternoon.length === 0 ? (
+                <p className="text-center text-gray-500">No slots available</p>
+              ) : (
+                categorizedSlots.afternoon.map((time) => (
+                  <button
+                    key={time}
+                    onClick={() => setSelectedSlot(time)}
+                    className={`
+                      w-full p-3 rounded-lg transition-all transform hover:scale-105
+                      ${selectedSlot === time
+                        ? 'bg-primary text-white shadow-md scale-105'
+                        : 'bg-white hover:bg-gray-100 hover:shadow-sm'
+                      }
+                    `}
+                  >
+                    {time}
+                  </button>
+                ))
+              )}
             </div>
           </div>
 
@@ -174,21 +196,25 @@ export default function SlotSelection({
               Evening
             </h4>
             <div className="space-y-3">
-              {categorizedSlots.evening.map((time) => (
-                <button
-                  key={time}
-                  onClick={() => setSelectedSlot(time)}
-                  className={`
-                    w-full p-3 rounded-lg transition-all transform hover:scale-105
-                    ${selectedSlot === time
-                      ? 'bg-primary text-white shadow-md scale-105'
-                      : 'bg-white hover:bg-gray-100 hover:shadow-sm'
-                    }
-                  `}
-                >
-                  {time}
-                </button>
-              ))}
+              {categorizedSlots.evening.length === 0 ? (
+                <p className="text-center text-gray-500">No slots available</p>
+              ) : (
+                categorizedSlots.evening.map((time) => (
+                  <button
+                    key={time}
+                    onClick={() => setSelectedSlot(time)}
+                    className={`
+                      w-full p-3 rounded-lg transition-all transform hover:scale-105
+                      ${selectedSlot === time
+                        ? 'bg-primary text-white shadow-md scale-105'
+                        : 'bg-white hover:bg-gray-100 hover:shadow-sm'
+                      }
+                    `}
+                  >
+                    {time}
+                  </button>
+                ))
+              )}
             </div>
           </div>
         </div>
