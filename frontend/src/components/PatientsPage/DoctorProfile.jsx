@@ -6,18 +6,16 @@ const DoctorProfile = ({ doctor }) => {
 
   const navigate = useNavigate();
   const { token } = useSelector((state) => state.auth);
-  const doctorId = useParams();
+  const {doctorId} = useParams();
 
+  console.log("Doctor ID", doctorId);
   const handleBookAppointment = () => {
-    if (token) {
-      // If the user is logged in, navigate to the appointment booking page
-      navigate(`/bookappointment/${doctorId}`); // Replace doctorId with the actual doctor ID
-    } else {
-      // If the user is not logged in, navigate to the sign-in page
-      // Store the current page URL in localStorage or as state for later redirection
-      localStorage.setItem('redirectAfterSignIn', '/bookappointment/doctorId'); // Modify as needed
-      navigate('/signin'); // Redirect to sign-in page
-    }
+    if(!token){
+      localStorage.setItem('redirect', `/bookappointment/${doctorId}`);
+      navigate('/signin');
+      // return;
+    }else
+    navigate(`/bookappointment/${doctorId}`);
   };
 
   return (

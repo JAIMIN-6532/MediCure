@@ -1,20 +1,72 @@
 import { FaFileInvoice, FaUser, FaCreditCard } from 'react-icons/fa';
+import { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
 
-export default function Invoice({ invoice }) {
+export default function Invoice({ invoice, doctor, patient }) {
+  // Function to generate PDF
+  const generatePDF = () => {
+    const doc = new jsPDF();
+
+    // Add Title
+    doc.setFontSize(20);
+    doc.text("MEDICURE", 20, 20);
+    doc.setFontSize(12);
+    doc.text(`Invoice from: ${doctor.name}`, 20, 30);
+    doc.text(`${doctor.clinicaddress}`, 20, 35);
+    doc.text(`${doctor.city}`, 20, 40);
+
+    // Add Invoice Details
+    doc.text(`Order: #${invoice.orderId}`, 150, 30);
+    doc.text(`Issued: ${invoice.issueDate}`, 150, 35);
+
+    // Add Patient Details
+    doc.text(`Invoice To: ${patient.name}`, 20, 50);
+    doc.text(`${patient.email}`, 20, 55);
+    doc.text(`${patient.phone || 'N/A'}`, 20, 60);
+
+    // Add Payment Details
+    doc.text(`Payment Method: ${invoice.payment.method || 'N/A'}`, 150, 50);
+    doc.text(`Card Number: ${invoice.payment.cardNumber || 'N/A'}`, 150, 55);
+    doc.text(`Bank: ${invoice.payment.bank || 'N/A'}`, 150, 60);
+
+    // Add Table with items
+    const tableData = invoice.items.map(item => [
+      item.description,
+      item.quantity,
+      `$${item.vat}`,
+      `$${item.total}`
+    ]);
+    
+    doc.autoTable({
+      head: [['Description', 'Quantity', 'VAT', 'Total']],
+      body: tableData,
+      startY: 70,
+      theme: 'striped',
+    });
+
+    // Add Subtotal, Discount and Total
+    doc.text(`Subtotal: $${invoice.subtotal}`, 150, doc.lastAutoTable.finalY + 10);
+    doc.text(`Discount: -${invoice.discount}%`, 150, doc.lastAutoTable.finalY + 15);
+    doc.text(`Total Amount: $${invoice.total}`, 150, doc.lastAutoTable.finalY + 25);
+
+    // Save the generated PDF
+    doc.save('invoice.pdf');
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-lg p-8 animate-slide-up max-w-4xl mx-auto">
       <div className="flex justify-between items-start mb-8 border-b border-gray-100 pb-8">
         <div>
           <h1 className="text-4xl font-bold text-primary mb-2 flex items-center gap-3">
             <FaFileInvoice />
-            DOCCURE
+            MEDICURE
           </h1>
           <div className="text-gray-600">
             <p className="font-semibold mb-1 text-primary">Invoice From</p>
             <div className="space-y-1">
-              <p className="font-medium">{invoice.doctor.name}</p>
-              <p>{invoice.doctor.address}</p>
-              <p>{invoice.doctor.location}</p>
+              <p className="font-medium">{doctor.name}</p>
+              <p>{doctor.clinicaddress}</p>
+              <p>{doctor.city}</p>
             </div>
           </div>
         </div>
@@ -34,9 +86,9 @@ export default function Invoice({ invoice }) {
               Invoice To
             </p>
             <div className="space-y-1 text-gray-600">
-              <p className="font-medium">{invoice.patient.name}</p>
-              <p>{invoice.patient.address}</p>
-              <p>{invoice.patient.location}</p>
+              <p className="font-medium">{patient.name}</p>
+              <p>{patient.email}</p>
+              <p>{patient.phone || 17362736236}</p>
             </div>
           </div>
         </div>
@@ -47,9 +99,9 @@ export default function Invoice({ invoice }) {
               Payment Method
             </p>
             <div className="space-y-1 text-gray-600">
-              <p className="font-medium">{invoice.payment.method}</p>
-              <p>{invoice.payment.cardNumber}</p>
-              <p>{invoice.payment.bank}</p>
+              <p className="font-medium">{invoice.payment.method || 'N/A'}</p>
+              <p>{invoice.payment.cardNumber || 'N/A'}</p>
+              <p>{invoice.payment.bank || 'N/A'}</p>
             </div>
           </div>
         </div>
@@ -93,6 +145,16 @@ export default function Invoice({ invoice }) {
             <span className="text-2xl font-bold text-primary">${invoice.total}</span>
           </div>
         </div>
+      </div>
+
+      {/* Download Button */}
+      <div className="mt-6 text-right">
+        <button
+          onClick={generatePDF}
+          className="bg-primary text-white py-2 px-6 rounded-lg hover:bg-primary-dark"
+        >
+          Download as PDF
+        </button>
       </div>
     </div>
   );

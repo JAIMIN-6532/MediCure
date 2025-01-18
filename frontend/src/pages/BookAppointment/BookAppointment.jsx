@@ -1,34 +1,13 @@
-import { useState } from "react";
-// import DoctorInfo from './components/DoctorInfo';
-// import SlotSelection from './components/SlotSelection';
-// import PersonalInfo from './components/PersonalInfo';
-// import BookingConfirmation from './components/BookingConfirmation';
-// import Invoice from './components/Invoice';
-
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { fetchDoctorById } from "../../reduxToolkit/reducers/DoctorReducer.js";
+import { fetchAppointmentSlots, bookAppointment } from "../../reduxToolkit/reducers/BookingReducer.js";
 import DoctorInfo from "../../components/BookAppointment/DoctorInfo";
 import SlotSelection from "../../components/BookAppointment/SlotSelection";
 import PersonalInfo from "../../components/BookAppointment/PersonalInfo";
 import BookingConfirmation from "../../components/BookAppointment/BookingConfirmation";
 import Invoice from "../../components/BookAppointment/Invoice";
-import { fetchDoctorById } from "../../reduxToolkit/reducers/DoctorReducer.js";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { useEffect } from "react";
-import { fetchAppointmentSlots } from "../../reduxToolkit/reducers/BookingReducer.js";
-
-import { Book } from "lucide-react";
-import { use } from "react";
-
-const doctorInfo = {
-  name: "Dr. Darren Elder",
-  specialty: "Dental Surgeon",
-  rating: 4.5,
-  reviews: 35,
-  location: "Newyork, USA",
-  image: "https://randomuser.me/api/portraits/men/36.jpg",
-  experience: "15+ Years Experience",
-  fees: "$100",
-};
 
 const mockInvoice = {
   orderId: "00124",
@@ -69,95 +48,104 @@ const mockInvoice = {
 
 
 
+
 const BookAppointment = () => {
-
-    
-const {doctorId} = useParams();
-const dispatch = useDispatch();
-const { selectedDoctor, fetchDoctorByIdStatus, error } = useSelector(
-  (state) => state.doctors
-);
-
-const { appointments, status, errorA } = useSelector((state) => state.appointments);
-
-console.log("Selected Doctor IN Bookappoin", selectedDoctor);
-console.log("appointments from BookAppin", appointments);
-const [prevDoctorId, setPrevDoctorId] = useState(null);
-
-
-useEffect(() => {
-    if (doctorId !== prevDoctorId) {
-      // Only reset the state if the doctorId has actually changed
-      // dispatch(resetDoctorState());
-      setPrevDoctorId(doctorId); // Update the previous doctorId after resetting
-      dispatch(fetchDoctorById(doctorId)); // Fetch new doctor data
-      dispatch(fetchAppointmentSlots(doctorId));
-    }
-    }, [doctorId, dispatch,prevDoctorId]); // Run when doctorId or prevDoctorId changes
-
-  // Handle loading and error state
-  if (fetchDoctorByIdStatus === 'loading') {
-     <div>Loading...</div>;
-  }
-  if (fetchDoctorByIdStatus === 'failed') {
-     <div>Error: {error}</div>;
-  }
-
-  if (status === 'loading') {
-    <div>Loading...</div>;
- }
- if (status === 'failed') {
-    <div>Error: {error}</div>;
- }
-
-
-
+  const { doctorId } = useParams();
+  const dispatch = useDispatch();
+  
+  const { selectedDoctor, fetchDoctorByIdStatus, error } = useSelector((state) => state.doctors);
+  const user = useSelector((state) => state.auth.user);
+  const { appointments, status, errorA } = useSelector((state) => state.appointments);
+  const { bookappointmentStatus, bookappointmentError } = useSelector((state) => state.appointments);
+  console.log("selectedDoctor", selectedDoctor);
   const [step, setStep] = useState(1);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedSlot, setSelectedSlot] = useState(null);
+  const [prevDoctorId, setPrevDoctorId] = useState(null);
 
+  // Fetch doctor data and appointment slots on doctorId change
+  useEffect(() => {
+    if (doctorId !== prevDoctorId) {
+      setPrevDoctorId(doctorId);
+      dispatch(fetchDoctorById(doctorId));
+      dispatch(fetchAppointmentSlots(doctorId));
+    }
+  }, [doctorId, dispatch, prevDoctorId]);
+
+  // Handle next step
   const handleNext = () => {
     setStep(step + 1);
   };
 
+  // Handle booking confirmation
   const handleBookingConfirm = (formData) => {
-    setStep(3);
+    console.log("Booking Confirmed", formData);
+    
+    // Dispatch the bookAppointment action only when all data is collected
+    dispatch(bookAppointment({
+      doctorId: formData.doctorId,
+      patientId: formData.patientId,
+      date: formData.selectedDate,
+      timeSlot: formData.selectedSlot,
+    }));
   };
 
+  // Handle booking confirmation success
+  useEffect(() => {
+    if (bookappointmentStatus === 'succeeded') {
+      setStep(3); // Go to confirmation page
+    }
+  }, [bookappointmentStatus]);
+
+  // Handle invoice view
   const handleViewInvoice = () => {
     setStep(4);
   };
 
+  // Handle loading/error states
+  if (fetchDoctorByIdStatus === 'loading' || status === 'loading') {
+    return <div>Loading...</div>;
+  }
+
+  if (fetchDoctorByIdStatus === 'failed' || status === 'failed') {
+    return <div>Error: {error || errorA}</div>;
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50  md:p-8">
+    <div className="min-h-screen bg-gray-50 md:p-8">
       <div className="max-w-6xl mx-auto pt-16">
         <DoctorInfo doctor={selectedDoctor} />
-
         {step === 1 && (
           <SlotSelection
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
             selectedSlot={selectedSlot}
-            appointmentSlots = {appointments.availableSlots}
+            appointmentSlots={appointments.availableSlots}
             setSelectedSlot={setSelectedSlot}
             onNext={handleNext}
           />
         )}
-
-        {step === 2 && <PersonalInfo onSubmit={handleBookingConfirm} />}
-
+        {step === 2 && (
+          <PersonalInfo
+            selectedDate={selectedDate}
+            selectedSlot={selectedSlot}
+            patient={user}
+            onSubmit={handleBookingConfirm}
+          />
+        )}
         {step === 3 && (
           <BookingConfirmation
             booking={{
-              doctorName: doctorInfo.name,
+              doctorName: selectedDoctor.name,
               date: selectedDate.toLocaleDateString(),
               time: selectedSlot,
+              city: selectedDoctor.city || selectedDoctor.clinicaddress,
             }}
+            patient={user}
             onViewInvoice={handleViewInvoice}
           />
         )}
-
-        {step === 4 && <Invoice invoice={mockInvoice} />}
+        {step === 4 && <Invoice invoice={mockInvoice} doctor={selectedDoctor} patient={user} />}
       </div>
     </div>
   );

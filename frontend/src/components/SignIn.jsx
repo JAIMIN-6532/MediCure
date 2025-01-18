@@ -37,8 +37,16 @@ const SignIn = () => {
   // Redirect and save token to localStorage if user successfully signs in
   useEffect(() => {
     if (user && token) {
+      if(localStorage.getItem('redirect')){
+        localStorage.setItem('token', token);
+        const redirect = localStorage.getItem('redirect');
+        navigate(redirect);
+        localStorage.removeItem('redirect');
+      }else{
       localStorage.setItem('token', token); // Save token to local storage
-      navigate('/'); // Redirect to the home page after successful sign-in
+      // navigate('/'); // Redirect to the home page after successful sign-in
+      navigate('/'); // Redirect to the dashboard page after successful sign
+      }
     }
   }, [user, token, navigate]);
 

@@ -1,6 +1,6 @@
 import { FaCheckCircle, FaCalendarAlt, FaClock, FaMapMarkerAlt } from 'react-icons/fa';
 
-export default function BookingConfirmation({ booking, onViewInvoice }) {
+export default function BookingConfirmation({ booking,patient, onViewInvoice }) {
   return (
     <div className="min-h-[400px] flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center animate-slide-up">

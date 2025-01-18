@@ -1,13 +1,20 @@
 import { useState } from 'react';
 import { FaUser, FaEnvelope, FaPhone, FaMoneyBill, FaWallet, FaHandshake } from 'react-icons/fa';
+import { useParams } from 'react-router-dom';
 
-export default function PersonalInfo({ onSubmit }) {
+export default function PersonalInfo({ patient,onSubmit,selectedSlot,selectedDate }) {
+  console.log("patient from Personal Info",patient);
+  const {doctorId} = useParams();
   const [formData, setFormData] = useState({
-    firstName: '',
+    doctorId: doctorId,
+    patientId: patient._id,
+    firstName: patient.name,
     lastName: '',
-    email: '',
+    email: patient.email,
     phone: '',
-    paymentMethod: 'offline',
+    selectedDate: selectedDate,
+    selectedSlot: selectedSlot,
+    paymentMethod: 'Offline',
     acceptTerms: false
   });
 
