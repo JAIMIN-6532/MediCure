@@ -40,6 +40,7 @@ const doctorSchema = new mongoose.Schema({
     enum: ["Pending", "Verified", "Rejected"],
     default: "Pending",
   }, // Status of verification
+  avgRating : {type : Number , default : 0},
   feedbacks: [
     {
       type: mongoose.Schema.Types.ObjectId,

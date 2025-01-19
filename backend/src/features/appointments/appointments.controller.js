@@ -222,6 +222,7 @@ separateDateAndTime(slot) {
 
 
 
+
 getAvailableSlots = async (req, res) => {
   const { doctorId } = req.params;
 
@@ -272,6 +273,8 @@ getAvailableSlots = async (req, res) => {
 
       const currentDayIndex = new Date().getDay();
       let daysToAdd = dayOfWeekIndex - currentDayIndex;
+
+      // If the daysToAdd is less than or equal to 0, it means the desired day is later in the week
       if (daysToAdd <= 0) {
         daysToAdd += 7; // Move to the next occurrence of the same weekday
       }
@@ -288,7 +291,25 @@ getAvailableSlots = async (req, res) => {
         return !bookedSlots.has(slotIdentifier); // Remove if the slot is booked
       });
 
-      // If there are available slots left for this day, return them
+      // If today is the same day of the week as the available day, include today's slots
+      const isToday = currentDayIndex === dayOfWeekIndex;
+      const formattedToday = format(today, 'yyyy-MM-dd'); // Format today's date
+
+      if (isToday) {
+        const availableTodaySlots = day.slots.filter((slot) => {
+          const slotIdentifier = `${formattedToday}-${slot}`;
+          return !bookedSlots.has(slotIdentifier); // Remove if the slot is booked
+        });
+
+        if (availableTodaySlots.length > 0) {
+          return {
+            date: formattedToday,
+            availableSlots: availableTodaySlots,
+          };
+        }
+      }
+
+      // Return the next available date if no slots for today
       if (availableDaySlots.length > 0) {
         return {
           date: formattedDate,

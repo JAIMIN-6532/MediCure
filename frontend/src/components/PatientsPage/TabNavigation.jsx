@@ -1,7 +1,7 @@
 import React from 'react';
 
 const TabNavigation = ({ activeTab, setActiveTab }) => {
-  const tabs = ['Overview', 'Locations', 'Reviews', 'Business Hours'];
+  const tabs = [ 'Reviews', 'Business Hours'];
 
   return (
     <div className="border-b border-gray-200 mt-8">

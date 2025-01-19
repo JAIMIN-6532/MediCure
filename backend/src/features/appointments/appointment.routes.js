@@ -20,6 +20,7 @@ appointmentRouter.get('/availableslots/:doctorId', (req,res,next)=>{
 
 appointmentRouter.post('/bookappointment', jwtAuth ,(req,res,next)=>{
     // console.log("inside bookappointment route");
+    console.log("req.body",req.body);
     appointmentController.bookAppointment(req,res,next);
 });
 

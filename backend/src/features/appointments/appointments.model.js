@@ -15,6 +15,7 @@ const appointmentSchema = new mongoose.Schema({
   type: { 
     type: String, 
     enum: ['Online', 'Offline'], 
+    required: true
    
   },
   status: { 

@@ -5,6 +5,7 @@ export default function SlotSelection({
   selectedDate,
   setSelectedDate,
   selectedSlot,
+  doctor,
   appointmentSlots,
   setSelectedSlot,
   onNext

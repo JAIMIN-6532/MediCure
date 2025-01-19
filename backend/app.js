@@ -10,7 +10,7 @@ import patientRouter from "./src/features/patient/patient.routes.js";
 import doctorRouter from "./src/features/doctor/doctor.routes.js";
 import appointmentRouter from "./src/features/appointments/appointment.routes.js";
 import feedbackRouter from "./src/features/feedback/feedback.routes.js";
-
+import errorHandler from "./src/errorhandler/errorHandler.js";
 // import { ApplicationError } from "./src/error-handler/Applicationerror.js";
 
 dotenv.config();
@@ -18,6 +18,7 @@ dotenv.config();
 const app = express();
 
 app.use(cookieParser());
+
 // app.use(
 //   session({
 //     secret: 'SecretKey',
@@ -41,6 +42,8 @@ app.use((req, res, next) => {
     }
     next();
   });
+
+
   
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -54,6 +57,7 @@ app.use("/api/appointment",appointmentRouter);
 app.use("/api/feedback",feedbackRouter);
 // app.use("/api/service/",serviceRouter);
 
+app.use(errorHandler);
 
 app.use((req, res) => {
     res

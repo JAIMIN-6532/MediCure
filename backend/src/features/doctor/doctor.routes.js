@@ -60,4 +60,5 @@ doctorRouter.post("/addavailability/:did", (req, res, next) => {
   doctorController.addavailability(req, res, next);
 });
 
+
 export default doctorRouter;

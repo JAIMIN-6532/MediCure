@@ -5,6 +5,13 @@ export default class DoctorRepository {
   signUp = async ({ name, email, password }) => {
     try {
       // const {name,email,password} = req.body;
+      const existingDoctor = await DoctorModel.findOne({ email });
+      if (existingDoctor) {
+        const error = new Error("DoctorEmail already exists");
+        error.status = 400; // Set specific status for "bad request"
+        throw error; // Throw the error to be handled later
+      }
+
       const newDoctor = await DoctorModel.create({
         name,
         email,
@@ -24,7 +31,6 @@ export default class DoctorRepository {
       return doctor;
       // const deletedDoctor = await DoctorModel.findOne({ email }).deleteOne();
       // return null;
-      
     } catch (err) {
       console.log(err);
       throw err;
@@ -103,106 +109,118 @@ export default class DoctorRepository {
     }
   };
 
-    uploadDocument3 = async ({ doctorId, consultationFee ,availability }) => {
-        try {
-        const objectId = new mongoose.Types.ObjectId(doctorId);
-        const updatedDoctor = await DoctorModel.findOneAndUpdate(
-            { _id: objectId },
-            {
-            $set: {
-                consultationFee: consultationFee,
-                availability: availability,
-                steps: 4,
-                // availability : slots,
-                
-            },
-            },
-            { new: true }
-        );
-        console.log(updatedDoctor);
-
-        return updatedDoctor;
-        } catch (err) {
-        console.log("DR upload document3", err);
-        throw err;
-        }
-    };
-
-    getAllDoctors = async () => {
-        try {
-        const doctors = await DoctorModel.find().populate("feedbacks").exec();
-        return doctors;
-        } catch (err) {
-        console.log("DR get all doctors", err);
-        throw err;
-        }
-    }
-
-    getDoctorById = async (doctorId) => { 
+  uploadDocument3 = async ({ doctorId, consultationFee, availability }) => {
+    try {
       const objectId = new mongoose.Types.ObjectId(doctorId);
-      // console.log("objectid ",objectId);
-        try {
-        const doctor = await DoctorModel.findById(objectId)
-        .populate('feedbacks')  // Populate the feedbacks field
+      const updatedDoctor = await DoctorModel.findOneAndUpdate(
+        { _id: objectId },
+        {
+          $set: {
+            consultationFee: consultationFee,
+            availability: availability,
+            steps: 4,
+            // availability : slots,
+          },
+        },
+        { new: true }
+      );
+      console.log(updatedDoctor);
+
+      return updatedDoctor;
+    } catch (err) {
+      console.log("DR upload document3", err);
+      throw err;
+    }
+  };
+
+  getAllDoctors = async () => {
+    try {
+      const doctors = await DoctorModel.find().populate("feedbacks").exec();
+      return doctors;
+    } catch (err) {
+      console.log("DR get all doctors", err);
+      throw err;
+    }
+  };
+
+  getDoctorById = async (doctorId) => {
+    const objectId = new mongoose.Types.ObjectId(doctorId);
+    // console.log("objectid ",objectId);
+    try {
+      const doctor = await DoctorModel.findById(doctorId)
+        .populate({
+          path: "feedbacks", // Populate feedbacks field in DoctorModel
+          populate: {
+            path: "patient", // Populate the patient reference within feedback
+            select: "name", // Select only the patient's name (you can add more fields if needed)
+          },
+        })
         .exec();
-        // console.log("doctor",doctor);
-        return doctor;
-        } catch (err) {
-        console.log("DR get doctor by id", err);
-        throw err;
-        }
+
+      // console.log("doctor",doctor);
+      return doctor;
+    } catch (err) {
+      console.log("DR get doctor by id", err);
+      throw err;
     }
+  };
 
-    getFeedbackByDoctorId = async (doctorId) => {
-        try {
-        const doctor = await DoctorModel.findById(doctorId).populate("feedbacks").exec();
-        return doctor;
-        } catch (err) {
-        console.log("DR get feedback by doctor id", err);
-        throw err;
-        }
+  getFeedbackByDoctorId = async (doctorId) => {
+    try {
+      const doctor = await DoctorModel.findById(doctorId)
+        .populate("feedbacks")
+        .exec();
+      return doctor;
+    } catch (err) {
+      console.log("DR get feedback by doctor id", err);
+      throw err;
     }
+  };
 
-    getAppointmentsByDoctorId = async (doctorId) => {
-        try {
-        const doctor = await DoctorModel.findById(doctorId).populate("appointments").exec();
-        console.log("doctor",doctor);
-        return doctor.appointments;
-        } catch (err) {
-        console.log("DR get appointments by doctor id", err);
-        throw err;
-        }
+  getAppointmentsByDoctorId = async (doctorId) => {
+    try {
+      const doctor = await DoctorModel.findById(doctorId)
+        .populate("appointments")
+        .exec();
+      console.log("doctor", doctor);
+      return doctor.appointments;
+    } catch (err) {
+      console.log("DR get appointments by doctor id", err);
+      throw err;
     }
+  };
 
-    addavailability = async ( doctorId, availability ,fees) => {
-      try {
-          const objectId = new mongoose.Types.ObjectId(doctorId);
-          const doctor = await DoctorModel.findById(objectId);
-  
-          if (!doctor) {
-              throw new Error('Doctor not found');
-          }
-  
-          const existingDay = doctor.availability.find(a => a.day === availability.day);   //doctor will not add added slot again..
-  
-          if (existingDay) {
-              existingDay.slots.push(...availability.slots);
-          } else {
-              doctor.availability.push(availability);
-          }
+  addavailability = async (doctorId, availability, fees) => {
+    try {
+      const objectId = new mongoose.Types.ObjectId(doctorId);
+      const doctor = await DoctorModel.findById(objectId);
 
-          console.log("fees",fees);
-
-          doctor.consultationFee = fees;
-
-          console.log("Doctor",doctor);
-  
-          const updatedDoctor = await doctor.save();
-          console.log(updatedDoctor);
-          return updatedDoctor;
-      } catch (err) {
-          console.log("DR add availability", err);
-          throw err;
+      if (!doctor) {
+        throw new Error("Doctor not found");
       }
-  }
+
+      const existingDay = doctor.availability.find(
+        (a) => a.day === availability.day
+      ); //doctor will not add added slot again..
+
+      if (existingDay) {
+        existingDay.slots.push(...availability.slots);
+      } else {
+        doctor.availability.push(availability);
+      }
+
+      console.log("fees", fees);
+
+      doctor.consultationFee = fees;
+
+      console.log("Doctor", doctor);
+
+      const updatedDoctor = await doctor.save();
+      console.log(updatedDoctor);
+      return updatedDoctor;
+    } catch (err) {
+      console.log("DR add availability", err);
+      throw err;
+    }
+  };
 }

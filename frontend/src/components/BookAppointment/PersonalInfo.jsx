@@ -1,28 +1,51 @@
-import { useState } from 'react';
-import { FaUser, FaEnvelope, FaPhone, FaMoneyBill, FaWallet, FaHandshake } from 'react-icons/fa';
-import { useParams } from 'react-router-dom';
+import { useState } from "react";
+import {
+  FaUser,
+  FaEnvelope,
+  FaPhone,
+  FaMoneyBill,
+  FaWallet,
+  FaHandshake,
+} from "react-icons/fa";
+import { useParams } from "react-router-dom";
 
-export default function PersonalInfo({ patient,onSubmit,selectedSlot,selectedDate }) {
-  console.log("patient from Personal Info",patient);
-  const {doctorId} = useParams();
+export default function PersonalInfo({
+  patient,
+  onSubmit,
+  selectedSlot,
+  selectedDate,
+  doctor
+}) {
+  console.log("patient from Personal Info", patient);
+  const { doctorId } = useParams();
   const [formData, setFormData] = useState({
     doctorId: doctorId,
     patientId: patient._id,
     firstName: patient.name,
-    lastName: '',
+    lastName: "",
     email: patient.email,
-    phone: '',
+    phone: "",
     selectedDate: selectedDate,
     selectedSlot: selectedSlot,
-    paymentMethod: 'Offline',
-    acceptTerms: false
+    paymentMethod: "Offline",
+    acceptTerms: false,
+    type: "",
+    serviceType: doctor?.serviceType === "Both" ? null : doctor?.serviceType // Initialize serviceType based on doctor's serviceType
   });
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  // Handle the service type selection change
+  const handleServiceTypeChange = (type) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      serviceType: type,
     }));
   };
 
@@ -32,11 +55,13 @@ export default function PersonalInfo({ patient,onSubmit,selectedSlot,selectedDat
         <FaUser className="text-primary" />
         Personal Information
       </h2>
-      
-      <form onSubmit={(e) => {
-        e.preventDefault();
-        onSubmit(formData);
-      }}>
+
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit(formData);
+        }}
+      >
         <div className="space-y-6">
           <div className="flex flex-col md:flex-row gap-6">
             <div className="flex-1">
@@ -100,7 +125,53 @@ export default function PersonalInfo({ patient,onSubmit,selectedSlot,selectedDat
                 required
               />
             </div>
+            
+            {/* Service Type Selection if Doctor Offers Both */}
+            {doctor?.serviceType === "Both" && (
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-gray-700 mb-3">
+                  Choose Service Type
+                </h3>
+                <div className="flex gap-4">
+                  <button
+                    type="button"
+                    onClick={() => handleServiceTypeChange("Online")}
+                    className={`px-6 py-2 rounded-lg ${
+                      formData.serviceType === "Online"
+                        ? "bg-primary text-white"
+                        : "bg-gray-50 text-gray-700"
+                    }`}
+                  >
+                    Online
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleServiceTypeChange("Offline")}
+                    className={`px-6 py-2 rounded-lg ${
+                      formData.serviceType === "Offline"
+                        ? "bg-primary text-white"
+                        : "bg-gray-50 text-gray-700"
+                    }`}
+                  >
+                    Offline
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* If the doctor offers only one type, automatically select it */}
+            
           </div>
+          {doctor?.serviceType === "Online" && (
+              <div className="text-center text-red-900 text-2xl">
+                Only Online appointments available.
+              </div>
+            )}
+            {doctor?.serviceType === "Offline" && !formData.serviceType && (
+              <div className="text-center text-gray-500 mb-6">
+                Only Offline appointments available.
+              </div>
+            )}
         </div>
 
         <div className="mt-10">
@@ -114,15 +185,19 @@ export default function PersonalInfo({ patient,onSubmit,selectedSlot,selectedDat
                 type="radio"
                 name="paymentMethod"
                 value="offline"
-                checked={formData.paymentMethod === 'offline'}
+                checked={formData.paymentMethod === "offline"}
                 onChange={handleChange}
                 className="w-4 h-4 text-primary"
               />
               <div className="flex items-center gap-3 flex-1">
                 <FaMoneyBill className="text-green-500 text-2xl" />
                 <div>
-                  <span className="text-gray-700 font-medium block">Pay at Clinic</span>
-                  <span className="text-sm text-gray-500">Pay with cash or card at the clinic</span>
+                  <span className="text-gray-700 font-medium block">
+                    Pay at Clinic
+                  </span>
+                  <span className="text-sm text-gray-500">
+                    Pay with cash or card at the clinic
+                  </span>
                 </div>
               </div>
               <span className="text-green-500 font-semibold">Available</span>
@@ -133,57 +208,25 @@ export default function PersonalInfo({ patient,onSubmit,selectedSlot,selectedDat
                 type="radio"
                 name="paymentMethod"
                 value="online"
-                checked={formData.paymentMethod === 'online'}
+                checked={formData.paymentMethod === "online"}
                 onChange={handleChange}
                 className="w-4 h-4 text-primary"
               />
               <div className="flex items-center gap-3 flex-1">
                 <FaHandshake className="text-blue-500 text-2xl" />
                 <div>
-                  <span className="text-gray-700 font-medium block">Pay Online</span>
-                  <span className="text-sm text-gray-500">Secure payment after appointment confirmation</span>
+                  <span className="text-gray-700 font-medium block">
+                    Pay Online
+                  </span>
+                  <span className="text-sm text-gray-500">
+                    Secure payment after appointment confirmation
+                  </span>
                 </div>
               </div>
               <span className="text-blue-500 font-semibold">Recommended</span>
             </label>
           </div>
         </div>
-
-        {formData.paymentMethod === 'online' && (
-          <div className="mt-6 bg-blue-50 p-6 rounded-xl">
-            <div className="flex items-start gap-3">
-              <div className="text-blue-500 mt-1">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <div>
-                <h4 className="text-blue-900 font-medium">Online Payment Information</h4>
-                <p className="text-sm text-blue-700 mt-1">
-                  After booking confirmation, you'll receive payment instructions via email. You can complete the payment securely through our payment gateway.
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {formData.paymentMethod === 'offline' && (
-          <div className="mt-6 bg-green-50 p-6 rounded-xl">
-            <div className="flex items-start gap-3">
-              <div className="text-green-500 mt-1">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <div>
-                <h4 className="text-green-900 font-medium">Pay at Clinic</h4>
-                <p className="text-sm text-green-700 mt-1">
-                  You can pay using cash, credit/debit card, or any other accepted payment method at the clinic during your visit.
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
 
         <div className="mt-8">
           <label className="flex items-center gap-3 cursor-pointer">
@@ -196,7 +239,7 @@ export default function PersonalInfo({ patient,onSubmit,selectedSlot,selectedDat
               required
             />
             <span className="text-sm text-gray-700">
-              I have read and accept the{' '}
+              I have read and accept the{" "}
               <a href="#" className="text-primary hover:underline font-medium">
                 Terms & Conditions
               </a>

@@ -46,9 +46,6 @@ const mockInvoice = {
   total: 315,
 };
 
-
-
-
 const BookAppointment = () => {
   const { doctorId } = useParams();
   const dispatch = useDispatch();
@@ -57,22 +54,34 @@ const BookAppointment = () => {
   const user = useSelector((state) => state.auth.user);
   const { appointments, status, errorA } = useSelector((state) => state.appointments);
   const { bookappointmentStatus, bookappointmentError } = useSelector((state) => state.appointments);
-  console.log("selectedDoctor", selectedDoctor);
+
+  // State variables for the booking flow
   const [step, setStep] = useState(1);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedSlot, setSelectedSlot] = useState(null);
+
+  // We will store the previous doctorId to detect when it changes
   const [prevDoctorId, setPrevDoctorId] = useState(null);
 
-  // Fetch doctor data and appointment slots on doctorId change
+  // Add console logs to check if the effect runs properly and states are resetting
   useEffect(() => {
+    console.log("DoctorId Changed: ", doctorId); // Log doctorId change
+    
+    // If doctorId changes, reset all the states related to booking
     if (doctorId !== prevDoctorId) {
-      setPrevDoctorId(doctorId);
+      setPrevDoctorId(doctorId); // Store the current doctorId
+      setStep(1);  // Always start from Step 1 (Slot Selection)
+      setSelectedDate(new Date()); // Reset selected date
+      setSelectedSlot(null); // Reset selected slot
+      console.log("State reset: ", { step, selectedDate, selectedSlot });
+      
+      // Dispatch actions to fetch new doctor and appointment slots
       dispatch(fetchDoctorById(doctorId));
       dispatch(fetchAppointmentSlots(doctorId));
     }
-  }, [doctorId, dispatch, prevDoctorId]);
+  }, [doctorId, dispatch, prevDoctorId]); // Dependency array ensures the effect runs when doctorId changes
 
-  // Handle next step
+  // Handle the next step in the booking flow
   const handleNext = () => {
     setStep(step + 1);
   };
@@ -81,21 +90,24 @@ const BookAppointment = () => {
   const handleBookingConfirm = (formData) => {
     console.log("Booking Confirmed", formData);
     
-    // Dispatch the bookAppointment action only when all data is collected
-    dispatch(bookAppointment({
-      doctorId: formData.doctorId,
-      patientId: formData.patientId,
-      date: formData.selectedDate,
-      timeSlot: formData.selectedSlot,
-    }));
+    // Dispatch the bookAppointment action when all data is collected
+    dispatch(
+      bookAppointment({
+        doctorId: formData.doctorId,
+        patientId: formData.patientId,
+        date: formData.selectedDate,
+        timeSlot: formData.selectedSlot,
+        type: formData.serviceType,
+      })
+    );
   };
 
-  // Handle booking confirmation success
+  // Handle successful booking confirmation
   useEffect(() => {
-    if (bookappointmentStatus === 'succeeded') {
-      setStep(3); // Go to confirmation page
+    if (bookappointmentStatus === "succeeded") {
+      setStep(3); // Move to the confirmation step
     }
-  }, [bookappointmentStatus]);
+  }, [bookappointmentStatus, doctorId , dispatch ]);
 
   // Handle invoice view
   const handleViewInvoice = () => {
@@ -103,36 +115,45 @@ const BookAppointment = () => {
   };
 
   // Handle loading/error states
-  if (fetchDoctorByIdStatus === 'loading' || status === 'loading') {
+  if (fetchDoctorByIdStatus === "loading" || status === "loading") {
     return <div>Loading...</div>;
   }
 
-  if (fetchDoctorByIdStatus === 'failed' || status === 'failed') {
+  if (fetchDoctorByIdStatus === "failed" || status === "failed") {
     return <div>Error: {error || errorA}</div>;
   }
 
   return (
     <div className="min-h-screen bg-gray-50 md:p-8">
       <div className="max-w-6xl mx-auto pt-16">
+        {/* Display selected doctor info */}
         <DoctorInfo doctor={selectedDoctor} />
+
+        {/* Step 1: Slot Selection */}
         {step === 1 && (
           <SlotSelection
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
             selectedSlot={selectedSlot}
+            doctor={selectedDoctor}
             appointmentSlots={appointments.availableSlots}
             setSelectedSlot={setSelectedSlot}
             onNext={handleNext}
           />
         )}
+
+        {/* Step 2: Personal Info */}
         {step === 2 && (
           <PersonalInfo
             selectedDate={selectedDate}
             selectedSlot={selectedSlot}
             patient={user}
             onSubmit={handleBookingConfirm}
+            doctor={selectedDoctor}
           />
         )}
+
+        {/* Step 3: Booking Confirmation */}
         {step === 3 && (
           <BookingConfirmation
             booking={{
@@ -145,6 +166,8 @@ const BookAppointment = () => {
             onViewInvoice={handleViewInvoice}
           />
         )}
+
+        {/* Step 4: Invoice */}
         {step === 4 && <Invoice invoice={mockInvoice} doctor={selectedDoctor} patient={user} />}
       </div>
     </div>

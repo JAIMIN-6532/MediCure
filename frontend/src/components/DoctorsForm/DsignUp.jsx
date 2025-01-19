@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';  // Import useNavigate
 import { Eye, EyeOff, Loader } from 'lucide-react';
 import AuthLayout from '../../components/AuthLayout';
 import axios from 'axios';
+
 const DsignUp = () => {
   const [formData, setFormData] = useState({
     email: '',
@@ -16,63 +17,60 @@ const DsignUp = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();  // Initialize the navigate function
   const [error, setError] = useState('');
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSendOtp = async (e) => {
     e.preventDefault();
-   
     setLoading(true);
-    // Simulate OTP sending
+    setError('');  // Reset error message on OTP request
 
-    try{
+    try {
       const response = await axios.post('http://localhost:3000/api/otp/send', { email: formData.email });
       console.log('OTP Sent:', response.data);
       setOtpSent(true);
-
-    }catch(err){
+    } catch (err) {
       console.log(err);
       setError(err.response ? err.response.data : 'Failed to send OTP.');
-    }finally{
+    } finally {
       setLoading(false);
     }
-
-    setTimeout(() => {
-      setOtpSent(true);
-      setLoading(false);
-    }, 1500);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    // Handle form submission here (e.g., save data to API)
+    setError(''); // Reset the error message
+  
     try {
-      // Send the signup request to the server
       const response = await axios.post('http://localhost:3000/api/doctor/dsignup', {
         email: formData.email,
         password: formData.password,
         name: formData.name,
         otp: formData.otp,
       });
+  
       console.log('User Created:', response.data);
       localStorage.setItem('did', JSON.stringify(response.data._id));
-      // alert('User successfully registered!');
-      navigate('/doctor-signup');  // Redirect to /doctor-signup after submission
-      
+      navigate('/doctor-signup'); // Redirect on success
     } catch (err) {
       console.error('Signup failed:', err);
-      setError(err.response ? err.response.data : 'An error occurred.');
+  
+      // Check for specific error messages from the backend
+      if (err.response?.data?.error === "DoctorEmail already exists") {
+        setError('An account with this email already exists. Please try for signin.');
+      } else if (err.response?.data?.error === 'Invalid OTP') {
+        setError('The OTP you entered is incorrect. Please try again.');
+      } else {
+        setError(err.response?.data?.error || 'An error occurred.');
+      }
     } finally {
       setLoading(false);
     }
-    setTimeout(() => {
-      setLoading(false);
-      navigate('/doctor-signup');  // Redirect to /doctor-signup after submission
-    }, 1500);
   };
-
+  
   return (
     <AuthLayout title="Doctor Sign Up">
       <form onSubmit={otpSent ? handleSubmit : handleSendOtp} className="space-y-4">
@@ -146,6 +144,10 @@ const DsignUp = () => {
               required
             />
           </div>
+        )}
+
+        {error && (
+          <div className="text-red-500 text-sm">{error }</div>  
         )}
 
         <button

@@ -87,7 +87,7 @@ export default class DoctorController {
         console.log("newdoctor:", doctor);
         return res.status(201).json(doctor);
       } else {
-        return res.status(400).send("Invalid OTP");
+        return res.status(400).send({ error: "Invalid OTP" });
       }
     } catch (err) {
       console.log(err);

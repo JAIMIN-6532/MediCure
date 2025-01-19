@@ -24,6 +24,7 @@ export default function AvailableTimings() {
   const [selectedDay, setSelectedDay] = useState('Wed');
   const [selectedSlots, setSelectedSlots] = useState([]);
   const [appointmentFee, setAppointmentFee] = useState('');
+  const [saveStatus, setSaveStatus] = useState(''); // Track the save status (empty, 'success', or 'error')
   
   const { doctorId } = useParams();
   const dispatch = useDispatch();
@@ -67,8 +68,20 @@ export default function AvailableTimings() {
         consultationFee: appointmentFee || doctor.consultationFee
       });
       console.log("Successfully added availability:", response.data);
+      
+      // Set the save status to 'success' to trigger rerender
+      setSaveStatus('success');
+      
+      // After saving, we can re-fetch the doctor data to update the availability in state
+      dispatch(fetchDoctorById(doctorId));
+
+      // Optionally, clear the selection state after saving
+      setSelectedSlots([]);  // Clear selected slots if needed
     } catch (error) {
       console.error("Error adding availability:", error);
+      
+      // Set the save status to 'error' to trigger rerender
+      setSaveStatus('error');
     }
   };
 
@@ -173,6 +186,14 @@ export default function AvailableTimings() {
                 placeholder="Enter appointment fee"
               />
             </div>
+
+            {/* Display save status */}
+            {saveStatus === 'success' && (
+              <div className="text-green-500 text-sm mt-2">Availability saved successfully!</div>
+            )}
+            {saveStatus === 'error' && (
+              <div className="text-red-500 text-sm mt-2">Error saving availability. Please try again.</div>
+            )}
 
             <div className="flex justify-end gap-4 pt-4">
               <button className="px-6 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
