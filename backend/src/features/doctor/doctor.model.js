@@ -13,9 +13,7 @@ const doctorSchema = new mongoose.Schema({
   city : {type:String},   //second
   state : {type:String},  //second
   specialization: { type: String ,
-     enum: ["Cardiologist", "Dermatologist", "Endocrinologist", "Gastroenterologist", "Gynecologist", "Hematologist", 
-      "Infectious Disease Specialist", "Nephrologist", "Neurologist", "Oncologist",
-       "Others"]
+     enum: ["Cardiology","Neurology","Dermatology","Orthopedics","Pediatrics"]
     }, //second
   experience: { type: Number }, // In years  //second
   consultationFee: { type: Number }, 
