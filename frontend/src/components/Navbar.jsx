@@ -189,6 +189,9 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem("token"); // Remove token from localStorage
     //if localstorage have did then remove it
+    if(localStorage.getItem("doctor")){
+      localStorage.removeItem("doctor");
+    }
     if (localStorage.getItem("did")) {
       localStorage.removeItem("did");
     }
@@ -234,12 +237,12 @@ const Navbar = () => {
           </div>
 
           <div className="hidden md:flex items-center space-x-4">
-            {isLoggedIn && user ? (
+            {isLoggedIn  && (user || doctor) ? (
               <div className="flex items-center space-x-2">
                 {/* Display user's profile image if available */}
                 {user.profileImageUrl ? (
                   <img
-                    src={user.profileImageUrl}
+                    src={user.profileImageUrl || doctor.profileImageUrl}
                     alt="Profile"
                     className="w-11 h-11 rounded-full object-cover cursor-pointer"
                     onClick={handleProfileClick} // Click on image to navigate
@@ -256,7 +259,7 @@ const Navbar = () => {
               </div>
             ) : null}
 
-            {isLoggedIn || isdid ? (
+            {isLoggedIn ? (
               <button
                 onClick={handleLogout}
                 className="bg-primary-blue text-white px-6 py-2 rounded-full hover:bg-dark-blue transition-colors"

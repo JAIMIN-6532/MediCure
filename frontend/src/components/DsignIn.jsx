@@ -31,6 +31,7 @@ const DsignIn = () => {
     useEffect(() => {
       const savedToken = token;
       const doctorId = user?._id;
+      console.log(doctorId);
       if (savedToken) {
         navigate(`/d-dashbord/${doctorId}`);
       }
@@ -42,6 +43,7 @@ const DsignIn = () => {
       if (user && token) {
         const doctorId = user._id;
         localStorage.setItem('token', token); // Save token to local storage
+        console.log(doctorId);
         navigate(`/d-dashbord/${doctorId}`); // Redirect to the home page after successful sign-in
       }
     }, [user, token, navigate]);

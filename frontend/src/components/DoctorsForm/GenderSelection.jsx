@@ -4,7 +4,7 @@ import React from 'react';
 const GenderSelection = ({ formData, handleChange }) => {
   return (
     <div className="grid grid-cols-3 gap-4">
-      {['male', 'female', 'other'].map((gender) => (
+      {['Male', 'Female'].map((gender) => (
         <button
           key={gender}
           type="button"

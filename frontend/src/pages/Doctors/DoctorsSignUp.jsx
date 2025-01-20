@@ -7,8 +7,11 @@ import Step1 from "../../components/DoctorsForm/Step1";
 import Step2 from "../../components/DoctorsForm/Step2";
 import Step3 from "../../components/DoctorsForm/Step3";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { fetchDoctorById } from "../../reduxToolkit/reducers/DoctorReducer";
 
 const DoctorSignUp = () => {
+  const dispatch = useDispatch();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -127,7 +130,9 @@ const DoctorSignUp = () => {
         setStep(3); // Move to Step 3
       } else if (step === 3) {
         const res = await uploadStep3Details(did, formData); // Step 3 API call
-
+        console.log("Doctor created:", res);
+        localStorage.setItem("doctor", JSON.stringify(res));   //we are setting Updated Doctor HEre WITH Steps=4
+        dispatch(fetchDoctorById(did)); // Re-fetch the updated doctor data from the backend
         navigate(`/d-dashbord/${did}`); // Redirect to dashboard after successful signup
         // Handle success (e.g., redirect or show success message)
       }
