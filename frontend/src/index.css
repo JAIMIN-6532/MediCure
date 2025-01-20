@@ -2,18 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   /* font-family: gilroy; */
-  
 }
-body,html{
+body,
+html {
   height: 100%;
   width: 100%;
 }
-
 
 .nav-link {
   @apply flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-blue-50 hover:text-primary rounded-lg transition-all duration-300;
