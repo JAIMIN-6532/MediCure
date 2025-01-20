@@ -30,7 +30,7 @@ export default class PatientController {
           hashedPassword
         );
       } else {
-        return res.status(400).send("Invalid OTP");
+        return res.status(400).send({ error: "Invalid OTP" });
       }
       console.log(newPatient);
       if (newPatient) return res.status(201).send(newPatient);

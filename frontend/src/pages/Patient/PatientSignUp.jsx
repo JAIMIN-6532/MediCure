@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Eye, EyeOff, Loader } from 'lucide-react';
 import AuthLayout from '../../components/AuthLayout';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';  // Import useNavigate
 
 const PatientSignUp = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +15,8 @@ const PatientSignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();  // Initialize the navigate function
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -21,20 +25,50 @@ const PatientSignUp = () => {
   const handleSendOtp = async (e) => {
     e.preventDefault();
     setLoading(true);
-    // Simulate OTP sending
-    setTimeout(() => {
+    setError('');  // Reset error message on OTP request
+
+    try {
+      const response = await axios.post('http://localhost:3000/api/otp/send', { email: formData.email });
+      console.log('OTP Sent:', response.data);
       setOtpSent(true);
+    } catch (err) {
+      console.log(err);
+      setError(err.response ? err.response.data : 'Failed to send OTP.');
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    // Handle form submission
-    setTimeout(() => {
+    setError(''); // Reset the error message
+  
+    try {
+      const response = await axios.post('http://localhost:3000/api/patient/signup', {
+        email: formData.email,
+        password: formData.password,
+        name: formData.name,
+        otp: formData.otp,
+      });
+  
+      console.log('User Created:', response.data);
+      localStorage.setItem('pid', JSON.stringify(response.data._id));
+      navigate('/signin'); // Redirect on success
+    } catch (err) {
+      console.error('Signup failed:', err);
+  
+      // Check for specific error messages from the backend
+      if (err.response?.data?.error === "Email already exists") {
+        setError('An account with this email already exists. Please try for signin.');
+      } else if (err.response?.data?.error === 'Invalid OTP') {
+        setError('The OTP you entered is incorrect. Please try again.');
+      } else {
+        setError(err.response?.data?.error || 'An error occurred.');
+      }
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
 
   return (

@@ -55,6 +55,9 @@ const BookAppointment = () => {
   const { appointments, status, errorA } = useSelector((state) => state.appointments);
   const { bookappointmentStatus, bookappointmentError } = useSelector((state) => state.appointments);
 
+  console.log("Selected Doctor Inside BA",selectedDoctor);
+  console.log("selected slots",appointments);
+
   // State variables for the booking flow
   const [step, setStep] = useState(1);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -104,7 +107,9 @@ const BookAppointment = () => {
 
   // Handle successful booking confirmation
   useEffect(() => {
-    if (bookappointmentStatus === "succeeded") {
+    console.log("Booking Status Changed: ", bookappointmentStatus);
+    console.log("Doctor ID in BookingApStatus: ", doctorId);
+    if (bookappointmentStatus === "succeeded" && doctorId === prevDoctorId) {
       setStep(3); // Move to the confirmation step
     }
   }, [bookappointmentStatus, doctorId , dispatch ]);

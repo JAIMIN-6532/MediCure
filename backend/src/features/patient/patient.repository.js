@@ -5,6 +5,12 @@ import mongoose from "mongoose";
 export default class PatientRepository {
   signUp = async (name, email, password) => {
     try {
+      const existingPatient = await patientModel.findOne({ email });
+      if (existingPatient) {
+        const error = new Error("Email already exists");
+        error.status = 400; // Set specific status for "bad request"
+        throw error; // Throw the error to be handled later
+      }
       const newPatient = await patientModel.create({
         name,
         email,
@@ -14,6 +20,7 @@ export default class PatientRepository {
       return newPatient;
     } catch (error) {
       console.error("patient signup repo", error);
+      throw error;
     }
   };
   async signIn(email, password) {
@@ -21,7 +28,7 @@ export default class PatientRepository {
       return await patientModel.findOne({ email, password });
     } catch (err) {
       console.log(err);
-      throw new ApplicationError("Something went wrong with database", 500);
+      throw err;
     }
   }
 
