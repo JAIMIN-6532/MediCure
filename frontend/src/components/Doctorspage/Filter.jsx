@@ -1,7 +1,7 @@
 import React from "react";
 
 function Filter({ filters, onFilterChange, onResetFilters }) {
-  const specialties = ["Cardiologist", "Neurology", "Pediatrics", "Dermatologist", "Orthopedics"];
+  const specialties = ["Cardiology", "Neurology", "Pediatrics", "Dermatology", "Orthopedics"];
   const consultationTypes = ["Online", "Offline"];
 
   return (

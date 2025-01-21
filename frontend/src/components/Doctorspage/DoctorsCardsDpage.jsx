@@ -12,6 +12,12 @@ function DoctorsCardsDpage() {
     (state) => state.doctors
   );
 
+  const { token } = useSelector((state) => state.auth);
+
+  const [doctorId, setDoctorId] = useState(null);
+
+
+
   const [filters, setFilters] = useState({
     location: "",
     gender: "",
@@ -59,6 +65,16 @@ function DoctorsCardsDpage() {
     return 0; // Return 0 if no feedbacks
   };
 
+  const handleBookAppointment = (doctorId) => {
+    if (!token) {
+      localStorage.setItem('redirect', `/bookappointment/${doctorId}`);
+      navigate('/signin');
+    } else {
+      
+      navigate(`/bookappointment/${doctorId}`);
+    }
+  };
+
   const renderStars = (rating) => {
     return [...Array(5)].map((_, index) => (
       <Star
@@ -104,9 +120,9 @@ function DoctorsCardsDpage() {
     const matchesGender = filters.gender ? doctor.gender?.toLowerCase() === filters.gender.toLowerCase() : true;
     const matchesSpecialty = filters.specialty ? doctor.specialization === filters.specialty : true;
     const matchesLocation = filters.location
-      ? doctor.city?.toLowerCase().includes(filters.location?.toLowerCase()) ||
-        doctor.clinicaddress?.toLowerCase().includes(filters.location?.toLowerCase()) ||
-        doctor.state?.toLowerCase().includes(filters.location?.toLowerCase())
+      ? doctor.city?.toLowerCase().includes(filters.location?.toLowerCase().trim()) ||
+        doctor.clinicaddress?.toLowerCase().includes(filters.location?.toLowerCase().trim()) ||
+        doctor.state?.toLowerCase().includes(filters.location?.toLowerCase().trim())
       : true;
 
     const matchesConsultationType = filters.consultationType
@@ -144,7 +160,7 @@ function DoctorsCardsDpage() {
   if (fetchDoctorsStatus === "failed") return <div>Error: {error}</div>;
 
   return (
-    <div className="container mx-auto px-4 py-8 pt-[90px]">
+    <div className="container w-[90%] mx-auto px-4 py-8 pt-[90px]">
       {/* Filters */}
       <div className="flex gap-8">
         <Filter filters={filters} onFilterChange={handleFilterChange} onResetFilters={handleResetFilters} />
@@ -181,7 +197,7 @@ function DoctorsCardsDpage() {
                         <div className="flex items-center gap-4 mt-3">
                           <div className="flex items-center text-gray-600">
                             <MapPin className="w-4 h-4 mr-1" />
-                            {doctor.clinicaddress || doctor.city}
+                            { doctor.city}
                           </div>
                           <div className="flex items-center text-gray-600">
                             <Calendar className="w-4 h-4 mr-1 " />
@@ -194,7 +210,7 @@ function DoctorsCardsDpage() {
                       <div className="flex items-center justify-between border-t pt-4">
                         <div>
                           <p className="text-gray-600">Consultation Fee</p>
-                          <p className="text-lg font-semibold">${doctor.consultationFee}</p>
+                          <p className="text-lg font-semibold ">₹ {doctor.consultationFee}</p>
                         </div>
                         <ServiceTypeBadge serviceType={doctor.serviceType} />
                       </div>
@@ -205,7 +221,7 @@ function DoctorsCardsDpage() {
                         >
                           View Profile
                         </button>
-                        <button className="flex-1 bg-primary-blue text-white px-4 py-2 rounded-full hover:bg-dark-blue transition-colors">
+                        <button className="flex-1 bg-primary-blue text-white px-4 py-2 rounded-full hover:bg-dark-blue transition-colors" onClick={() => handleBookAppointment(doctor._id)} >
                           Book Now
                         </button>
                       </div>

@@ -3,7 +3,14 @@ import { FaStar, FaMapMarkerAlt } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 // import { Video, MapPin } from "lucide-react";
-import { Video, MapPin, Star, Clock, Stethoscope , Building } from 'lucide-react';
+import {
+  Video,
+  MapPin,
+  Star,
+  Clock,
+  Stethoscope,
+  Building,
+} from "lucide-react";
 function ServiceTypeBadge({ type }) {
   return (
     <div className="flex gap-2">
@@ -22,15 +29,15 @@ function ServiceTypeBadge({ type }) {
     </div>
   );
 }
-const DoctorProfile = ({ doctor , avgRating}) => {
+const DoctorProfile = ({ doctor, avgRating }) => {
   const navigate = useNavigate();
   const { token } = useSelector((state) => state.auth);
   const { doctorId } = useParams();
 
   const handleBookAppointment = () => {
     if (!token) {
-      localStorage.setItem('redirect', `/bookappointment/${doctorId}`);
-      navigate('/signin');
+      localStorage.setItem("redirect", `/bookappointment/${doctorId}`);
+      navigate("/signin");
     } else {
       navigate(`/bookappointment/${doctorId}`);
     }
@@ -41,26 +48,34 @@ const DoctorProfile = ({ doctor , avgRating}) => {
       <div className="flex flex-col md:flex-row gap-8">
         {/* Left Column - Image and Basic Info */}
         <div className="md:w-1/3">
-          <div className="rounded-lg overflow-hidden shadow-md mb-4">
-            <img
-              src={doctor.profileImageUrl}
-              alt={doctor.name}
-              className="w-full h-64 object-cover hover:scale-105 transition-all duration-300 object-center"
-            />
-          </div>
+        <div className="relative w-full max-w-md aspect-[4/3] rounded-lg overflow-hidden shadow-lg group">
+        <div className="w-full h-full">
+          <img
+            src={doctor.profileImageUrl}
+            alt={doctor.name}
+            className="w-full h-full object-contain hover:object-cover transition-all duration-300 ease-in-out transform group-hover:scale-105"
+          />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      </div>
+
           <div className="space-y-2">
             <div className="flex items-center text-gray-600">
               <Clock className="w-4 h-4 mr-2" />
               <span>{doctor.experience} Years Experience</span>
             </div>
-            {(doctor?.city || doctor?.state) &&<div className="flex items-center text-gray-600">
-              <MapPin className="w-4 h-4 mr-2" />
-              <span>{doctor.city } {doctor.state}</span>
-            </div>
-}
+            {(doctor?.city || doctor?.state) && (
+              <div className="flex items-center text-gray-600">
+                <MapPin className="w-4 h-4 mr-2" />
+                <span>
+                  {doctor.city} {doctor.state}
+                </span>
+              </div>
+            )}
             {doctor.clinicaddress && (
               <div className="text-gray-600 text-sm mt-2 flex items-center">
-               <Building className="w-4 h-4 mr-2" /> <span>{doctor.clinicaddress}</span> 
+                <Building className="w-4 h-4 mr-2" />{" "}
+                <span>{doctor.clinicaddress}</span>
               </div>
             )}
           </div>
@@ -70,7 +85,9 @@ const DoctorProfile = ({ doctor , avgRating}) => {
         <div className="md:w-2/3">
           <div className="flex justify-between items-start mb-4">
             <div>
-              <h1 className="text-2xl font-bold text-gray-800">{doctor.name}</h1>
+              <h1 className="text-2xl font-bold text-gray-800">
+                {doctor.name}
+              </h1>
               <div className="flex items-center gap-2 mt-2">
                 <Stethoscope className="w-5 h-5 text-blue-600" />
                 <span className="text-gray-600">{doctor.specialization}</span>
@@ -81,17 +98,16 @@ const DoctorProfile = ({ doctor , avgRating}) => {
 
           {/* Rating */}
           <div className="flex items-center mb-4">
-            
-            {
-              <FaStar className="w-5 h-5 text-yellow-400" />
-            }
-            <span className="ml-2 text-gray-600">({avgRating?.toFixed(2)})/5</span>
+            {<FaStar className="w-5 h-5 text-yellow-400" />}
+            <span className="ml-2 text-gray-600">
+              ({avgRating?.toFixed(2)})/5
+            </span>
           </div>
 
           {/* Consultation Fee */}
           <div className="bg-blue-50 p-4 rounded-lg mb-6">
             <div className="text-lg font-semibold text-blue-600">
-              Consultation Fee: ${doctor.consultationFee}
+              Consultation Fee: ₹ {doctor.consultationFee}
             </div>
           </div>
 

@@ -315,13 +315,15 @@ export default class DoctorController {
       const appointments =
         await this.doctorRepository.getAppointmentsByDoctorId(doctorId);
       console.log("appointments", appointments);
-      console.log("avalibility", appointments.availability);
-      return res.status(200).json(appointments.availability);
+      console.log("avalibility", appointments);
+      return res.status(200).json(appointments);
     } catch (err) {
       console.log("inside DC getAppointmentsByDoctorId", err);
       next(err);
     }
   };
+
+
 
   addavailability = async (req, res, next) => {
     try {

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { gsap } from 'gsap';
-
+import { fetchAppointmentsByDoctorId } from '../../reduxToolkit/reducers/DoctorReducer';
+import { useDispatch, useSelector } from 'react-redux';
 import Profile from '../../components/DoctorDashbord/DDNavbar/Profile';
 import Navigation from '../../components/DoctorDashbord/DDNavbar/Navigation';
 import Stats from '../../components/DoctorDashbord/DDashbord/Stats';
@@ -8,10 +9,25 @@ import AppointmentList from '../../components/DoctorDashbord/DDashbord/Appointme
 import Appointments from '../../components/DoctorDashbord/DDTabs/Appointments';
 import Patients from '../../components/DoctorDashbord/DDTabs/Patients';
 import AvailableTimings from '../../components/DoctorDashbord/DDTabs/AvailableTimings';
+import { fetchDoctorById } from '../../reduxToolkit/reducers/DoctorReducer';
+import { useParams } from 'react-router-dom';
 
 
 const DoctorDashbord= ()=>{
   const [activeNav, setActiveNav] = useState('Dashboard');
+  const dispatch = useDispatch();
+
+  const {doctorId} = useParams();
+
+  const {appointments,fetchAppointmentsStatus} = useSelector((state) => state.doctors);
+  const {doctor,fetchDoctorByIdStatus} = useSelector((state) => state.doctors);
+
+  useEffect(() => {
+    // Fetch appointments on component mount
+    dispatch(fetchAppointmentsByDoctorId(doctorId));  //for realTime Use websockets
+    dispatch(fetchDoctorById(doctorId));
+
+  }, [dispatch,doctorId]);
 
   
 
@@ -21,11 +37,11 @@ const DoctorDashbord= ()=>{
         return (
           <>
             <Stats />
-            <AppointmentList />
+            <AppointmentList  />
           </>
         );
       case 'Appointments':
-        return <Appointments />;
+        return <Appointments appointments={appointments} doctor={doctor} />;
       case 'Available Timings':
         return <AvailableTimings />;
       case 'My Patients':

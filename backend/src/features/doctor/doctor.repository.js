@@ -180,9 +180,25 @@ export default class DoctorRepository {
   getAppointmentsByDoctorId = async (doctorId) => {
     try {
       const doctor = await DoctorModel.findById(doctorId)
-        .populate("appointments")
+        .populate({
+          path: "appointments", // First populate appointments
+          populate: {
+            path: "patient", // Then populate patient inside each appointment
+            select: "name email", // Optionally select the fields you need from the patient (adjust as necessary)
+          },
+        })
         .exec();
+
       console.log("doctor", doctor);
+
+      doctor.appointments.sort((a, b) => {
+        return new Date(a.date) - new Date(b.date);
+      });
+
+      
+
+      
+
       return doctor.appointments;
     } catch (err) {
       console.log("DR get appointments by doctor id", err);
