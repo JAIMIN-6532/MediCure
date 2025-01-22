@@ -29,5 +29,9 @@ appointmentRouter.get('/getappointment/:aid', (req,res,next)=>{
     appointmentController.getAppointmentByAId(req,res,next);
 });
 
+appointmentRouter.post('/bookappointment/lock',jwtAuth,(req,res,next)=>{
+    console.log("inside lock route");
+    appointmentController.lockAppointment(req,res,next);
+})
 
 export default appointmentRouter;

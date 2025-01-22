@@ -53,43 +53,61 @@ export default class AppointmentRepository {
   //     console.error(error);
   //   }
   // };
-   bookAppointment = async (appointmentData, res, next) => {
+  bookAppointment = async (appointmentData, res, next) => {
     try {
-      const { doctorId, patientId, date, timeSlot,type } = appointmentData;
-      console.log("Appointment Data:", appointmentData); 
+      const { doctorId, patientId, date, timeSlot, type } = appointmentData;
+      console.log("Appointment Data:", appointmentData);
       console.log("Appointment Data:", {
         doctorId,
         patientId,
         date: new Date(date).toISOString(), // Standard ISO format for date
         timeSlot,
-        type:type,
+        type: type,
       });
-  
+
       let parsedDate;
       if (typeof date === "string") {
         parsedDate = new Date(date);
-  
+
         // Validate the date
         if (isNaN(parsedDate)) {
-          return res.status(400).json({ message: "Invalid date format provided" });
+          return "Invalid date format provided";
         }
       } else if (date instanceof Date) {
         parsedDate = date;
       } else {
-        return res.status(400).json({ message: "Date is required and must be a valid date" });
+        return "Date is required and must be a valid date";
       }
-  
+
       // Check if the appointment slot is already taken
       const existingAppointment = await AppointmentModel.findOne({
         doctor: doctorId,
         date: parsedDate,
         timeSlot,
+        status: { $eq: "Confirmed" },
       });
-  
+
+      const lockedAppointment = await AppointmentModel.findOne({
+        doctor: doctorId,
+        date: parsedDate,
+        timeSlot,
+        status: { $eq: "Locked" },
+      });
+
       if (existingAppointment) {
-        return res.status(400).json({ message: "Appointment slot is already taken" });
+        // return res.status(400).json({ message: "Appointment slot is already taken" });
+        return "Appointment slot is already taken";
       }
-  
+
+      if(lockedAppointment){
+       const appointment =  await AppointmentModel.updateOne(
+          { _id: lockedAppointment._id },
+          { $set: { status: "Confirmed" } }
+        );
+        await appointment.save();
+        return appointment;
+      }
+
       // Create a new appointment
       const appointment = await AppointmentModel.create({
         doctor: doctorId,
@@ -98,20 +116,20 @@ export default class AppointmentRepository {
         timeSlot,
         type,
       });
-  
+
       // Update doctor's and patient's appointments array
       await DoctorModel.findByIdAndUpdate(
         doctorId,
         { $push: { appointments: appointment._id } },
         { new: true }
       );
-  
+
       await PatientModel.findByIdAndUpdate(
         patientId,
         { $push: { appointments: appointment._id } },
         { new: true }
       );
-  
+
       // Send success response (only one response per request)
       // if (!res.headersSent) {
       //   return res.status(200).json({
@@ -122,7 +140,7 @@ export default class AppointmentRepository {
       return appointment;
     } catch (error) {
       console.error("Error booking appointment:", error);
-  
+
       // Ensure only one response is sent in case of an error
       // if (!res.headersSent) {
       //   return res.status(500).json({
@@ -132,15 +150,58 @@ export default class AppointmentRepository {
       // }
     }
   };
-  
-  
-  
-
 
   getAppointmentByAId = async (id) => {
     try {
       const appointment = await AppointmentModel.findById(id);
       return appointment;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  lockAppointment = async (appointmentData) => {
+    const { doctorId, patientId, date, timeSlot } = appointmentData;
+    try {
+      let parsedDate;
+      if (typeof date === "string") {
+        parsedDate = new Date(date);
+
+        // Validate the date
+        if (isNaN(parsedDate)) {
+          return res
+            .status(400)
+            .json({ message: "Invalid date format provided" });
+        }
+      } else if (date instanceof Date) {
+        parsedDate = date;
+      } else {
+        return res
+          .status(400)
+          .json({ message: "Date is required and must be a valid date" });
+      }
+      const lockedAppointment = await AppointmentModel.create({
+        doctor: doctorId,
+        patient: patientId,
+        date: parsedDate,
+        timeSlot,
+        type: "Offline",
+        status: "Locked",
+      });
+      // Update doctor's and patient's appointments array
+      await DoctorModel.findByIdAndUpdate(
+        doctorId,
+        { $push: { appointments: lockedAppointment._id } },
+        { new: true }
+      );
+
+      await PatientModel.findByIdAndUpdate(
+        patientId,
+        { $push: { appointments: lockedAppointment._id } },
+        { new: true }
+      );
+      const lockAppointment = await lockedAppointment.save();
+      return lockAppointment;
     } catch (error) {
       console.error(error);
     }

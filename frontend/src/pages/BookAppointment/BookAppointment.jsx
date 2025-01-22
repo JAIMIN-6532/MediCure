@@ -2,12 +2,18 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { fetchDoctorById } from "../../reduxToolkit/reducers/DoctorReducer.js";
-import { fetchAppointmentSlots, bookAppointment } from "../../reduxToolkit/reducers/BookingReducer.js";
+import {
+  fetchAppointmentSlots,
+  bookAppointment,
+} from "../../reduxToolkit/reducers/BookingReducer.js";
 import DoctorInfo from "../../components/BookAppointment/DoctorInfo";
 import SlotSelection from "../../components/BookAppointment/SlotSelection";
 import PersonalInfo from "../../components/BookAppointment/PersonalInfo";
 import BookingConfirmation from "../../components/BookAppointment/BookingConfirmation";
 import Invoice from "../../components/BookAppointment/Invoice";
+import { lockSlot } from "../../reduxToolkit/reducers/BookingReducer.js";
+import io from "socket.io-client";
+var socket;
 
 const mockInvoice = {
   orderId: "00124",
@@ -49,14 +55,20 @@ const mockInvoice = {
 const BookAppointment = () => {
   const { doctorId } = useParams();
   const dispatch = useDispatch();
-  
-  const { selectedDoctor, fetchDoctorByIdStatus, error } = useSelector((state) => state.doctors);
-  const user = useSelector((state) => state.auth.user);
-  const { appointments, status, errorA } = useSelector((state) => state.appointments);
-  const { bookappointmentStatus, bookappointmentError } = useSelector((state) => state.appointments);
 
-  console.log("Selected Doctor Inside BA",selectedDoctor);
-  console.log("selected slots",appointments);
+  const { selectedDoctor, fetchDoctorByIdStatus, error } = useSelector(
+    (state) => state.doctors
+  );
+  const user = useSelector((state) => state.auth.user);
+  const { appointments, status, errorA } = useSelector(
+    (state) => state.appointments
+  );
+  const { bookappointmentStatus, bookappointmentError } = useSelector(
+    (state) => state.appointments
+  );
+
+  console.log("Selected Doctor Inside BA", selectedDoctor);
+  console.log("selected slots", appointments);
 
   // State variables for the booking flow
   const [step, setStep] = useState(1);
@@ -69,15 +81,15 @@ const BookAppointment = () => {
   // Add console logs to check if the effect runs properly and states are resetting
   useEffect(() => {
     console.log("DoctorId Changed: ", doctorId); // Log doctorId change
-    
+
     // If doctorId changes, reset all the states related to booking
     if (doctorId !== prevDoctorId) {
       setPrevDoctorId(doctorId); // Store the current doctorId
-      setStep(1);  // Always start from Step 1 (Slot Selection)
+      setStep(1); // Always start from Step 1 (Slot Selection)
       setSelectedDate(new Date()); // Reset selected date
       setSelectedSlot(null); // Reset selected slot
       console.log("State reset: ", { step, selectedDate, selectedSlot });
-      
+
       // Dispatch actions to fetch new doctor and appointment slots
       dispatch(fetchDoctorById(doctorId));
       dispatch(fetchAppointmentSlots(doctorId));
@@ -86,13 +98,43 @@ const BookAppointment = () => {
 
   // Handle the next step in the booking flow
   const handleNext = () => {
+    dispatch(
+      lockSlot({
+        doctorId: doctorId,
+        date: selectedDate,
+        timeSlot: selectedSlot,
+        patientId: user._id,
+      })
+    );
+
+    socket.emit("lockSlot", {
+      doctorId: doctorId,
+      date: selectedDate,
+      timeSlot: selectedSlot,
+      patientId: user._id,
+    });
+
     setStep(step + 1);
   };
+
+  // Connect to the server
+  useEffect(() => {
+    socket = io("http://localhost:3000", {
+      transports: ["websocket", "polling"],
+    });
+    socket.on("connect", () => {
+      console.log("Socket connected:", socket.id);  // Log socket ID when connected
+    });
+  
+    return () => {
+      socket.off("connect");
+    };
+  },[]);
 
   // Handle booking confirmation
   const handleBookingConfirm = (formData) => {
     console.log("Booking Confirmed", formData);
-    
+
     // Dispatch the bookAppointment action when all data is collected
     dispatch(
       bookAppointment({
@@ -103,7 +145,34 @@ const BookAppointment = () => {
         type: formData.serviceType,
       })
     );
+    // Emit the bookAppointment event to the server
+    socket.emit("bookAppointment", {
+      doctorId: formData.doctorId,
+      patientId: formData.patientId,
+      date: formData.selectedDate,
+      timeSlot: formData.selectedSlot,
+      type: formData.serviceType,
+    });
   };
+
+  // Listen for real-time updates
+  useEffect(() => {
+    socket.on("appointmentBooked", (appointment) => {
+      console.log("Appointment booked successfully: ", appointment);
+      setStep(3); // Move to confirmation step
+    });
+
+    socket.on("slotLocked", (lockedSlot) => {
+      console.log("Slot locked successfully: ", lockedSlot);
+      dispatch(fetchAppointmentSlots(doctorId));
+      // Handle slot lock success, maybe show a notification
+    });
+
+    return () => {
+      socket.off("appointmentBooked");
+      socket.off("slotLocked");
+    };
+  }, [dispatch]);
 
   // Handle successful booking confirmation
   useEffect(() => {
@@ -112,7 +181,7 @@ const BookAppointment = () => {
     if (bookappointmentStatus === "succeeded" && doctorId === prevDoctorId) {
       setStep(3); // Move to the confirmation step
     }
-  }, [bookappointmentStatus, doctorId , dispatch ]);
+  }, [bookappointmentStatus, doctorId, dispatch]);
 
   // Handle invoice view
   const handleViewInvoice = () => {
@@ -173,7 +242,13 @@ const BookAppointment = () => {
         )}
 
         {/* Step 4: Invoice */}
-        {step === 4 && <Invoice invoice={mockInvoice} doctor={selectedDoctor} patient={user} />}
+        {step === 4 && (
+          <Invoice
+            invoice={mockInvoice}
+            doctor={selectedDoctor}
+            patient={user}
+          />
+        )}
       </div>
     </div>
   );
