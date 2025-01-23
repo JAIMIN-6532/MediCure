@@ -119,7 +119,7 @@ const BookAppointment = () => {
 
   // Connect to the server
   useEffect(() => {
-    socket = io("http://localhost:3000", {
+    socket = io(`${import.meta.env.VITE_APP_API_URL}`, {
       transports: ["websocket", "polling"],
     });
     socket.on("connect", () => {

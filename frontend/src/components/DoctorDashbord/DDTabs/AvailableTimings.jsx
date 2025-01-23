@@ -63,7 +63,7 @@ export default function AvailableTimings() {
         day: selectedDay,
         slots: selectedSlots
       };
-      const response = await axios.post(`http://localhost:3000/api/doctor/addavailability/${doctorId}`, {
+      const response = await axios.post(`${import.meta.env.VITE_APP_API_URL}/api/doctor/addavailability/${doctorId}`, {
         availability,
         consultationFee: appointmentFee || doctor.consultationFee
       });

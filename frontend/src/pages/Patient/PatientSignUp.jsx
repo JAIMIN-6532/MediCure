@@ -28,7 +28,7 @@ const PatientSignUp = () => {
     setError('');  // Reset error message on OTP request
 
     try {
-      const response = await axios.post('http://localhost:3000/api/otp/send', { email: formData.email });
+      const response = await axios.post(`${import.meta.env.VITE_APP_API_URL}/api/otp/send`, { email: formData.email });
       console.log('OTP Sent:', response.data);
       setOtpSent(true);
     } catch (err) {
@@ -45,7 +45,7 @@ const PatientSignUp = () => {
     setError(''); // Reset the error message
   
     try {
-      const response = await axios.post('http://localhost:3000/api/patient/signup', {
+      const response = await axios.post(`${import.meta.env.VITE_APP_API_URL}/api/patient/signup`, {
         email: formData.email,
         password: formData.password,
         name: formData.name,

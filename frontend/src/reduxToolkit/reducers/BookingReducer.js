@@ -37,7 +37,7 @@ export const lockSlot = createAsyncThunk(
       localDate.getMilliseconds().toString().padStart(3, "0") +
       "Z"; // Corrected format without any extra dots
     const response = await axios.post(
-      "http://localhost:3000/api/appointment/bookappointment/lock",
+      `${import.meta.env.VITE_APP_API_URL}/api/appointment/bookappointment/lock`,
       {
         ...appointmentData,
         date: formattedDate, // Use the correctly formatted local date
@@ -60,7 +60,7 @@ export const releaseSlot = createAsyncThunk(
   async (appointmentData) => {
     console.log("appointmentData", appointmentData);
     const response = await axios.post(
-      "http://localhost:3000/api/appointment/bookappointment/release",
+      `${import.meta.env.VITE_APP_API_URL}/api/appointment/bookappointment/release`,
       appointmentData,
       {
         headers: {
@@ -80,7 +80,7 @@ export const fetchAppointmentSlots = createAsyncThunk(
   "appointments/fetchAppointments",
   async (doctorId) => {
     const response = await axios.get(
-      `http://localhost:3000/api/appointment/availableslots/${doctorId}`
+      `${import.meta.env.VITE_APP_API_URL}/api/appointment/availableslots/${doctorId}`
     ); // Modify the URL as needed
     console.log("response", response.data);
     return response.data; // Assuming the backend returns an array of appointments
@@ -160,7 +160,7 @@ export const bookAppointment = createAsyncThunk(
 
     // Send the request with correctly formatted date
     const response = await axios.post(
-      "http://localhost:3000/api/appointment/bookappointment",
+      `${import.meta.env.VITE_APP_API_URL}/api/appointment/bookappointment`,
       {
         ...appointmentData,
         date: formattedDate, // Use the correctly formatted local date

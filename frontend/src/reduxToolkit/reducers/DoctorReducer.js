@@ -5,10 +5,12 @@ import axios from "axios";
 export const fetchDoctors = createAsyncThunk(
   "doctors/fetchDoctors",
   async () => {
+    // console.log("fetchDoctors", process.env.REACT_APP_API_URL);
     const response = await axios.get(
-      "http://localhost:3000/api/doctor/getAllDoctors"
+      `${import.meta.env.VITE_APP_API_URL}/api/doctor/getAllDoctors`
     );
     console.log("response", response.data);
+    // console.log(process.env.REACT_APP_API_URL);
     const data = await response.data;
     return data;
   }
@@ -20,7 +22,7 @@ export const fetchDoctorById = createAsyncThunk(
   async (doctorId) => {
     console.log("Doctor ID in fetchDoctorById:", doctorId);
     const response = await axios.get(
-      `http://localhost:3000/api/doctor/doctorinfo/${doctorId}`
+      `${import.meta.env.VITE_APP_API_URL}/api/doctor/doctorinfo/${doctorId}`
     );
     console.log("Doctor fetched by ID:", response.data);
     return response.data; // returns the doctor's data
@@ -32,7 +34,7 @@ export const fetchDoctorAvgRatingByDoctorId = createAsyncThunk(
   async (doctorId) => {
     console.log("Doctor ID in fetchDoctorAvgRatingByDoctorId:", doctorId);
     const response = await axios.get(
-      `http://localhost:3000/api/feedback/getavgrating/${doctorId}`
+      `${import.meta.env.VITE_APP_API_URL}/api/feedback/getavgrating/${doctorId}`
     );
     console.log("Doctor fetched by ID:", response.data);
 
@@ -45,7 +47,7 @@ export const fetchAppointmentsByDoctorId = createAsyncThunk(
   async (doctorId) => {
     console.log("Doctor ID in fetchAppointmentsByDoctorId:", doctorId);
     const response = await axios.get(
-      `http://localhost:3000/api/doctor/getappointment/${doctorId}`,
+      `${import.meta.env.VITE_APP_API_URL}/api/doctor/getappointment/${doctorId}`,
       { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
     );
     console.log("Doctor fetched by ID:", response.data);

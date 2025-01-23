@@ -62,7 +62,7 @@ const DoctorSignUp = () => {
     formDataToSend.append("degree", formData.degreeProof);
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/doctor/${doctorId}/uploaddoc1`,
+        `${import.meta.env.VITE_APP_API_URL}/api/doctor/${doctorId}/uploaddoc1`,
         formDataToSend,
         {
           headers: {
@@ -81,7 +81,7 @@ const DoctorSignUp = () => {
   const uploadStep2Details = async (doctorId, formData) => {
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/doctor/${doctorId}/uploaddoc2`,
+        `${import.meta.env.VITE_APP_API_URL}/api/doctor/${doctorId}/uploaddoc2`,
         {
           gender: formData.gender,
           serviceType: formData.serviceType,
@@ -104,7 +104,7 @@ const DoctorSignUp = () => {
   const uploadStep3Details = async (doctorId, formData) => {
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/doctor/${doctorId}/uploaddoc3`,
+        `${import.meta.env.VITE_APP_API_URL}/api/doctor/${doctorId}/uploaddoc3`,
         {
           consultationFee: formData.consultationFee,
           availability: formData.availability,

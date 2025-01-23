@@ -18,7 +18,7 @@ export const doctorSignIn = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        'http://localhost:3000/api/doctor/dsignin',
+        `${import.meta.env.VITE_APP_API_URL}/api/doctor/dsignin`,
         credentials
       );
       return response.data; // The data from the API response
@@ -34,7 +34,7 @@ export const doctorSignUp = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        'http://localhost:3000/api/doctor/dsignup',
+        `${import.meta.env.VITE_APP_API_URL}/api/doctor/dsignup`,
         credentials
       );
       return response.data; // The data from the API response
@@ -50,7 +50,7 @@ export const patientSignIn = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        'http://localhost:3000/api/patient/signin',
+        `${import.meta.env.VITE_APP_API_URL}/api/patient/signin`,
         credentials
       );
       return response.data; // The data from the API response
@@ -66,7 +66,7 @@ export const patientSignUp = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        'http://localhost:3000/api/patient/signup',
+        `${import.meta.env.VITE_APP_API_URL}/api/patient/signup`,
         credentials
       );
 
