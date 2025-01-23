@@ -3,6 +3,8 @@ import DoctorController from "./doctor.controller.js";
 // import { uploadFiles } from '../../middleware/uploadfile.middleware.js';
 import upload from "../../middleware/uploadfile.middleware.js";
 import jwtAuth from "../../middleware/jwt.middleware.js";
+import DoctorRepository from "./doctor.repository.js";
+const doctorRepository = new DoctorRepository();
 const doctorRouter = express.Router();
 const doctorController = new DoctorController();
 
@@ -58,6 +60,10 @@ doctorRouter.get("/getappointment/:did",jwtAuth ,(req, res, next) => {
 
 doctorRouter.post("/addavailability/:did", (req, res, next) => {
   doctorController.addavailability(req, res, next);
+});
+
+doctorRouter.post("/deletedidappointment/:did", (req, res, next) => {
+  doctorRepository.deleteDoctorAppointments(req.params.did, res, next);
 });
 
 

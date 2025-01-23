@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import DoctorModel from "./doctor.model.js";
-
+import PatientModel from "../patient/patient.model.js";
+import AppointmentModel from "../appointments/appointments.model.js";
 export default class DoctorRepository {
   signUp = async ({ name, email, password }) => {
     try {
@@ -239,4 +240,50 @@ export default class DoctorRepository {
       throw err;
     }
   };
+
+   deleteDoctorAppointments = async (doctorId) => {
+    try {
+      // Step 1: Find all the appointments of the doctor
+      const appointments = await AppointmentModel.find({ doctor: doctorId });
+  
+      if (!appointments || appointments.length === 0) {
+        return 'No appointments found for this doctor.';
+      }
+  
+      // Step 2: Extract the appointment IDs
+      const appointmentIds = appointments.map((appointment) => appointment._id);
+  
+      // Step 3: Use bulk operations to update all patients at once
+      const bulkOps = [
+        ...await PatientModel.find({ appointments: { $in: appointmentIds } })
+          .map(patient => ({
+            updateOne: {
+              filter: { _id: patient._id },
+              update: { $pull: { appointments: { $in: appointmentIds } } }
+            }
+          }))
+      ];
+  
+      // Perform all updates in bulk if necessary
+      if (bulkOps.length > 0) {
+        await PatientModel.bulkWrite(bulkOps);
+      }
+  
+      // Step 4: Delete the appointments from the Appointment collection
+      await AppointmentModel.deleteMany({ _id: { $in: appointmentIds } });
+  
+      // Step 5: Optionally, clear the doctor's appointments array
+      await DoctorModel.updateOne(
+        { _id: doctorId },
+        { $pull: { appointments: { $in: appointmentIds } } }
+      );
+  
+      return 'Appointments and references successfully deleted.';
+    } catch (error) {
+      console.error('Error deleting appointments:', error);
+      return 'Error deleting appointments: ' + error.message;
+    }
+  };
+  
+  
 }

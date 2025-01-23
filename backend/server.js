@@ -4,10 +4,12 @@ import { connectDB } from "./src/config/db.js";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import AppointmentRepository from "./src/features/appointments/appointment.repository.js";
+import AppointmentController from "./src/features/appointments/appointments.controller.js";
 import cors from "cors";
 dotenv.config();
 
-const appointmentRepository = new AppointmentRepository();
+// const appointmentRepository = new AppointmentRepository();
+const appointmentController = new AppointmentController();
 
 const httpServer = createServer(server);
 
@@ -31,7 +33,7 @@ io.on('connection', (socket) => {
     try {
       // Here you handle the booking logic
       console.log("here")
-      const appointment = await appointmentRepository.bookAppointment(appointmentData,res,next);
+      const appointment = await appointmentController.bookAppointment(appointmentData);
       console.log("appointment", appointment);
       // Emit the booking confirmation to all connected clients
       io.emit('appointmentBooked', appointment);
@@ -46,7 +48,7 @@ io.on('connection', (socket) => {
     try {
       // Handle locking logic
       console.log("Slot data:", slotData);
-      const lockedSlot = await appointmentRepository.lockAppointment(slotData);
+      const lockedSlot = await appointmentController.lockAppointment(slotData);
 
       // Emit a notification for the locked slot to all clients
       io.emit('slotLocked', lockedSlot);

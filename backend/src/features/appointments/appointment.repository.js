@@ -54,21 +54,22 @@ export default class AppointmentRepository {
   //   }
   // };
   bookAppointment = async (appointmentData, res, next) => {
+    
     try {
       const { doctorId, patientId, date, timeSlot, type } = appointmentData;
       console.log("Appointment Data:", appointmentData);
       console.log("Appointment Data:", {
         doctorId,
         patientId,
-        date: new Date(date).toISOString(), // Standard ISO format for date
+        date: new Date(date).toISOString(),
         timeSlot,
-        type: type,
+        type,
       });
-
+  
       let parsedDate;
       if (typeof date === "string") {
         parsedDate = new Date(date);
-
+  
         // Validate the date
         if (isNaN(parsedDate)) {
           return "Invalid date format provided";
@@ -78,7 +79,7 @@ export default class AppointmentRepository {
       } else {
         return "Date is required and must be a valid date";
       }
-
+  
       // Check if the appointment slot is already taken
       const existingAppointment = await AppointmentModel.findOne({
         doctor: doctorId,
@@ -86,70 +87,64 @@ export default class AppointmentRepository {
         timeSlot,
         status: { $eq: "Confirmed" },
       });
-
+  
+      // Check if there's a locked appointment
       const lockedAppointment = await AppointmentModel.findOne({
         doctor: doctorId,
         date: parsedDate,
         timeSlot,
         status: { $eq: "Locked" },
       });
-
+  
+      console.log("Locked Appointment:", lockedAppointment);
+  
       if (existingAppointment) {
-        // return res.status(400).json({ message: "Appointment slot is already taken" });
-        return "Appointment slot is already taken";
+        return "Appointment slot is already taken"; // Slot is already confirmed
       }
-
-      if(lockedAppointment){
-       const appointment =  await AppointmentModel.updateOne(
+  
+      if (lockedAppointment) {
+        // Update the locked appointment to confirmed status
+        const updatedAppointment = await AppointmentModel.updateOne(
           { _id: lockedAppointment._id },
           { $set: { status: "Confirmed" } }
         );
-        await appointment.save();
-        return appointment;
+  
+        console.log("Updated Locked Appointment to Confirmed:", updatedAppointment);
+  
+        return updatedAppointment; // Return the updated appointment
       }
-
-      // Create a new appointment
-      const appointment = await AppointmentModel.create({
+  
+      // If no locked appointment, create a new appointment
+      const newAppointment = await AppointmentModel.create({
         doctor: doctorId,
-        patient: patientId, // This would normally be fetched from the logged-in user
+        patient: patientId,
         date: parsedDate,
         timeSlot,
         type,
       });
-
+  
       // Update doctor's and patient's appointments array
       await DoctorModel.findByIdAndUpdate(
         doctorId,
-        { $push: { appointments: appointment._id } },
+        { $push: { appointments: newAppointment._id } },
         { new: true }
       );
-
+  
       await PatientModel.findByIdAndUpdate(
         patientId,
-        { $push: { appointments: appointment._id } },
+        { $push: { appointments: newAppointment._id } },
         { new: true }
       );
-
-      // Send success response (only one response per request)
-      // if (!res.headersSent) {
-      //   return res.status(200).json({
-      //     message: "Appointment booked successfully",
-      //     appointment,
-      //   });
-      // }
-      return appointment;
+  
+      console.log("New Appointment Booked:", newAppointment);
+  
+      return newAppointment; // Return the newly created appointment
     } catch (error) {
       console.error("Error booking appointment:", error);
-
-      // Ensure only one response is sent in case of an error
-      // if (!res.headersSent) {
-      //   return res.status(500).json({
-      //     message: "Error booking appointment",
-      //     error: error.message,
-      //   });
-      // }
+      return "Error booking appointment: " + error.message;
     }
   };
+  
 
   getAppointmentByAId = async (id) => {
     try {
@@ -161,6 +156,7 @@ export default class AppointmentRepository {
   };
 
   lockAppointment = async (appointmentData) => {
+  console.log("Appointment Data:", appointmentData);
     const { doctorId, patientId, date, timeSlot } = appointmentData;
     try {
       let parsedDate;

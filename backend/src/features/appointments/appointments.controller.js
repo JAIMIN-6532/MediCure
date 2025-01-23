@@ -520,6 +520,7 @@ export default class AppointmentController {
 
   lockAppointment = async (req, res, next) => {
     // const { doctorId, patientId, date, timeSlot  } = req.body;
+    console.log("req.body", req.body);
     try {
       const Lockappointment = await this.appointmentRepository.lockAppointment(
         req.body
