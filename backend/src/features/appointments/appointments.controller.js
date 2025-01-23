@@ -518,16 +518,14 @@ export default class AppointmentController {
     }
   };
 
-  lockAppointment = async (req, res, next) => {
+  lockAppointment = async (req) => {
     // const { doctorId, patientId, date, timeSlot  } = req.body;
-    console.log("req.body", req.body);
+    console.log("req.body", req);
     try {
       const Lockappointment = await this.appointmentRepository.lockAppointment(
-        req.body
+        req
       );
-      return res
-        .status(200)
-        .json({ message: "Appointment locked successfully", Lockappointment });
+      return Lockappointment;
     } catch (error) {
       console.error(error);
       return res.status(500).json({ message: "Error locking appointment" });

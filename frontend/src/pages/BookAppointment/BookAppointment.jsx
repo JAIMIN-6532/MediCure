@@ -13,7 +13,8 @@ import BookingConfirmation from "../../components/BookAppointment/BookingConfirm
 import Invoice from "../../components/BookAppointment/Invoice";
 import { lockSlot } from "../../reduxToolkit/reducers/BookingReducer.js";
 import io from "socket.io-client";
-var socket;
+
+let socket;
 
 const mockInvoice = {
   orderId: "00124",
@@ -67,37 +68,26 @@ const BookAppointment = () => {
     (state) => state.appointments
   );
 
-  console.log("Selected Doctor Inside BA", selectedDoctor);
-  console.log("selected slots", appointments);
-
-  // State variables for the booking flow
   const [step, setStep] = useState(1);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedSlot, setSelectedSlot] = useState(null);
 
-  // We will store the previous doctorId to detect when it changes
   const [prevDoctorId, setPrevDoctorId] = useState(null);
 
-  // Add console logs to check if the effect runs properly and states are resetting
   useEffect(() => {
-    console.log("DoctorId Changed: ", doctorId); // Log doctorId change
-
-    // If doctorId changes, reset all the states related to booking
     if (doctorId !== prevDoctorId) {
-      setPrevDoctorId(doctorId); // Store the current doctorId
-      setStep(1); // Always start from Step 1 (Slot Selection)
-      setSelectedDate(new Date()); // Reset selected date
-      setSelectedSlot(null); // Reset selected slot
-      console.log("State reset: ", { step, selectedDate, selectedSlot });
+      setPrevDoctorId(doctorId);
+      setStep(1);
+      setSelectedDate(new Date());
+      setSelectedSlot(null);
 
-      // Dispatch actions to fetch new doctor and appointment slots
       dispatch(fetchDoctorById(doctorId));
       dispatch(fetchAppointmentSlots(doctorId));
     }
-  }, [doctorId, dispatch, prevDoctorId]); // Dependency array ensures the effect runs when doctorId changes
+  }, [doctorId, dispatch, prevDoctorId]);
 
-  // Handle the next step in the booking flow
-  const handleNext = () => {
+  const handleNext = (e) => {
+    e.preventDefault();
     dispatch(
       lockSlot({
         doctorId: doctorId,
@@ -117,25 +107,43 @@ const BookAppointment = () => {
     setStep(step + 1);
   };
 
-  // Connect to the server
+  // Initialize socket and listen for updates
   useEffect(() => {
     socket = io(`${import.meta.env.VITE_APP_API_URL}`, {
       transports: ["websocket", "polling"],
     });
+
     socket.on("connect", () => {
-      console.log("Socket connected:", socket.id);  // Log socket ID when connected
+      console.log("Socket connected:", socket.id);
     });
-  
+
+    // Listen for 'slotLocked' event to update slots
+    socket.on("slotLocked", (lockedSlot) => {
+      console.log("Slot locked successfully: ", lockedSlot);
+      // Update available slots after slot is locked
+
+      // if (Array.isArray(appointments)) {
+      //   const updatedSlots = appointments.filter((slot) => slot !== lockedSlot.timeSlot);
+      //   dispatch(setAvailableSlots(updatedSlots));
+      // }
+
+      dispatch(fetchAppointmentSlots(doctorId)); // Fetch updated slots after slot is locked
+    });
+
+    // Listen for 'appointmentBooked' event to confirm booking
+    socket.on("appointmentBooked", (appointment) => {
+      console.log("Appointment booked successfully: ", appointment);
+      setStep(3); // Proceed to booking confirmation step
+    });
+
     return () => {
       socket.off("connect");
+      socket.off("slotLocked");
+      socket.off("appointmentBooked");
     };
-  },[]);
+  }, [dispatch, doctorId,appointments]);
 
-  // Handle booking confirmation
   const handleBookingConfirm = (formData) => {
-    console.log("Booking Confirmed", formData);
-
-    // Dispatch the bookAppointment action when all data is collected
     dispatch(
       bookAppointment({
         doctorId: formData.doctorId,
@@ -145,7 +153,7 @@ const BookAppointment = () => {
         type: formData.serviceType,
       })
     );
-    // Emit the bookAppointment event to the server
+
     socket.emit("bookAppointment", {
       doctorId: formData.doctorId,
       patientId: formData.patientId,
@@ -155,40 +163,17 @@ const BookAppointment = () => {
     });
   };
 
-  // Listen for real-time updates
-  useEffect(() => {
-    socket.on("appointmentBooked", (appointment) => {
-      console.log("Appointment booked successfully: ", appointment);
-      setStep(3); // Move to confirmation step
-    });
-
-    socket.on("slotLocked", (lockedSlot) => {
-      console.log("Slot locked successfully: ", lockedSlot);
-      dispatch(fetchAppointmentSlots(doctorId));
-      // Handle slot lock success, maybe show a notification
-    });
-
-    return () => {
-      socket.off("appointmentBooked");
-      socket.off("slotLocked");
-    };
-  }, [dispatch]);
-
   // Handle successful booking confirmation
   useEffect(() => {
-    console.log("Booking Status Changed: ", bookappointmentStatus);
-    console.log("Doctor ID in BookingApStatus: ", doctorId);
     if (bookappointmentStatus === "succeeded" && doctorId === prevDoctorId) {
       setStep(3); // Move to the confirmation step
     }
   }, [bookappointmentStatus, doctorId, dispatch]);
 
-  // Handle invoice view
   const handleViewInvoice = () => {
     setStep(4);
   };
 
-  // Handle loading/error states
   if (fetchDoctorByIdStatus === "loading" || status === "loading") {
     return <div>Loading...</div>;
   }
@@ -200,10 +185,8 @@ const BookAppointment = () => {
   return (
     <div className="min-h-screen bg-gray-50 md:p-8">
       <div className="max-w-6xl mx-auto pt-16">
-        {/* Display selected doctor info */}
         <DoctorInfo doctor={selectedDoctor} />
 
-        {/* Step 1: Slot Selection */}
         {step === 1 && (
           <SlotSelection
             selectedDate={selectedDate}
@@ -216,7 +199,6 @@ const BookAppointment = () => {
           />
         )}
 
-        {/* Step 2: Personal Info */}
         {step === 2 && (
           <PersonalInfo
             selectedDate={selectedDate}
@@ -227,7 +209,6 @@ const BookAppointment = () => {
           />
         )}
 
-        {/* Step 3: Booking Confirmation */}
         {step === 3 && (
           <BookingConfirmation
             booking={{
@@ -241,7 +222,6 @@ const BookAppointment = () => {
           />
         )}
 
-        {/* Step 4: Invoice */}
         {step === 4 && (
           <Invoice
             invoice={mockInvoice}

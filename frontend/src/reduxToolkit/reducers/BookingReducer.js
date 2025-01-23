@@ -183,7 +183,12 @@ export const bookAppointment = createAsyncThunk(
 const appointmentsSlice = createSlice({
   name: "appointments",
   initialState,
-  reducers: {},
+  reducers: {
+    // setAvailableSlots: (state, action) => {
+    //   // This will update the available slots with the new list
+    //   state.appointments = Array.isArray(action.payload) ? action.payload : [];
+    // },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchAppointmentSlots.pending, (state) => {
@@ -212,6 +217,10 @@ const appointmentsSlice = createSlice({
       })
       .addCase(lockSlot.fulfilled, (state, action) => {
         state.lockSlotStatus = "succeeded";
+        // const updatedSlots = Array.isArray(state.appointments) ? state.appointments.filter(
+        //   (slot) => slot !== action.payload.timeSlot // Remove the locked slot
+        // ) : []; // If appointments is not an array, fallback to an empty array
+        // state.appointments = updatedSlots;
       })
       .addCase(lockSlot.rejected, (state, action) => {
         state.lockSlotStatus = "failed";
@@ -222,6 +231,9 @@ const appointmentsSlice = createSlice({
       })
       .addCase(releaseSlot.fulfilled, (state, action) => {
         state.releaseSlotStatus = "succeeded";
+        // Manually update the available slots after releasing a slot
+        // const updatedSlots = [...state.appointments, action.payload.timeSlot]; // Add the released slot back
+        // state.appointments = updatedSlots;
       })
       .addCase(releaseSlot.rejected, (state, action) => {
         state.releaseSlotStatus = "failed";
@@ -230,5 +242,6 @@ const appointmentsSlice = createSlice({
   },
 });
 
+// export const { setAvailableSlots } = appointmentsSlice.actions;
 // Export the async thunk to use it in the component
 export default appointmentsSlice.reducer;
