@@ -531,4 +531,18 @@ export default class AppointmentController {
       return res.status(500).json({ message: "Error locking appointment" });
     }
   };
+
+  unlockAppointment = async (req) => {
+    // const { doctorId, patientId, date, timeSlot  } = req.body;
+    console.log("req.body", req);
+    try {
+      const Unlockappointment = await this.appointmentRepository.unlockAppointment(
+        req
+      );
+      return Unlockappointment;
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Error unlocking appointment" });
+    }
+  }
 }

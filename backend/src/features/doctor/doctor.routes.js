@@ -55,7 +55,7 @@ doctorRouter.get("/getfeedback/:doctorId", (req, res, next) => {
 
 doctorRouter.get("/getappointment/:did",jwtAuth ,(req, res, next) => {
   console.log("getappointmentbydoctorid", req.params.did);
-  doctorController.getAppointmentsByDoctorId(req, res, next);
+  doctorController.getConfirmedAppointmentsByDoctorId(req, res, next);
 }); 
 
 doctorRouter.post("/addavailability/:did", (req, res, next) => {

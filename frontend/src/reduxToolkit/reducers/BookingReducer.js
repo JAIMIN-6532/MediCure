@@ -14,7 +14,6 @@ const initialState = {
   errorA: null,
 };
 
-
 // Create the async thunk for locking an appointment slot
 export const lockSlot = createAsyncThunk(
   "appointments/lockSlot",
@@ -37,7 +36,9 @@ export const lockSlot = createAsyncThunk(
       localDate.getMilliseconds().toString().padStart(3, "0") +
       "Z"; // Corrected format without any extra dots
     const response = await axios.post(
-      `${import.meta.env.VITE_APP_API_URL}/api/appointment/bookappointment/lock`,
+      `${
+        import.meta.env.VITE_APP_API_URL
+      }/api/appointment/bookappointment/lock`,
       {
         ...appointmentData,
         date: formattedDate, // Use the correctly formatted local date
@@ -54,13 +55,24 @@ export const lockSlot = createAsyncThunk(
   }
 );
 
+// export const updateAvailableSlots = async(lockedSlot)=>{
+//   console.log("lockedSlot",lockedSlot);
+//   appointmentsSlice.appointments = appointmentsSlice.appointments.filter(
+//     (slot) => slot.timeSlot !== lockedSlot.timeSlot && slot.date !== lockedSlot.date
+//   );
+// }
+
+
+
 // Create the async thunk for releasing an appointment slot
 export const releaseSlot = createAsyncThunk(
   "appointments/releaseSlot",
   async (appointmentData) => {
     console.log("appointmentData", appointmentData);
     const response = await axios.post(
-      `${import.meta.env.VITE_APP_API_URL}/api/appointment/bookappointment/release`,
+      `${
+        import.meta.env.VITE_APP_API_URL
+      }/api/appointment/bookappointment/release`,
       appointmentData,
       {
         headers: {
@@ -74,13 +86,14 @@ export const releaseSlot = createAsyncThunk(
   }
 );
 
-
 // Create the async thunk for fetching appointments By DoctorId
 export const fetchAppointmentSlots = createAsyncThunk(
   "appointments/fetchAppointments",
   async (doctorId) => {
     const response = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}/api/appointment/availableslots/${doctorId}`
+      `${
+        import.meta.env.VITE_APP_API_URL
+      }/api/appointment/availableslots/${doctorId}`
     ); // Modify the URL as needed
     console.log("response", response.data);
     return response.data; // Assuming the backend returns an array of appointments
@@ -178,12 +191,17 @@ export const bookAppointment = createAsyncThunk(
   }
 );
 
-
 // Create the slice
 const appointmentsSlice = createSlice({
   name: "appointments",
   initialState,
   reducers: {
+    updateAvailableSlots: (state, action) => {
+      const lockedSlot = action.payload;
+      state.appointments = state.appointments.filter(
+        (slot) => !(slot.date === lockedSlot.date && slot.timeSlot === lockedSlot.timeSlot)
+      );
+    },
     // setAvailableSlots: (state, action) => {
     //   // This will update the available slots with the new list
     //   state.appointments = Array.isArray(action.payload) ? action.payload : [];
@@ -197,6 +215,7 @@ const appointmentsSlice = createSlice({
       .addCase(fetchAppointmentSlots.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.appointments = action.payload; // Store the fetched appointments
+        // state.appointments = Array.isArray(action.payload) ? action.payload : [];
       })
       .addCase(fetchAppointmentSlots.rejected, (state, action) => {
         state.status = "failed";
@@ -217,6 +236,12 @@ const appointmentsSlice = createSlice({
       })
       .addCase(lockSlot.fulfilled, (state, action) => {
         state.lockSlotStatus = "succeeded";
+        // Extract the date and timeSlot of the locked slot
+        // const { date, timeSlot } = action.payload;
+        // // Filter out the locked slot from the available slots
+        // state.appointments = state.appointments.filter(
+        //   (slot) => !(slot.date === date && slot.timeSlot === timeSlot)
+        // );
         // const updatedSlots = Array.isArray(state.appointments) ? state.appointments.filter(
         //   (slot) => slot !== action.payload.timeSlot // Remove the locked slot
         // ) : []; // If appointments is not an array, fallback to an empty array
@@ -243,5 +268,6 @@ const appointmentsSlice = createSlice({
 });
 
 // export const { setAvailableSlots } = appointmentsSlice.actions;
+export const { updateAvailableSlots } = appointmentsSlice.actions;
 // Export the async thunk to use it in the component
 export default appointmentsSlice.reducer;

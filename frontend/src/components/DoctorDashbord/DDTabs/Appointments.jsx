@@ -69,7 +69,7 @@ const getStatusColor = (status) => {
 // Appointments Component
 export default function Appointments({ appointments, doctor }) {
   const [activeTab, setActiveTab] = useState("Today"); // State to handle active tab (Today, Upcoming, Past)
-
+  console.log(appointments);
   useEffect(() => {
     gsap.fromTo(
       ".appointments-title",
@@ -91,21 +91,15 @@ export default function Appointments({ appointments, doctor }) {
   // Helper function to convert time to 24-hour format for sorting
   // Helper function to convert time to 24-hour format for sorting
   const convertTo24HourFormat = (timeSlot) => {
-    if (!timeSlot) return 0; // If timeSlot is undefined or null, return 0 (or any default value)
-
     const [time, period] = timeSlot.split(" ");
-    if (!time || !period) return 0; // In case the time or period is not valid
-
-    let [hours, minutes] = time.split(":").map((num) => parseInt(num, 10));
-
-    if (period === "PM" && hours !== 12) {
-      hours += 12; // Convert PM hours to 24-hour format
-    }
-    if (period === "AM" && hours === 12) {
-      hours = 0; // Convert 12 AM to 00:00
-    }
-    return hours * 100 + minutes; // Convert time to an integer (HHMM format)
+    let [hours, minutes] = time.split(":").map(Number);
+  
+    if (period === "PM" && hours !== 12) hours += 12; // Convert PM hours to 24-hour format
+    if (period === "AM" && hours === 12) hours = 0; // Convert 12 AM to 00:00
+  
+    return hours * 100 + minutes; // Convert to HHMM format for easier comparison
   };
+  
 
   // Filter appointments based on the selected tab
   const filteredAppointments = appointments?.filter((appointment) => {
@@ -124,8 +118,16 @@ export default function Appointments({ appointments, doctor }) {
 
   // Sort today's appointments by time slot
   const sortedAppointments = filteredAppointments.sort((a, b) => {
-    const timeA = convertTo24HourFormat(a.time);
-    const timeB = convertTo24HourFormat(b.time);
+     // Sort by Date
+     const dateA = new Date(a.date).getTime();
+    const dateB = new Date(b.date).getTime();
+
+    if (dateA !== dateB) {
+      return dateA - dateB; // Date comparison
+    }
+ 
+    const timeA = convertTo24HourFormat(a.timeSlot);
+    const timeB = convertTo24HourFormat(b.timeSlot);
     return timeA - timeB;
   });
 
@@ -196,12 +198,12 @@ export default function Appointments({ appointments, doctor }) {
                 ) : (
                   // Fallback to initials if no profile image
                   <span className="w-8 h-8 flex items-center justify-center rounded-full bg-purple-300 text-white font-bold cursor-pointer">
-                    {appointment.patient.name.slice(0, 2).toUpperCase() ||
+                    {appointment.patient?.name.slice(0, 2).toUpperCase() ||
                       "User"}
                   </span>
                 )}
                 <div>
-                  <h4 className="font-medium">{appointment.patient.name}</h4>
+                  <h4 className="font-medium">{appointment.patient?.name}</h4>
                   <div className="flex items-center gap-2 text-sm text-gray-500">
                     <span>{appointment.time}</span>
                     <span>
@@ -227,9 +229,7 @@ export default function Appointments({ appointments, doctor }) {
                 <button className="px-4 py-2 bg-blue-50 text-primary rounded-lg hover:bg-blue-100 transition-colors">
                   Start Session
                 </button>
-                <button className="px-4 py-2 bg-gray-50 text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
-                  Reschedule
-                </button>
+                
               </div>
             </div>
           ))}
@@ -238,3 +238,4 @@ export default function Appointments({ appointments, doctor }) {
     </div>
   );
 }
+

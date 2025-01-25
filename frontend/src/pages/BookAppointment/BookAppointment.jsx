@@ -13,6 +13,9 @@ import BookingConfirmation from "../../components/BookAppointment/BookingConfirm
 import Invoice from "../../components/BookAppointment/Invoice";
 import { lockSlot } from "../../reduxToolkit/reducers/BookingReducer.js";
 import io from "socket.io-client";
+import { ClipLoader } from "react-spinners";
+import { updateAvailableSlots } from "../../reduxToolkit/reducers/BookingReducer.js";
+// import ScrollToTop from "../../components/ScrolltoTop.jsx";
 
 let socket;
 
@@ -86,18 +89,22 @@ const BookAppointment = () => {
     }
   }, [doctorId, dispatch, prevDoctorId]);
 
-  const handleNext = (e) => {
-    e.preventDefault();
-    dispatch(
-      lockSlot({
-        doctorId: doctorId,
-        date: selectedDate,
-        timeSlot: selectedSlot,
-        patientId: user._id,
-      })
-    );
+  useEffect(() => {
+    // Scroll to top whenever the step changes
+    window.scrollTo(0, 0);
+  }, [step]); // This will trigger whenever `step` changes
 
-    socket.emit("lockSlot", {
+  const handleNext =async (e) => {
+    e.preventDefault();
+  // dispatch(
+  //     lockSlot({
+  //       doctorId: doctorId,
+  //       date: selectedDate,
+  //       timeSlot: selectedSlot,
+  //       patientId: user._id,
+  //     })
+  //   );
+     socket.emit("lockSlot", {
       doctorId: doctorId,
       date: selectedDate,
       timeSlot: selectedSlot,
@@ -121,13 +128,25 @@ const BookAppointment = () => {
     socket.on("slotLocked", (lockedSlot) => {
       console.log("Slot locked successfully: ", lockedSlot);
       // Update available slots after slot is locked
-
+ // Dispatch an action to update available slots
+//  dispatch(updateAvailableSlots(lockedSlot));
       // if (Array.isArray(appointments)) {
       //   const updatedSlots = appointments.filter((slot) => slot !== lockedSlot.timeSlot);
       //   dispatch(setAvailableSlots(updatedSlots));
       // }
 
+      
       dispatch(fetchAppointmentSlots(doctorId)); // Fetch updated slots after slot is locked
+      // appointments.availableSlots = appointments.availableSlots.filter(
+      //   (slot) => slot !== lockedSlot.timeSlot
+      // );
+      // dispatch(updateAvailableSlots(lockedSlot));
+    });
+
+    socket.on("slotUnlocked", (unlockedSlot) => {
+      console.log("Slot unlocked successfully: ", unlockedSlot);
+      setStep(1); // Reset to slot selection step
+      dispatch(fetchAppointmentSlots(doctorId)); // Fetch updated slots after slot is unlocked
     });
 
     // Listen for 'appointmentBooked' event to confirm booking
@@ -154,13 +173,13 @@ const BookAppointment = () => {
       })
     );
 
-    socket.emit("bookAppointment", {
-      doctorId: formData.doctorId,
-      patientId: formData.patientId,
-      date: formData.selectedDate,
-      timeSlot: formData.selectedSlot,
-      type: formData.serviceType,
-    });
+    // socket.emit("bookAppointment", {
+    //   doctorId: formData.doctorId,
+    //   patientId: formData.patientId,
+    //   date: formData.selectedDate,
+    //   timeSlot: formData.selectedSlot,
+    //   type: formData.serviceType,
+    // });
   };
 
   // Handle successful booking confirmation
@@ -174,9 +193,20 @@ const BookAppointment = () => {
     setStep(4);
   };
 
-  if (fetchDoctorByIdStatus === "loading" || status === "loading") {
-    return <div>Loading...</div>;
-  }
+  // if (fetchDoctorByIdStatus === "loading" || status === "loading") {
+  //   return <div>Loading...</div>;
+  // }
+
+   // Conditional render for loading spinner
+   const isLoading = fetchDoctorByIdStatus === "loading" || status === "loading";
+
+   if (isLoading) {
+     return (
+       <div className="min-h-screen bg-gray-50 flex justify-center items-center">
+         <ClipLoader size={50} color="#3498db" />
+       </div>
+     );
+   }
 
   if (fetchDoctorByIdStatus === "failed" || status === "failed") {
     return <div>Error: {error || errorA}</div>;
@@ -184,6 +214,7 @@ const BookAppointment = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 md:p-8">
+
       <div className="max-w-6xl mx-auto pt-16">
         <DoctorInfo doctor={selectedDoctor} />
 

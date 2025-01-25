@@ -323,7 +323,19 @@ export default class DoctorController {
     }
   };
 
-
+  getConfirmedAppointmentsByDoctorId = async (req, res, next) => {
+    try {
+      const doctorId = req.params.did;
+      const appointments =
+        await this.doctorRepository.getConfirmedAppointmentsByDoctorId(doctorId);
+      console.log("appointments", appointments);
+      console.log("avalibility", appointments);
+      return res.status(200).json(appointments);
+    } catch (err) {
+      console.log("inside DC getConfirmedAppointmentsByDoctorId", err);
+      next(err);
+    }
+  };
 
   addavailability = async (req, res, next) => {
     try {

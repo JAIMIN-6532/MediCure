@@ -51,7 +51,12 @@ io.on('connection', (socket) => {
       const lockedSlot = await appointmentController.lockAppointment(slotData);
 
       // Emit a notification for the locked slot to all clients
+
       io.emit('slotLocked', lockedSlot);
+      setTimeout(async() => {
+        const unlockedSlot = await appointmentController.unlockAppointment(slotData);
+        io.emit('slotUnlocked', unlockedSlot);
+      }, 1*60*1000); // Unlock slot after 2 minutes
     } catch (error) {
       console.error("Error locking slot:", error);
       socket.emit('error', 'Error locking slot');

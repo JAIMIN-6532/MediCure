@@ -15,12 +15,15 @@ import DoctorDashbord from "./pages/DoctorDashbord/DoctorDashbord";
 import DoctorProfilePage from "./pages/Patient/DoctorProfilePage";
 import BookAppointment from "./pages/BookAppointment/BookAppointment";
 import PatientDashbord from "./pages/PatientDashbord/PatientDashbord";
+// import ScrollToTop from "./components/ScrolltoTop";
 const App = () => {
   return (
     <>
-      <div className="min-h-screen bg-white">
+      <div className="flex flex-col min-h-screen bg-white">
         <Navbar />
-
+  
+        <div className="flex-grow">
+       
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/doctors" element={<DoctorsList />} />
@@ -51,6 +54,8 @@ const App = () => {
           {/* <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} /> */}
         </Routes>
+      
+        </div>
         <Footer />
       </div>
     </>
