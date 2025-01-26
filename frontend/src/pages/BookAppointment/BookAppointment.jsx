@@ -79,7 +79,7 @@ const BookAppointment = () => {
 
   const [prevDoctorId, setPrevDoctorId] = useState(null);
   useEffect(() => {
-    socket = io.connect("http://localhost:3000",{
+    socket = io.connect("https://medicure-go5v.onrender.com",{
       transports: ["websocket", "polling"],
     });
     // return () => {
