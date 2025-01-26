@@ -13,38 +13,39 @@ const appointmentController = new AppointmentController();
 
 const httpServer = createServer(server);
 
-
 const io = new Server(httpServer, {
   cors: {
-    origin: "https://medicure-frontend-qii7.onrender.com",
+    origin: "https://medicure-frontend-qii7.onrender.com", //https://medicure-frontend-qii7.onrender.com
     methods: ["GET", "POST"],
-    transports: ['websocket', 'polling'],
+    transports: ["websocket", "polling"],
   },
 });
 
 // Socket.IO events
 
 // Example event for booking an appointment
-io.on('connection', (socket) => {
-  console.log('A user connected');
-  
+io.on("connection", (socket) => {
+  console.log("A user connected");
+
   // Listen for booking events
-  socket.on('bookAppointment', async (appointmentData) => {
+  socket.on("bookAppointment", async (appointmentData) => {
     try {
       // Here you handle the booking logic
-      console.log("here")
-      const appointment = await appointmentController.bookAppointment(appointmentData);
+      console.log("here");
+      const appointment = await appointmentController.bookAppointment(
+        appointmentData
+      );
       console.log("appointment", appointment);
       // Emit the booking confirmation to all connected clients
-      io.emit('appointmentBooked', appointment);
+      io.emit("appointmentBooked", appointment);
     } catch (error) {
       console.error("Error booking appointment:", error);
-      socket.emit('error', 'Error booking appointment');
+      socket.emit("error", "Error booking appointment");
     }
   });
 
   // Listen for lockSlot events
-  socket.on('lockSlot', async (slotData) => {
+  socket.on("lockSlot", async (slotData) => {
     try {
       // Handle locking logic
       console.log("Slot data:", slotData);
@@ -52,22 +53,23 @@ io.on('connection', (socket) => {
 
       // Emit a notification for the locked slot to all clients
 
-      io.emit('slotLocked', lockedSlot);
-       setTimeout(async() => {
-        const unlockedSlot = await appointmentController.unlockAppointment(slotData);
-        io.emit('slotUnlocked', unlockedSlot);
-      }, 15*60*1000); // Unlock slot after 15 minutes
+      io.emit("slotLocked", lockedSlot);
+      setTimeout(async () => {
+        const unlockedSlot = await appointmentController.unlockAppointment(
+          slotData
+        );
+        io.emit("slotUnlocked", unlockedSlot);
+      }, 15 * 60 * 1000); // Unlock slot after 15 minutes
     } catch (error) {
       console.error("Error locking slot:", error);
-      socket.emit('error', 'Error locking slot');
+      socket.emit("error", "Error locking slot");
     }
   });
 
-  socket.on('disconnect', () => {
-    console.log('A user disconnected');
+  socket.on("disconnect", () => {
+    console.log("A user disconnected");
   });
 });
-
 
 console.log(process.env.PORT);
 const serverStart = httpServer.listen(process.env.PORT, async (err) => {

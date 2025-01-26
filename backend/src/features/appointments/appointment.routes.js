@@ -10,7 +10,7 @@ const appointmentController = new AppointmentController();
 //     appointmentController.bookAppointment(req,res,next);
 // });
 
-appointmentRouter.get("/availableslots/:doctorId", (req, res, next) => {
+appointmentRouter.get("/availableslots/:doctorId", jwtAuth ,(req, res, next) => {
   console.log("inside availableslots route");
   appointmentController.getAvailableSlots(req, res, next);
 });

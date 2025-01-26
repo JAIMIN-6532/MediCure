@@ -90,12 +90,18 @@ export const releaseSlot = createAsyncThunk(
 export const fetchAppointmentSlots = createAsyncThunk(
   "appointments/fetchAppointments",
   async (doctorId) => {
+    console.log("doctorId", doctorId);
     const response = await axios.get(
       `${
         import.meta.env.VITE_APP_API_URL
-      }/api/appointment/availableslots/${doctorId}`
+      }/api/appointment/availableslots/${doctorId}`,{
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
     ); // Modify the URL as needed
-    console.log("response", response.data);
+    console.log("response", response);
     return response.data; // Assuming the backend returns an array of appointments
   }
 );

@@ -78,6 +78,14 @@ const BookAppointment = () => {
   const [selectedSlot, setSelectedSlot] = useState(null);
 
   const [prevDoctorId, setPrevDoctorId] = useState(null);
+  useEffect(() => {
+    socket = io.connect("http://localhost:3000",{
+      transports: ["websocket", "polling"],
+    });
+    // return () => {
+    //   socket.disconnect();
+    // };
+  }, []);
 
   useEffect(() => {
     if (doctorId !== prevDoctorId) {
@@ -301,7 +309,7 @@ const BookAppointment = () => {
       <div className="max-w-6xl mx-auto pt-16">
         <DoctorInfo doctor={selectedDoctor} />
 
-        {appointments && appointments.availableSlots && step === 1 && (
+        {step === 1 && (
           <SlotSelection
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}

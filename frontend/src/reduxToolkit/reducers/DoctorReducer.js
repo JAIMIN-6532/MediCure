@@ -34,7 +34,9 @@ export const fetchDoctorAvgRatingByDoctorId = createAsyncThunk(
   async (doctorId) => {
     console.log("Doctor ID in fetchDoctorAvgRatingByDoctorId:", doctorId);
     const response = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}/api/feedback/getavgrating/${doctorId}`
+      `${
+        import.meta.env.VITE_APP_API_URL
+      }/api/feedback/getavgrating/${doctorId}`
     );
     console.log("Doctor fetched by ID:", response.data);
 
@@ -47,7 +49,9 @@ export const fetchAppointmentsByDoctorId = createAsyncThunk(
   async (doctorId) => {
     console.log("Doctor ID in fetchAppointmentsByDoctorId:", doctorId);
     const response = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}/api/doctor/getappointment/${doctorId}`,
+      `${
+        import.meta.env.VITE_APP_API_URL
+      }/api/doctor/getappointment/${doctorId}`,
       { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
     );
     console.log("Doctor fetched by ID:", response.data);
@@ -117,11 +121,18 @@ const doctorSlice = createSlice({
       .addCase(fetchDoctorAvgRatingByDoctorId.fulfilled, (state, action) => {
         state.fetchDoctorAvgRatingStatus = "succeeded";
 
-        if (action.payload.avgRating.length === 0) {
-          state.avgRating = 0; // If no ratings, set avgRating to null
-        } else {
-          console.log("action.payload", action.payload.avgRating[0].avgRating);
-          state.avgRating = action.payload.avgRating[0].avgRating; // Use the first rating if available
+        // Check if avgRating is an array and has at least one item
+        if (
+          Array.isArray(action.payload?.avgRating) &&
+          action.payload.avgRating.length > 0
+        ) {
+          console.log(
+            "action.payload",
+            action.payload?.avgRating[0]?.avgRating
+          );
+          state.avgRating = action.payload.avgRating[0]?.avgRating; // Use the first rating if available
+        } else {    
+          state.avgRating = 0; // No ratings available, set avgRating to 0
         }
       })
       .addCase(fetchDoctorAvgRatingByDoctorId.rejected, (state, action) => {
