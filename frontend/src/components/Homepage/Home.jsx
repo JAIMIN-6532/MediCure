@@ -4,8 +4,13 @@ import { Link } from "react-router-dom";
 import DoctorCard from "./DoctorCard";
 import SpecialtyCard from "./SpecialityCard";
 import homedoctor from "../../assets/homedoctor.png";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+  const navigate = useNavigate();
+  handleFindDoctorsClick = () => {
+    navigate("/doctors");
+  };
   return (
     <>
       {/* Hero Section */}
@@ -22,11 +27,11 @@ const Home = () => {
                 Discover the best doctors, clinics, and hospitals in your area.
                 Book appointments instantly and get the care you deserve.
               </p>
-              <Link to="/doctors" className="text-primary-blue text-lg font-semibold hover:underline">
-              <button className="bg-primary-blue text-white px-8 py-3 rounded-full hover:bg-dark-blue transition-colors text-lg" >
+              {/* <Link to="/doctors" className="text-primary-blue text-lg font-semibold hover:underline"> */}
+              <button className="bg-primary-blue text-white px-8 py-3 rounded-full hover:bg-dark-blue transition-colors text-lg" onClick={handleFindDoctorsClick}>
                 Find Doctors
               </button>
-              </Link>
+              {/* </Link> */}
             </div>
             <div className="md:w-1/2">
               <img
