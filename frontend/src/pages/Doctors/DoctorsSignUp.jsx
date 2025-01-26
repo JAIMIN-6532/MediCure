@@ -328,7 +328,9 @@ const DoctorSignUp = () => {
     formDataToSend.append("images", formData.profileImage);
     formDataToSend.append("id", formData.idProof);
     formDataToSend.append("degree", formData.degreeProof);
+    console.log("Form Data to send:", formDataToSend);
     try {
+      console.log("Form Data to send:", formDataToSend);
       const response = await axios.post(
         `${import.meta.env.VITE_APP_API_URL}/api/doctor/${doctorId}/uploaddoc1`,
         formDataToSend,
