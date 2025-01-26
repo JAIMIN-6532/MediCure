@@ -301,7 +301,7 @@ const BookAppointment = () => {
       <div className="max-w-6xl mx-auto pt-16">
         <DoctorInfo doctor={selectedDoctor} />
 
-        {step === 1 && (
+        {appointments && appointments.availableSlots && step === 1 && (
           <SlotSelection
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
