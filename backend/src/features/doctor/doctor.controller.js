@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import DoctorModel from "./doctor.model.js";
 import cloudinary from "../../config/cloudinaryconfig.js";
 import jwt from "jsonwebtoken";
+import path from "path";
 
 // import { upload, uploadFiles } from "../../middleware/uploadfile.middleware.js";
 import fs from "fs";
