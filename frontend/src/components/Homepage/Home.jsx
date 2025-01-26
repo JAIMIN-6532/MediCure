@@ -1,5 +1,10 @@
 import React from "react";
-import { FaSearch, FaUserMd, FaCalendarAlt, FaRegCommentDots } from "react-icons/fa"; // Import React Icons
+import {
+  FaSearch,
+  FaUserMd,
+  FaCalendarAlt,
+  FaRegCommentDots,
+} from "react-icons/fa"; // Import React Icons
 import { Link } from "react-router-dom";
 import DoctorCard from "./DoctorCard";
 import SpecialtyCard from "./SpecialityCard";
@@ -8,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const navigate = useNavigate();
-  handleFindDoctorsClick = () => {
+  const handleFindDoctorsClick = () => {
     navigate("/doctors");
   };
   return (
@@ -28,7 +33,10 @@ const Home = () => {
                 Book appointments instantly and get the care you deserve.
               </p>
               {/* <Link to="/doctors" className="text-primary-blue text-lg font-semibold hover:underline"> */}
-              <button className="bg-primary-blue text-white px-8 py-3 rounded-full hover:bg-dark-blue transition-colors text-lg" onClick={handleFindDoctorsClick}>
+              <button
+                className="bg-primary-blue text-white px-8 py-3 rounded-full hover:bg-dark-blue transition-colors text-lg"
+                onClick={handleFindDoctorsClick}
+              >
                 Find Doctors
               </button>
               {/* </Link> */}
@@ -61,7 +69,7 @@ const Home = () => {
             {/* Left Side: Image */}
             <div className="md:w-1/2">
               <img
-                src={homedoctor}  // Replace with your image
+                src={homedoctor} // Replace with your image
                 alt="Search Doctor"
                 className="w-full max-w-lg mx-auto rounded-lg"
               />
@@ -69,7 +77,9 @@ const Home = () => {
 
             {/* Right Side: Steps */}
             <div className="md:w-1/2 text-left">
-              <h1 className="text-4xl mb-[15px] font-bold text-dark-blue">How It Works?..</h1>
+              <h1 className="text-4xl mb-[15px] font-bold text-dark-blue">
+                How It Works?..
+              </h1>
               <h2 className="text-3xl font-semibold text-dark-blue mb-6">
                 4 Easy Steps to Get Your Solution
               </h2>
@@ -80,15 +90,25 @@ const Home = () => {
                   <div className="flex items-start mb-8">
                     <FaSearch className="text-primary-blue text-6xl mr-4" />
                     <div>
-                      <h3 className="font-semibold text-primary-blue text-[1.3rem]">Search Doctor</h3>
-                      <p>Search for a doctor based on specialization, location, or availability.</p>
+                      <h3 className="font-semibold text-primary-blue text-[1.3rem]">
+                        Search Doctor
+                      </h3>
+                      <p>
+                        Search for a doctor based on specialization, location,
+                        or availability.
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-start mb-8">
                     <FaUserMd className="text-primary-blue text-6xl mr-4" />
                     <div>
-                      <h3 className="font-semibold text-primary-blue text-[1.3rem]">Check Doctor Profile</h3>
-                      <p>Explore detailed doctor profiles on our platform to make informed healthcare decisions.</p>
+                      <h3 className="font-semibold text-primary-blue text-[1.3rem]">
+                        Check Doctor Profile
+                      </h3>
+                      <p>
+                        Explore detailed doctor profiles on our platform to make
+                        informed healthcare decisions.
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -97,15 +117,25 @@ const Home = () => {
                   <div className="flex items-start mb-8">
                     <FaCalendarAlt className="text-primary-blue text-6xl mr-4" />
                     <div>
-                      <h3 className="font-semibold text-primary-blue text-[1.3rem]">Schedule Appointment</h3>
-                      <p>After choosing your preferred doctor, select a convenient time slot, & confirm your appointment.</p>
+                      <h3 className="font-semibold text-primary-blue text-[1.3rem]">
+                        Schedule Appointment
+                      </h3>
+                      <p>
+                        After choosing your preferred doctor, select a
+                        convenient time slot, & confirm your appointment.
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-start mb-8">
                     <FaRegCommentDots className="text-primary-blue text-6xl mr-4" />
                     <div>
-                      <h3 className="font-semibold text-primary-blue text-[1.3rem]">Get Your Solution</h3>
-                      <p>Discuss your health concerns with the doctor and receive personalized advice & solution.</p>
+                      <h3 className="font-semibold text-primary-blue text-[1.3rem]">
+                        Get Your Solution
+                      </h3>
+                      <p>
+                        Discuss your health concerns with the doctor and receive
+                        personalized advice & solution.
+                      </p>
                     </div>
                   </div>
                 </div>
