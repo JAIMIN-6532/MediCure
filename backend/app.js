@@ -52,6 +52,9 @@ app.use("/api/patient",patientRouter);
 app.use("/api/doctor" , doctorRouter)
 app.use("/api/otp",OtpRouter);
 
+app.use("/",()=>{
+  res.send("Welcome to the home page");
+})
 
 app.use("/api/appointment",appointmentRouter);
 app.use("/api/feedback",feedbackRouter);
