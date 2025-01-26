@@ -1,6 +1,6 @@
 import React from "react";
 import { FaSearch, FaUserMd, FaCalendarAlt, FaRegCommentDots } from "react-icons/fa"; // Import React Icons
-
+import { Link } from "react-router-dom";
 import DoctorCard from "./DoctorCard";
 import SpecialtyCard from "./SpecialityCard";
 import homedoctor from "../../assets/homedoctor.png";
@@ -22,9 +22,11 @@ const Home = () => {
                 Discover the best doctors, clinics, and hospitals in your area.
                 Book appointments instantly and get the care you deserve.
               </p>
-              <button className="bg-primary-blue text-white px-8 py-3 rounded-full hover:bg-dark-blue transition-colors text-lg" onClick={()=>{window.location.href="/doctors"}}>
+              <Link to="/doctors" className="text-primary-blue text-lg font-semibold hover:underline">
+              <button className="bg-primary-blue text-white px-8 py-3 rounded-full hover:bg-dark-blue transition-colors text-lg" >
                 Find Doctors
               </button>
+              </Link>
             </div>
             <div className="md:w-1/2">
               <img
