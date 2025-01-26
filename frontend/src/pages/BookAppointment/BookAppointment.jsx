@@ -71,6 +71,8 @@ const BookAppointment = () => {
     (state) => state.appointments
   );
 
+  // const [uappointments, setuAppointments] = useState(null);
+
   const [step, setStep] = useState(1);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedSlot, setSelectedSlot] = useState(null);
@@ -94,17 +96,17 @@ const BookAppointment = () => {
     window.scrollTo(0, 0);
   }, [step]); // This will trigger whenever `step` changes
 
-  const handleNext =async (e) => {
+  const handleNext = async (e) => {
     e.preventDefault();
-  // dispatch(
-  //     lockSlot({
-  //       doctorId: doctorId,
-  //       date: selectedDate,
-  //       timeSlot: selectedSlot,
-  //       patientId: user._id,
-  //     })
-  //   );
-     socket.emit("lockSlot", {
+    // dispatch(
+    //     lockSlot({
+    //       doctorId: doctorId,
+    //       date: selectedDate,
+    //       timeSlot: selectedSlot,
+    //       patientId: user._id,
+    //     })
+    //   );
+    socket.emit("lockSlot", {
       doctorId: doctorId,
       date: selectedDate,
       timeSlot: selectedSlot,
@@ -128,15 +130,55 @@ const BookAppointment = () => {
     socket.on("slotLocked", (lockedSlot) => {
       console.log("Slot locked successfully: ", lockedSlot);
       // Update available slots after slot is locked
- // Dispatch an action to update available slots
-//  dispatch(updateAvailableSlots(lockedSlot));
+      // Dispatch an action to update available slots
+      //  dispatch(updateAvailableSlots(lockedSlot));
       // if (Array.isArray(appointments)) {
       //   const updatedSlots = appointments.filter((slot) => slot !== lockedSlot.timeSlot);
       //   dispatch(setAvailableSlots(updatedSlots));
       // }
 
-      
-      dispatch(fetchAppointmentSlots(doctorId)); // Fetch updated slots after slot is locked
+      console.log("lockedSlot", lockedSlot);
+      console.log("appointments", appointments);
+      // Sample lockedSlot with ISO 8601 date format
+
+      // Sample appointments array with one object
+
+      // // Convert the lockedSlot's date to just the date part (YYYY-MM-DD)
+      const lockedDate = new Date(lockedSlot.date).toISOString().split("T")[0];
+
+      // Check if appointments is an object with availableSlots array
+      if (appointments && Array.isArray(appointments.availableSlots)) {
+        // Remove lockedSlot from appointments
+        const updatedAppointments = {
+          ...appointments,
+          availableSlots: appointments.availableSlots.map((slotGroup) => {
+            const slotGroupDate = new Date(slotGroup.date)
+              .toISOString()
+              .split("T")[0];
+
+            // If the date matches, remove the locked timeSlot
+            if (slotGroupDate === lockedDate) {
+              const updatedSlots = slotGroup.availableSlots.filter(
+                (slot) => slot !== lockedSlot.timeSlot
+              );
+              return {
+                ...slotGroup,
+                availableSlots: updatedSlots,
+              };
+            }
+            return slotGroup;
+          }),
+        };
+        dispatch(updateAvailableSlots(updatedAppointments));
+
+        console.log(updatedAppointments);
+      } else {
+        console.error(
+          "appointments is not structured as expected:",
+          appointments
+        );
+      }
+      // dispatch(fetchAppointmentSlots(doctorId)); // Fetch updated slots after slot is locked
       // appointments.availableSlots = appointments.availableSlots.filter(
       //   (slot) => slot !== lockedSlot.timeSlot
       // );
@@ -145,8 +187,50 @@ const BookAppointment = () => {
 
     socket.on("slotUnlocked", (unlockedSlot) => {
       console.log("Slot unlocked successfully: ", unlockedSlot);
+      // Convert unlockedSlot date to YYYY-MM-DD format
+      const unlockedDate = new Date(unlockedSlot.date)
+        .toISOString()
+        .split("T")[0];
+
+      if (appointments && Array.isArray(appointments.availableSlots)) {
+        // Update the appointments object directly to add the unlocked time slot
+        const updatedAppointments = {
+          ...appointments,
+          availableSlots: appointments.availableSlots.map((slotGroup) => {
+            const slotGroupDate = new Date(slotGroup.date)
+              .toISOString()
+              .split("T")[0];
+
+            // If the date matches, add the unlocked timeSlot back to the available slots
+            if (slotGroupDate === unlockedDate) {
+              return {
+                ...slotGroup,
+                availableSlots: [
+                  ...slotGroup.availableSlots,
+                  unlockedSlot.timeSlot,
+                ], // Add unlocked time slot
+              };
+            }
+            return slotGroup;
+          }),
+        };
+
+        // Directly update the appointments object in Redux
+        dispatch(updateAvailableSlots(updatedAppointments));
+
+        console.log(
+          "Updated Appointments after unlocking slot:",
+          updatedAppointments
+        );
+      } else {
+        console.error(
+          "appointments is not structured as expected:",
+          appointments
+        );
+      }
+      if(step >= 2)
       setStep(1); // Reset to slot selection step
-      dispatch(fetchAppointmentSlots(doctorId)); // Fetch updated slots after slot is unlocked
+      // dispatch(fetchAppointmentSlots(doctorId)); // Fetch updated slots after slot is unlocked
     });
 
     // Listen for 'appointmentBooked' event to confirm booking
@@ -160,7 +244,7 @@ const BookAppointment = () => {
       socket.off("slotLocked");
       socket.off("appointmentBooked");
     };
-  }, [dispatch, doctorId,appointments]);
+  }, [dispatch, doctorId, appointments]);
 
   const handleBookingConfirm = (formData) => {
     dispatch(
@@ -197,16 +281,16 @@ const BookAppointment = () => {
   //   return <div>Loading...</div>;
   // }
 
-   // Conditional render for loading spinner
-   const isLoading = fetchDoctorByIdStatus === "loading" || status === "loading";
+  // Conditional render for loading spinner
+  const isLoading = fetchDoctorByIdStatus === "loading" || status === "loading";
 
-   if (isLoading) {
-     return (
-       <div className="min-h-screen bg-gray-50 flex justify-center items-center">
-         <ClipLoader size={50} color="#3498db" />
-       </div>
-     );
-   }
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex justify-center items-center">
+        <ClipLoader size={50} color="#3498db" />
+      </div>
+    );
+  }
 
   if (fetchDoctorByIdStatus === "failed" || status === "failed") {
     return <div>Error: {error || errorA}</div>;
@@ -214,7 +298,6 @@ const BookAppointment = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 md:p-8">
-
       <div className="max-w-6xl mx-auto pt-16">
         <DoctorInfo doctor={selectedDoctor} />
 
@@ -224,7 +307,7 @@ const BookAppointment = () => {
             setSelectedDate={setSelectedDate}
             selectedSlot={selectedSlot}
             doctor={selectedDoctor}
-            appointmentSlots={appointments.availableSlots}
+            appointmentSlots={appointments?.availableSlots}
             setSelectedSlot={setSelectedSlot}
             onNext={handleNext}
           />

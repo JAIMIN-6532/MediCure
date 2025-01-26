@@ -196,12 +196,10 @@ const appointmentsSlice = createSlice({
   name: "appointments",
   initialState,
   reducers: {
-    updateAvailableSlots: (state, action) => {
-      const lockedSlot = action.payload;
-      state.appointments = state.appointments.filter(
-        (slot) => !(slot.date === lockedSlot.date && slot.timeSlot === lockedSlot.timeSlot)
-      );
+    setAvailableSlots(state, action) {
+      state.appointments = action.payload;
     },
+    
     // setAvailableSlots: (state, action) => {
     //   // This will update the available slots with the new list
     //   state.appointments = Array.isArray(action.payload) ? action.payload : [];
@@ -267,7 +265,13 @@ const appointmentsSlice = createSlice({
   },
 });
 
+export const { setAvailableSlots } = appointmentsSlice.actions;
+export const updateAvailableSlots = (updatedAppointments) => {
+  return (dispatch) => {
+    dispatch(setAvailableSlots(updatedAppointments));
+  };
+};
 // export const { setAvailableSlots } = appointmentsSlice.actions;
-export const { updateAvailableSlots } = appointmentsSlice.actions;
+// export const { updateAvailableSlots } = appointmentsSlice.actions;
 // Export the async thunk to use it in the component
 export default appointmentsSlice.reducer;

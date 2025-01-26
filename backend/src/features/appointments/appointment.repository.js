@@ -258,7 +258,6 @@ export default class AppointmentRepository {
       const istOffset = 5.5 * 60 * 60 * 1000; // 5 hours 30 minutes in milliseconds
       const istDate = new Date(parsedDate.getTime() + istOffset); // Adjust date to IST time
   
-      // The `istDate` is now in IST (Indian Standard Time)
       console.log("Converted IST Date:", istDate); // This will be in IST time
 
       const lockedAppointment = await AppointmentModel.findOne({
@@ -278,7 +277,8 @@ export default class AppointmentRepository {
         _id: lockedAppointment._id,
       });
 
-      return deletedAppointment;
+
+      return lockedAppointment; // Return the deleted appointment 
     } catch (error) {
       console.error(error);
     }
