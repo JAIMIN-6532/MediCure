@@ -267,12 +267,14 @@ const Navbar = () => {
                 Logout
               </button>
             ) : (
+              <NavLink to="/signin" className="hover:text-primary-blue transition-colors">
               <button
-                onClick={() => (window.location.href = "/signin")}
+                
                 className="bg-primary-blue text-white px-6 py-2 rounded-full hover:bg-dark-blue transition-colors"
               >
                 Login/Register
               </button>
+              </NavLink>
             )}
           </div>
 
@@ -313,9 +315,8 @@ const Navbar = () => {
                   Logout
                 </button>
               ) : (
-                <NavLink to="/signin" className="block px-3 py-2 hover:text-primary-blue" onClick={() => setIsOpen(false)}>
+                <NavLink to="/signin" className="hover:text-primary-blue transition-colors">
                 <button
-                  
                   className="bg-primary-blue text-white px-6 py-2 rounded-full hover:bg-dark-blue transition-colors"
                 >
                   Login/Register
