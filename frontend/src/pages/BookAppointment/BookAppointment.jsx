@@ -15,6 +15,7 @@ import { lockSlot } from "../../reduxToolkit/reducers/BookingReducer.js";
 import io from "socket.io-client";
 import { ClipLoader } from "react-spinners";
 import { updateAvailableSlots } from "../../reduxToolkit/reducers/BookingReducer.js";
+
 // import ScrollToTop from "../../components/ScrolltoTop.jsx";
 
 let socket;
@@ -67,6 +68,9 @@ const BookAppointment = () => {
   const { appointments, status, errorA } = useSelector(
     (state) => state.appointments
   );
+
+  console.log("appointments from state", appointments);
+
   const { bookappointmentStatus, bookappointmentError } = useSelector(
     (state) => state.appointments
   );
@@ -194,52 +198,84 @@ const BookAppointment = () => {
       // dispatch(updateAvailableSlots(lockedSlot));
     });
 
+    // socket.on("slotUnlocked", (unlockedSlot) => {
+    //   console.log("Slot unlocked successfully: ", unlockedSlot);
+    //   // Convert unlockedSlot date to YYYY-MM-DD format
+    //   const unlockedDate = new Date(unlockedSlot.date)
+    //     .toISOString()
+    //     .split("T")[0];
+
+    //   if (appointments && Array.isArray(appointments.availableSlots)) {
+    //     // Update the appointments object directly to add the unlocked time slot
+    //     const updatedAppointments = {
+    //       ...appointments,
+    //       availableSlots: appointments.availableSlots.map((slotGroup) => {
+    //         const slotGroupDate = new Date(slotGroup.date)
+    //           .toISOString()
+    //           .split("T")[0];
+
+    //         // If the date matches, add the unlocked timeSlot back to the available slots
+    //         if (slotGroupDate === unlockedDate) {
+    //           return {
+    //             ...slotGroup,
+    //             availableSlots: [
+    //               ...slotGroup.availableSlots,
+    //               unlockedSlot.timeSlot,
+    //             ], // Add unlocked time slot
+    //           };
+    //         }
+    //         return slotGroup;
+    //       }),
+    //     };
+    //     console.log("Updated Appointments after unlocking slot:", updatedAppointments);
+    //     // Directly update the appointments object in Redux
+    //     dispatch(updateAvailableSlots(updatedAppointments));
+
+    //     console.log(
+    //       "Updated Appointments after unlocking slot after setAvalable:",
+    //       updatedAppointments
+    //     );
+    //   } else {
+    //     console.error(
+    //       "appointments is not structured as expected:",
+    //       appointments
+    //     );
+    //   }
+    //   // if(step >= 2)
+    //   setStep(1); // Reset to slot selection step
+    //   // dispatch(fetchAppointmentSlots(doctorId)); // Fetch updated slots after slot is unlocked
+    // });
     socket.on("slotUnlocked", (unlockedSlot) => {
       console.log("Slot unlocked successfully: ", unlockedSlot);
-      // Convert unlockedSlot date to YYYY-MM-DD format
-      const unlockedDate = new Date(unlockedSlot.date)
-        .toISOString()
-        .split("T")[0];
-
+      const unlockedDate = new Date(unlockedSlot.date).toISOString().split("T")[0];
+    
       if (appointments && Array.isArray(appointments.availableSlots)) {
-        // Update the appointments object directly to add the unlocked time slot
         const updatedAppointments = {
           ...appointments,
           availableSlots: appointments.availableSlots.map((slotGroup) => {
-            const slotGroupDate = new Date(slotGroup.date)
-              .toISOString()
-              .split("T")[0];
-
+            const slotGroupDate = new Date(slotGroup.date).toISOString().split("T")[0];
+    
             // If the date matches, add the unlocked timeSlot back to the available slots
             if (slotGroupDate === unlockedDate) {
+              // Check if the timeSlot is already in availableSlots to avoid duplicates
+              const updatedSlots = slotGroup.availableSlots.includes(unlockedSlot.timeSlot)
+                ? slotGroup.availableSlots
+                : [...slotGroup.availableSlots, unlockedSlot.timeSlot];
+    
               return {
                 ...slotGroup,
-                availableSlots: [
-                  ...slotGroup.availableSlots,
-                  unlockedSlot.timeSlot,
-                ], // Add unlocked time slot
+                availableSlots: updatedSlots,
               };
             }
             return slotGroup;
           }),
         };
-        console.log("Updated Appointments after unlocking slot:", updatedAppointments);
-        // Directly update the appointments object in Redux
+    
         dispatch(updateAvailableSlots(updatedAppointments));
-
-        console.log(
-          "Updated Appointments after unlocking slot after setAvalable:",
-          updatedAppointments
-        );
       } else {
-        console.error(
-          "appointments is not structured as expected:",
-          appointments
-        );
+        console.error("appointments is not structured as expected:", appointments);
       }
-      // if(step >= 2)
       setStep(1); // Reset to slot selection step
-      // dispatch(fetchAppointmentSlots(doctorId)); // Fetch updated slots after slot is unlocked
     });
 
     // Listen for 'appointmentBooked' event to confirm booking
