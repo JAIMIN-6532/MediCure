@@ -12,7 +12,7 @@ import appointmentRouter from "./src/features/appointments/appointment.routes.js
 import feedbackRouter from "./src/features/feedback/feedback.routes.js";
 import errorHandler from "./src/errorhandler/errorHandler.js";
 // import { ApplicationError } from "./src/error-handler/Applicationerror.js";
-
+import path from "path";
 dotenv.config();
 
 const app = express();
