@@ -60,7 +60,7 @@ io.on("connection", (socket) => {
         );
         console.log("Unlocked Slot before emit:", unlockedSlot);
         io.emit("slotUnlocked", unlockedSlot);
-      }, 1 * 60 * 1000); // Unlock slot after 15 minutes
+      }, 15 * 60 * 1000); // Unlock slot after 15 minutes
     } catch (error) {
       console.error("Error locking slot:", error);
       socket.emit("error", "Error locking slot");
