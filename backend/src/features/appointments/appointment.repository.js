@@ -277,6 +277,18 @@ export default class AppointmentRepository {
         _id: lockedAppointment._id,
       });
 
+      const doctor = await DoctorModel.findByIdAndUpdate(
+        doctorId,
+        { $pull: { appointments: lockedAppointment._id } },
+        { new: true }
+      );
+
+      const patient = await PatientModel.findByIdAndUpdate(
+        patientId,
+        { $pull: { appointments: lockedAppointment._id } },
+        { new: true }
+      );
+
 
       return lockedAppointment; // Return the deleted appointment 
     } catch (error) {

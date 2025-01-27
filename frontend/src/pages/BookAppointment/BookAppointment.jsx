@@ -177,6 +177,7 @@ const BookAppointment = () => {
             return slotGroup;
           }),
         };
+        console.log("Updated Appointments after locking slot:", updatedAppointments);
         dispatch(updateAvailableSlots(updatedAppointments));
 
         console.log(updatedAppointments);
@@ -222,7 +223,7 @@ const BookAppointment = () => {
             return slotGroup;
           }),
         };
-
+        console.log("Updated Appointments after unlocking slot:", updatedAppointments);
         // Directly update the appointments object in Redux
         dispatch(updateAvailableSlots(updatedAppointments));
 

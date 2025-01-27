@@ -58,6 +58,7 @@ io.on("connection", (socket) => {
         const unlockedSlot = await appointmentController.unlockAppointment(
           slotData
         );
+        console.log("Unlocked Slot before emit:", unlockedSlot);
         io.emit("slotUnlocked", unlockedSlot);
       }, 1 * 60 * 1000); // Unlock slot after 15 minutes
     } catch (error) {
