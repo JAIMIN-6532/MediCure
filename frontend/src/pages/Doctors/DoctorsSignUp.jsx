@@ -324,6 +324,7 @@ const DoctorSignUp = () => {
 
   // Step 1 API call
   const uploadStep1Documents = async (doctorId, formData) => {
+    
     const formDataToSend = new FormData();
     formDataToSend.append("images", formData.profileImage);
     formDataToSend.append("id", formData.idProof);
@@ -390,9 +391,11 @@ const DoctorSignUp = () => {
 
   // Handle form submission for each step
   const handleStepSubmit = async () => {
+    console.log("inside hadlestepsubmit", did , formData);
     setLoading(true);
     try {
       if (step === 1) {
+        console.log("inside step 1",did, formData);
         await uploadStep1Documents(did, formData); // Step 1 API call
         setStep(2); // Move to Step 2
       } else if (step === 2) {
