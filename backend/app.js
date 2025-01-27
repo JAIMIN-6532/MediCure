@@ -13,10 +13,12 @@ import feedbackRouter from "./src/features/feedback/feedback.routes.js";
 import errorHandler from "./src/errorhandler/errorHandler.js";
 // import { ApplicationError } from "./src/error-handler/Applicationerror.js";
 import path from "path";
+import url from "url"; // import url module
 dotenv.config();
 
 const app = express();
-
+const __filename = url.fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 app.use(cookieParser());
 
 // app.use(
