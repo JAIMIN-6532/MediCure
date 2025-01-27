@@ -145,8 +145,8 @@ const BookAppointment = () => {
       //   dispatch(setAvailableSlots(updatedSlots));
       // }
 
-      console.log("lockedSlot", lockedSlot);
-      console.log("appointments", appointments);
+      // console.log("lockedSlot", lockedSlot);
+      console.log("appointments after locking SLots", appointments);
       // Sample lockedSlot with ISO 8601 date format
 
       // Sample appointments array with one object
@@ -228,7 +228,7 @@ const BookAppointment = () => {
         dispatch(updateAvailableSlots(updatedAppointments));
 
         console.log(
-          "Updated Appointments after unlocking slot:",
+          "Updated Appointments after unlocking slot after setAvalable:",
           updatedAppointments
         );
       } else {

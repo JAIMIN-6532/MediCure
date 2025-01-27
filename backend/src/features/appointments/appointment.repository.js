@@ -162,7 +162,7 @@ export default class AppointmentRepository {
   };
 
    lockAppointment = async (appointmentData, res) => {
-    console.log("Appointment Data:", appointmentData);
+    console.log("Appointment Data for LOck:", appointmentData);
     const { doctorId, patientId, date, timeSlot } = appointmentData;
   
     try {
@@ -231,6 +231,7 @@ export default class AppointmentRepository {
   
       // Save the locked appointment
       const savedAppointment = await lockedAppointment.save();
+      console.log("Saved Locked Appointment:", savedAppointment);
       return savedAppointment;
     } catch (error) {
       console.error(error);
@@ -240,6 +241,7 @@ export default class AppointmentRepository {
 
   unlockAppointment = async (appointmentData) => {
     const { doctorId, patientId, date, timeSlot } = appointmentData;
+    console.log("Appointment Data for Unlock:", appointmentData);
     try {
       let parsedDate;
       if (typeof date === "string") {
