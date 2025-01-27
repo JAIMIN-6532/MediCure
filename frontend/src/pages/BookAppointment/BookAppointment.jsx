@@ -237,7 +237,7 @@ const BookAppointment = () => {
           appointments
         );
       }
-      if(step >= 2)
+      // if(step >= 2)
       setStep(1); // Reset to slot selection step
       // dispatch(fetchAppointmentSlots(doctorId)); // Fetch updated slots after slot is unlocked
     });
