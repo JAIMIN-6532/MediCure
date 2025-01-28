@@ -87,6 +87,7 @@ const BookAppointment = () => {
       transports: ["websocket", "polling"],
     });
     // return () => {
+      
     //   socket.disconnect();
     // };
   }, []);
