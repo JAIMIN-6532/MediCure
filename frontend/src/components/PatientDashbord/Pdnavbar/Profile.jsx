@@ -3,6 +3,11 @@ import gsap from "gsap";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
+const patient = {
+    name: "John Doe",
+    number: "1234567890",
+}
+
 export default function Profile() {
   const dispatch = useDispatch();
 
@@ -42,7 +47,7 @@ export default function Profile() {
         <div className="absolute bottom-2 right-2 w-4 h-4 bg-green-400 rounded-full border-2 border-white"></div>
       </div>
       <h2 className="mt-4 text-xl font-semibold">{patient?.name || "name"}</h2>
-      <p className="text-sm text-gray-500">{patient?.specialization || "number"}</p>
+      <p className="text-sm text-gray-500">{patient?.number || "number"}</p>
       <div className="mt-4 flex items-center gap-2">
         <span className="px-3 py-1 bg-blue-50 text-primary rounded-full text-sm">
           {/* {displayAvgRating()} */}
