@@ -3,12 +3,12 @@ import gsap from "gsap";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-const patient = {
-    name: "John Doe",
-    number: "1234567890",
-}
+// const patient = {
+//     name: "John Doe",
+//     number: "1234567890",
+// }
 
-export default function Profile() {
+export default function Profile({patient}) {
   const dispatch = useDispatch();
 
   useEffect(() => {

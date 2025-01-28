@@ -68,10 +68,10 @@ const getStatusColor = (status) => {
 };
 
 // Appointments Component
-export default function Appointments({ appointments, doctor }) {
+export default function Appointments({ patientappointments, patient }) {
   const [activeTab, setActiveTab] = useState("Today"); // State to handle active tab (Today, Upcoming, Past)
-  console.log(appointments);
-  appointments = appointmentshard;
+  console.log(patientappointments);
+//   appointments = appointmentshard;
   useEffect(() => {
     gsap.fromTo(
       ".appointments-title",
@@ -104,7 +104,7 @@ export default function Appointments({ appointments, doctor }) {
   
 
   // Filter appointments based on the selected tab
-  const filteredAppointments = appointments?.filter((appointment) => {
+  const filteredAppointments = patientappointments?.filter((appointment) => {
     const appointmentDate = new Date(appointment.date);
     const today = new Date();
 

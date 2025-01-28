@@ -74,10 +74,14 @@ export default class PatientRepository {
 
   async getAppointmentsByPatientId(patientId) {
     try {
-      return await patientModel
+      const patient =await patientModel
         .findById(patientId)
         .populate("appointments")
         .exec();
+        patient.appointments.sort((a, b) => {
+          return new Date(a.date) - new Date(b.date);
+        });
+        return patient.appointments;
     } catch (err) {
       console.log(err);
       throw new ApplicationError("Something went wrong with database", 500);

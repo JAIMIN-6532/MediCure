@@ -4,14 +4,29 @@ import Profile from '../../components/PatientDashbord/Pdnavbar/Profile';
 import Appointments from '../../components/PatientDashbord/PdTabs/Appointments';
 import { useState, useEffect } from 'react';
 import { gsap } from 'gsap';
-
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { fetchPatientById } from '../../reduxToolkit/reducers/PatientReducer.js';
+import { fetchAppointmentsByPatientId } from '../../reduxToolkit/reducers/PatientReducer.js';
 const PatientDashbord = () => {
 const [activeNav, setActiveNav] = useState('Dashboard');
+const patientId= useParams();
+console.log(patientId);
+const dispatch = useDispatch();
+
+const {patientappointments,fetchPatientAppointmentStatus,selectedpatient,fetchPatientByIdStaus} = useSelector((state) => state.patients);
+
+useEffect(()=>{
+  dispatch(fetchPatientById(patientId));
+  dispatch(fetchAppointmentsByPatientId(patientId));
+
+},[dispatch,patientId])
   const renderContent = () => {
       switch (activeNav) {
         case 'My-Appointments':
           // return <Appointments appointments={appointments} doctor={doctor} />;
-          return <Appointments />;
+          return <Appointments patientappointments={patientappointments} patient={selectedpatient} />;
         default:
           return (
             <div className="flex items-center justify-center h-full">
@@ -47,7 +62,7 @@ const [activeNav, setActiveNav] = useState('Dashboard');
       <div className="flex min-h-screen bg-gray-50 pt-[80px] p-4">
         {/* Sidebar */}
         <div className="sidebar w-80 bg-white p-6 shadow-lg">
-          <Profile />
+          <Profile patient={selectedpatient} />
           <Navigation activeNav={activeNav} setActiveNav={setActiveNav} />
         </div>
   

@@ -18,6 +18,7 @@ patientRouter.post('/logout',(req,res,next)=>{
 });
 
 patientRouter.get('/getpatient/:id',(req,res,next)=>{
+    console.log("inside get patient by id route",req.params.id);
     patientController.getPatientById(req,res,next)
 });
 

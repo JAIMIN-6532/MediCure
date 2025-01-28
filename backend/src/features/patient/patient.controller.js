@@ -170,7 +170,7 @@ export default class PatientController {
       if (appointments === null) {
         return res.status(404).json({ message: "Appointments not found" });
       }
-      return res.status(200).json(appointments.appointments);
+      return res.status(200).json(appointments);
     } catch (error) {
       console.error(error);
       return res.status(500).json({ message: "Error getting appointments" });

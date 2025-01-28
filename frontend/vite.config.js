@@ -8,7 +8,7 @@ export default defineConfig({
     proxy: {
       // Proxy WebSocket and API requests to the backend
       "/socket.io": {
-        target: "https://medicure-go5v.onrender.com", // Backend URL
+        target: "https://medicure-go5v.onrender.com", // Backend URL https://medicure-go5v.onrender.com
         ws: true, // Enable WebSocket support
       },
       // "/api": {
