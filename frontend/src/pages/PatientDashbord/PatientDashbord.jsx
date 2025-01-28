@@ -2,6 +2,9 @@ import React from 'react'
 import Navigation from '../../components/PatientDashbord/Pdnavbar/Navigation';
 import Profile from '../../components/PatientDashbord/Pdnavbar/Profile';
 import Appointments from '../../components/PatientDashbord/PdTabs/Appointments';
+import { useState, useEffect } from 'react';
+import { gsap } from 'gsap';
+
 const PatientDashbord = () => {
 const [activeNav, setActiveNav] = useState('Dashboard');
   const renderContent = () => {

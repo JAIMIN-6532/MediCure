@@ -53,6 +53,7 @@ const appointmentshard = [
 import { useState, useEffect } from "react";
 import { gsap } from "gsap";
 
+
 // Helper function to get status colors
 const getStatusColor = (status) => {
   const colors = {
