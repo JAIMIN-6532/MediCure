@@ -309,7 +309,7 @@ const BookAppointment = () => {
   }, [dispatch, doctorId, appointments]);
 
   const handleBookingConfirm = async (formData) => {
-    if (formData.serviceType === "Online") {
+    if (formData.paymentMethod === "Online") {
       try {
         const response = await axios.post(
           "https://medicure-go5v.onrender.com/api/payment/create-order",
