@@ -52,7 +52,7 @@ export default class PaymentRepository {
       }
       const paymentDetails = req.body.payload.payment.entity;
       PaymentModel.status = paymentDetails.status;
-      const savedpayment = await payment.save();
+      const savedpayment = await PaymentModel.save();
       // if(req.body.event === "payment.failed"){}
       // if(req.body.event === "payment.captured"){
       // }

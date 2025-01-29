@@ -142,7 +142,7 @@ const BookAppointment = () => {
     // Listen for 'slotLocked' event to update slots
     socket.on("slotLocked", (lockedSlot) => {
       console.log("Slot locked successfully: ", lockedSlot);
-      localStorage.setItem("lockedslotid", lockedSlot._id);
+      // localStorage.setItem("lockedslotid", lockedSlot._id);
       // Update available slots after slot is locked
       // Dispatch an action to update available slots
       //  dispatch(updateAvailableSlots(lockedSlot));
@@ -252,9 +252,9 @@ const BookAppointment = () => {
     // });
     socket.on("slotUnlocked", (unlockedSlot) => {
       console.log("Slot unlocked successfully: ", unlockedSlot);
-      if(localStorage.getItem("lockedslotid")){
-        localStorage.removeItem("lockedslotid");
-      }
+      // if(localStorage.getItem("lockedslotid")){
+      //   localStorage.removeItem("lockedslotid");
+      // }
       const unlockedDate = new Date(unlockedSlot.date)
         .toISOString()
         .split("T")[0];
@@ -335,7 +335,7 @@ const BookAppointment = () => {
             order_id: order.orderId,
             handler: async function (response) {
               console.log(response);
-              const orderId = response.data.orderId;
+              const orderId = response.razorpay_order_id;
               const isPaymentCaptured = await axios.post(
                 "https://medicure-go5v.onrender.com/api/payment/verify",{
                   orderId,
