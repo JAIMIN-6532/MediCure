@@ -51,8 +51,11 @@ export default class PaymentRepository {
         return res.status(400).json({ message: "Invalid Webhook Signature" });
       }
       const paymentDetails = req.body.payload.payment.entity;
-      PaymentModel.status = paymentDetails.status;
-      const savedpayment = await PaymentModel.save();
+      const payment = await PaymentModel.findOne({
+        orderId: paymentDetails.order_id,
+      });
+      payment.status = paymentDetails.status;
+      const savedpayment = await payment.save();
       // if(req.body.event === "payment.failed"){}
       // if(req.body.event === "payment.captured"){
       // }
