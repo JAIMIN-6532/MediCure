@@ -11,8 +11,8 @@ paymentRouter.post("/webhook", (req, res, next) => {
     paymentController.validateWebhook(req, res, next);
   });
 
-paymentRouter.get("/verify", (req, res, next) => {
-    
+paymentRouter.post("/verify", (req, res, next) => {
+
     paymentController.verifyPayment(req, res, next);
 });
 
