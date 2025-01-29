@@ -11,11 +11,11 @@ import doctorRouter from "./src/features/doctor/doctor.routes.js";
 import appointmentRouter from "./src/features/appointments/appointment.routes.js";
 import feedbackRouter from "./src/features/feedback/feedback.routes.js";
 import errorHandler from "./src/errorhandler/errorHandler.js";
+import paymentRouter from "./src/features/payment/payment.routes.js";
 // import { ApplicationError } from "./src/error-handler/Applicationerror.js";
 import path from "path";
 import url from "url"; // import url module
 dotenv.config();
-
 const app = express();
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,7 +34,7 @@ app.use(cookieParser());
 app.use((req, res, next) => {
     res.header(
       'Access-Control-Allow-Origin',
-      'https://medicure-frontend-qii7.onrender.com'
+      'http://localhost:5173'
     );
     res.header('Access-Control-Allow-Headers', '*');
     res.header('Access-Control-Allow-Methods', '*');
@@ -58,12 +58,13 @@ app.use("/api/otp",OtpRouter);
 
 app.use("/api/appointment",appointmentRouter);
 app.use("/api/feedback",feedbackRouter);
+app.use("/api/payment",paymentRouter);
 // app.use("/api/service/",serviceRouter);
-app.use(express.static(path.join(__dirname, "build")));
+// app.use(express.static(path.join(__dirname, "build")));
 // Send React's index.html for all other routes (client-side routing)
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
-});
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "build", "index.html"));
+// });
 app.use(errorHandler);
 
 app.use((req, res) => {

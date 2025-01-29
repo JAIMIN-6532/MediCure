@@ -15,7 +15,8 @@ import { lockSlot } from "../../reduxToolkit/reducers/BookingReducer.js";
 import io from "socket.io-client";
 import { ClipLoader } from "react-spinners";
 import { updateAvailableSlots } from "../../reduxToolkit/reducers/BookingReducer.js";
-
+import axios from "axios";
+import { set } from "mongoose";
 // import ScrollToTop from "../../components/ScrolltoTop.jsx";
 
 let socket;
@@ -83,11 +84,11 @@ const BookAppointment = () => {
 
   const [prevDoctorId, setPrevDoctorId] = useState(null);
   useEffect(() => {
-    socket = io.connect("https://medicure-go5v.onrender.com",{
+    socket = io.connect("http://localhost:3000", {
       transports: ["websocket", "polling"],
     });
     // return () => {
-      
+
     //   socket.disconnect();
     // };
   }, []);
@@ -142,6 +143,7 @@ const BookAppointment = () => {
     // Listen for 'slotLocked' event to update slots
     socket.on("slotLocked", (lockedSlot) => {
       console.log("Slot locked successfully: ", lockedSlot);
+      localStorage.setItem("lockedslotid", lockedSlot._id);
       // Update available slots after slot is locked
       // Dispatch an action to update available slots
       //  dispatch(updateAvailableSlots(lockedSlot));
@@ -182,7 +184,10 @@ const BookAppointment = () => {
             return slotGroup;
           }),
         };
-        console.log("Updated Appointments after locking slot:", updatedAppointments);
+        console.log(
+          "Updated Appointments after locking slot:",
+          updatedAppointments
+        );
         dispatch(updateAvailableSlots(updatedAppointments));
 
         console.log(updatedAppointments);
@@ -248,21 +253,30 @@ const BookAppointment = () => {
     // });
     socket.on("slotUnlocked", (unlockedSlot) => {
       console.log("Slot unlocked successfully: ", unlockedSlot);
-      const unlockedDate = new Date(unlockedSlot.date).toISOString().split("T")[0];
-    
+      if(localStorage.getItem("lockedslotid")){
+        localStorage.removeItem("lockedslotid");
+      }
+      const unlockedDate = new Date(unlockedSlot.date)
+        .toISOString()
+        .split("T")[0];
+
       if (appointments && Array.isArray(appointments.availableSlots)) {
         const updatedAppointments = {
           ...appointments,
           availableSlots: appointments.availableSlots.map((slotGroup) => {
-            const slotGroupDate = new Date(slotGroup.date).toISOString().split("T")[0];
-    
+            const slotGroupDate = new Date(slotGroup.date)
+              .toISOString()
+              .split("T")[0];
+
             // If the date matches, add the unlocked timeSlot back to the available slots
             if (slotGroupDate === unlockedDate) {
               // Check if the timeSlot is already in availableSlots to avoid duplicates
-              const updatedSlots = slotGroup.availableSlots.includes(unlockedSlot.timeSlot)
+              const updatedSlots = slotGroup.availableSlots.includes(
+                unlockedSlot.timeSlot
+              )
                 ? slotGroup.availableSlots
                 : [...slotGroup.availableSlots, unlockedSlot.timeSlot];
-    
+
               return {
                 ...slotGroup,
                 availableSlots: updatedSlots,
@@ -271,10 +285,13 @@ const BookAppointment = () => {
             return slotGroup;
           }),
         };
-    
+
         dispatch(updateAvailableSlots(updatedAppointments));
       } else {
-        console.error("appointments is not structured as expected:", appointments);
+        console.error(
+          "appointments is not structured as expected:",
+          appointments
+        );
       }
       setStep(1); // Reset to slot selection step
     });
@@ -292,16 +309,81 @@ const BookAppointment = () => {
     };
   }, [dispatch, doctorId, appointments]);
 
-  const handleBookingConfirm = (formData) => {
-    dispatch(
-      bookAppointment({
-        doctorId: formData.doctorId,
-        patientId: formData.patientId,
-        date: formData.selectedDate,
-        timeSlot: formData.selectedSlot,
-        type: formData.serviceType,
-      })
-    );
+  const handleBookingConfirm = async (formData) => {
+    if (formData.serviceType === "Online") {
+      try {
+        const response = await axios.post(
+          "http://localhost:3000/api/payment/create-order",
+          {
+            doctor: formData.doctorId,
+            amount: selectedDoctor.consultationFee,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage?.getItem("token")}`,
+            },
+          }
+        );
+
+        const order = response.data;
+        if (order) {
+          const options = {
+            key: order.key,
+            amount: order.amount,
+            currency: "INR",
+            name: "Doctor Consultation",
+            description: "Consultation with Doctor",
+            order_id: order.orderId,
+            handler: async function (response) {
+              console.log(response);
+              const orderId = response.data.orderId;
+              const isPaymentCaptured = await axios.post(
+                "http://localhost:3000/api/payment/verify",{
+                  orderId,
+                }
+              )
+              console.log(isPaymentCaptured);
+              if(isPaymentCaptured.data.success){
+              dispatch(
+                bookAppointment({
+                  doctorId: formData.doctorId,
+                  patientId: formData.patientId,
+                  date: formData.selectedDate,
+                  timeSlot: formData.selectedSlot,
+                  type: formData.serviceType,
+                })
+              );
+            }else{
+              console.log("Payment not captured");
+              setStep(1);
+            }
+            },
+            prefill: {
+              name: formData.firstName,
+              email: formData.email,
+              contact: formData.phone,
+            },
+            notes: {
+              appointmenttype: formData.serviceType,
+            },
+          };
+          const rezorpayInstance = new window.Razorpay(options);
+          rezorpayInstance.open();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      dispatch(
+        bookAppointment({
+          doctorId: formData.doctorId,
+          patientId: formData.patientId,
+          date: formData.selectedDate,
+          timeSlot: formData.selectedSlot,
+          type: formData.serviceType,
+        })
+      );
+    }
 
     // socket.emit("bookAppointment", {
     //   doctorId: formData.doctorId,

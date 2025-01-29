@@ -35,7 +35,7 @@ export default function Profile() {
     if (avgRating) {
       return (
         <span className="px-3 py-1 bg-blue-50 text-primary rounded-full text-sm">
-          ⭐ {avgRating} / 5
+          ⭐ {avgRating.toFixed(2)} / 5
         </span>
       );
     }

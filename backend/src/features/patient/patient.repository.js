@@ -65,7 +65,7 @@ export default class PatientRepository {
   async getPatientById(patientId) {
     const ObjectId = new mongoose.Types.ObjectId(patientId);
     try {
-      return await patientModel.findById(ObjectId);
+      return await patientModel.findOne({ _id: ObjectId });
     } catch (err) {
       console.log(err);
       throw new ApplicationError("Something went wrong with database", 500);
@@ -74,18 +74,23 @@ export default class PatientRepository {
 
   async getAppointmentsByPatientId(patientId) {
     try {
-      const patient =await patientModel
+      const patient = await patientModel
         .findById(patientId)
-        .populate("appointments")
+        .populate({
+          path: "appointments", // Populate appointments
+          populate: {
+            path: "doctor", // Nested population for doctor inside each appointment
+            select: "name email profileImageUrl", // Select fields to populate for the doctor
+          },
+        })
         .exec();
-        patient.appointments.sort((a, b) => {
-          return new Date(a.date) - new Date(b.date);
-        });
-        return patient.appointments;
+      patient.appointments.sort((a, b) => {
+        return new Date(a.date) - new Date(b.date);
+      });
+      return patient.appointments;
     } catch (err) {
       console.log(err);
       throw new ApplicationError("Something went wrong with database", 500);
     }
   }
-
 }

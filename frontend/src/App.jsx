@@ -15,46 +15,48 @@ import DoctorDashbord from "./pages/DoctorDashbord/DoctorDashbord";
 import DoctorProfilePage from "./pages/Patient/DoctorProfilePage";
 import BookAppointment from "./pages/BookAppointment/BookAppointment";
 import PatientDashbord from "./pages/PatientDashbord/PatientDashbord";
+import PrivateRoutePatient from "./components/PrivateRoutePatient";
 // import ScrollToTop from "./components/ScrolltoTop";
 const App = () => {
   return (
     <>
       <div className="flex flex-col min-h-screen bg-white">
         <Navbar />
-  
+
         <div className="flex-grow">
-       
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/doctors" element={<DoctorsList />} />
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/dsignin" element={<DsignIn />} />
-          <Route path="/signup" element={<PatientSignUp />} />
-          <Route path="dsignup" element={<DsignUp />} />
-          <Route path="/doctor-signup" element={<DoctorSignUp />} />
-          {/* <Route path="/d-dashbord/:doctorId" element={<DoctorDashbord />} /> */}
-          {/* Protected Routes */}
-          <Route
-            path="/d-dashbord/:doctorId"
-            element={<PrivateRoute element={<DoctorDashbord />} />}
-          />
-          <Route
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/doctors" element={<DoctorsList />} />
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/dsignin" element={<DsignIn />} />
+            <Route path="/signup" element={<PatientSignUp />} />
+            <Route path="dsignup" element={<DsignUp />} />
+            <Route path="/doctor-signup" element={<DoctorSignUp />} />
+            {/* <Route path="/d-dashbord/:doctorId" element={<DoctorDashbord />} /> */}
+            {/* Protected Routes */}
+            <Route
+              path="/d-dashbord/:doctorId"
+              element={<PrivateRoute element={<DoctorDashbord />} />}
+            />
+            {/* <Route
             path="/p-dashbord/:patientId"
             element={<PatientDashbord />}
-          />
-
-          <Route
-            path="/doctorprofilepatientview/:doctorId"
-            element={<DoctorProfilePage />}
-          />
-          <Route
-            path="/bookappointment/:doctorId"
-            element={<BookAppointment />}
-          />
-          {/* <Route path="/about" element={<About />} />
+          /> */}
+            <Route
+              path="/p-dashbord/:patientId"
+              element={<PrivateRoutePatient element={<PatientDashbord />} />}
+            />
+            <Route
+              path="/doctorprofilepatientview/:doctorId"
+              element={<DoctorProfilePage />}
+            />
+            <Route
+              path="/bookappointment/:doctorId"
+              element={<BookAppointment />}
+            />
+            {/* <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} /> */}
-        </Routes>
-      
+          </Routes>
         </div>
         <Footer />
       </div>
