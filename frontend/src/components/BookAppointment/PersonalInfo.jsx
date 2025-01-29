@@ -41,11 +41,19 @@ export default function PersonalInfo({
     }));
   };
 
+
   // Handle the service type selection change
   const handleServiceTypeChange = (type) => {
     setFormData((prevData) => ({
       ...prevData,
       serviceType: type,
+    }));
+  };
+
+  const handlePaymentMethodChange = (method) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      paymentMethod: method,
     }));
   };
 
@@ -184,9 +192,9 @@ export default function PersonalInfo({
               <input
                 type="radio"
                 name="paymentMethod"
-                value="offline"
-                checked={formData.paymentMethod === "offline"}
-                onChange={handleChange}
+                value="Offline"
+                checked={formData.paymentMethod === "Offline"}
+                onChange={() => handlePaymentMethodChange("Offline")}
                 className="w-4 h-4 text-primary"
               />
               <div className="flex items-center gap-3 flex-1">
@@ -207,9 +215,9 @@ export default function PersonalInfo({
               <input
                 type="radio"
                 name="paymentMethod"
-                value="online"
-                checked={formData.paymentMethod === "online"}
-                onChange={handleChange}
+                value="Online"
+                checked={formData.paymentMethod === "Online"}
+                onChange={() => handlePaymentMethodChange("Online")}
                 className="w-4 h-4 text-primary"
               />
               <div className="flex items-center gap-3 flex-1">
