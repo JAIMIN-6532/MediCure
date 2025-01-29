@@ -22,7 +22,7 @@ export default class PaymentController {
             const response = await this.paymentRepository.validateWebhook(req,res,next);
             // if(response){
 
-               res.status(200).json({message: "Webhook validated successfully"});
+             return  res.status(200).json({message: "Webhook validated successfully"});
             // }
         }catch(error){
             console.log(error);
@@ -35,9 +35,9 @@ export default class PaymentController {
             const response = await this.paymentRepository.verifyPayment(req,res,next);
             console.log("response", response);
             if(response){
-                res.status(200).json({success:true});
+               return res.status(200).json({success:true});
             }
-            res.status(400).json({success:false});
+            return res.status(400).json({success:false});
         }catch(error){
             console.log(error);
             next(error);
