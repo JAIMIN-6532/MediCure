@@ -14,7 +14,7 @@ export default function PersonalInfo({
   onSubmit,
   selectedSlot,
   selectedDate,
-  doctor
+  doctor,
 }) {
   console.log("patient from Personal Info", patient);
   const { doctorId } = useParams();
@@ -30,7 +30,7 @@ export default function PersonalInfo({
     paymentMethod: "Offline",
     acceptTerms: false,
     type: "",
-    serviceType: doctor?.serviceType === "Both" ? null : doctor?.serviceType // Initialize serviceType based on doctor's serviceType
+    serviceType: doctor?.serviceType === "Both" ? null : doctor?.serviceType, // Initialize serviceType based on doctor's serviceType
   });
 
   const handleChange = (e) => {
@@ -40,7 +40,6 @@ export default function PersonalInfo({
       [name]: type === "checkbox" ? checked : value,
     }));
   };
-
 
   // Handle the service type selection change
   const handleServiceTypeChange = (type) => {
@@ -133,7 +132,7 @@ export default function PersonalInfo({
                 required
               />
             </div>
-            
+
             {/* Service Type Selection if Doctor Offers Both */}
             {doctor?.serviceType === "Both" && (
               <div className="mb-6">
@@ -168,18 +167,17 @@ export default function PersonalInfo({
             )}
 
             {/* If the doctor offers only one type, automatically select it */}
-            
           </div>
           {doctor?.serviceType === "Online" && (
-              <div className="text-center text-red-900 text-2xl">
-                Only Online appointments available.
-              </div>
-            )}
-            {doctor?.serviceType === "Offline" && !formData.serviceType && (
-              <div className="text-center text-gray-500 mb-6">
-                Only Offline appointments available.
-              </div>
-            )}
+            <div className="text-center text-red-900 text-2xl">
+              Only Online appointments available.
+            </div>
+          )}
+          {doctor?.serviceType === "Offline" && !formData.serviceType && (
+            <div className="text-center text-gray-500 mb-6">
+              Only Offline appointments available.
+            </div>
+          )}
         </div>
 
         <div className="mt-10">
@@ -188,28 +186,31 @@ export default function PersonalInfo({
             Payment Method
           </h3>
           <div className="space-y-4">
-            <label className="flex items-center gap-3 p-6 rounded-lg border border-gray-200 cursor-pointer transition-all hover:border-primary hover:bg-gray-50">
-              <input
-                type="radio"
-                name="paymentMethod"
-                value="Offline"
-                checked={formData.paymentMethod === "Offline"}
-                onChange={() => handlePaymentMethodChange("Offline")}
-                className="w-4 h-4 text-primary"
-              />
-              <div className="flex items-center gap-3 flex-1">
-                <FaMoneyBill className="text-green-500 text-2xl" />
-                <div>
-                  <span className="text-gray-700 font-medium block">
-                    Pay at Clinic
-                  </span>
-                  <span className="text-sm text-gray-500">
-                    Pay with cash or card at the clinic
-                  </span>
+            {formData?.serviceType === "Offline" && (
+              <label className="flex items-center gap-3 p-6 rounded-lg border border-gray-200 cursor-pointer transition-all hover:border-primary hover:bg-gray-50">
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="Offline"
+                  checked={formData.paymentMethod === "Offline"}
+                  onChange={() => handlePaymentMethodChange("Offline")}
+                  className="w-4 h-4 text-primary"
+                />
+                <div className="flex items-center gap-3 flex-1">
+                  <FaMoneyBill className="text-green-500 text-2xl" />
+
+                  <div>
+                    <span className="text-gray-700 font-medium block">
+                      Pay at Clinic
+                    </span>
+                    <span className="text-sm text-gray-500">
+                      Pay with cash or card at the clinic
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <span className="text-green-500 font-semibold">Available</span>
-            </label>
+                <span className="text-green-500 font-semibold">Available</span>
+              </label>
+            )}
 
             <label className="flex items-center gap-3 p-6 rounded-lg border border-gray-200 cursor-pointer transition-all hover:border-primary hover:bg-gray-50">
               <input

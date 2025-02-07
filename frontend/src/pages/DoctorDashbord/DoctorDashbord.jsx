@@ -20,7 +20,14 @@ const DoctorDashbord= ()=>{
   const {doctorId} = useParams();
 
   const {appointments,fetchAppointmentsStatus} = useSelector((state) => state.doctors);
-  const {doctor,fetchDoctorByIdStatus} = useSelector((state) => state.doctors);
+  // const {doctor,fetchDoctorByIdStatus} = useSelector((state) => state.doctors);
+  const doctor = useSelector((state) => state.doctors.selectedDoctor);
+  // const [filteredAppointments, setFilteredAppointments] = useState([]);
+
+  // const handleFilteredAppointments = (appointments) => {
+  //   setFilteredAppointments(appointments);
+  // };
+
 
   useEffect(() => {
     // Fetch appointments on component mount
@@ -29,6 +36,35 @@ const DoctorDashbord= ()=>{
 
   }, [dispatch,doctorId]);
 
+  console.log("Appointments: ", appointments);
+  console.log("Doctor: ", doctor);
+  const convertTo24HourFormat = (timeSlot) => {
+    const [time, period] = timeSlot.split(" ");
+    let [hours, minutes] = time.split(":").map(Number);
+
+    if (period === "PM" && hours !== 12) hours += 12; // Convert PM hours to 24-hour format
+    if (period === "AM" && hours === 12) hours = 0; // Convert 12 AM to 00:00
+
+    return hours * 100 + minutes; // Convert to HHMM format for easier comparison
+  };
+
+  // Get today's date in IST (UTC + 5:30)
+  const today = new Date();
+  const istDate = new Date(today.getTime() + (5 * 60 + 30) * 60 * 1000); // Convert to IST
+
+  const year = istDate.getUTCFullYear();
+  const month = String(istDate.getUTCMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+  const day = String(istDate.getUTCDate()).padStart(2, "0");
+
+  const todayIST = `${year}-${month}-${day}`;
+
+  // Filter appointments based on today's date
+   const filteredAppointments = appointments?.filter((appointment) => {
+    // Extract the date part (YYYY-MM-DD) from appointment.date
+    const appointmentDate = appointment.date.split("T")[0]; // Get the date part only (YYYY-MM-DD)
+    return appointmentDate === todayIST; // Only include appointments for today
+  });
+  
   
 
   const renderContent = () => {
@@ -36,16 +72,16 @@ const DoctorDashbord= ()=>{
       case 'Dashboard':
         return (
           <>
-            <Stats />
-            <AppointmentList  />
+            <Stats filteredAppointments={filteredAppointments} doctor={doctor} appointments={appointments}/>
+            <AppointmentList filteredAppointments={filteredAppointments}  appointments={appointments} />
           </>
         );
       case 'Appointments':
         return <Appointments appointments={appointments} doctor={doctor} />;
       case 'Available Timings':
-        return <AvailableTimings />;
-      case 'My Patients':
-        return <Patients />;
+        return <AvailableTimings doctor={doctor}/>;
+      case 'Reviews':
+        return <Patients doctor={doctor}/>;
       default:
         return (
           <div className="flex items-center justify-center h-full">

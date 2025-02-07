@@ -56,7 +56,8 @@ import { gsap } from "gsap";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { X } from 'lucide-react';
+import { X } from "lucide-react";
+import moment from "moment-timezone";
 // Helper function to get status colors
 const getStatusColor = (status) => {
   const colors = {
@@ -99,14 +100,14 @@ export default function Appointments({ patientappointments, patient }) {
   };
 
   const handleReviewClick = (appointment) => {
-    console.log("Appointment selected:", appointment);  // Log to ensure appointment is passed correctly
+    console.log("Appointment selected:", appointment); // Log to ensure appointment is passed correctly
     setSelectedAppointment(appointment);
     setShowModal(true);
   };
-  
+
   const onClose = () => {
     console.log("Closing modal"); // Log to confirm closing the modal
-    setShowModal(false);  // This should close the modal
+    setShowModal(false); // This should close the modal
   };
 
   const handleRatingChange = (newRating) => {
@@ -152,8 +153,6 @@ export default function Appointments({ patientappointments, patient }) {
     return appointmentDateObj < today; // Returns true if the appointment is in the past
   };
 
-  // Helper function to convert time to 24-hour format for sorting
-  // Helper function to convert time to 24-hour format for sorting
   const convertTo24HourFormat = (timeSlot) => {
     const [time, period] = timeSlot.split(" ");
     let [hours, minutes] = time.split(":").map(Number);
@@ -166,32 +165,51 @@ export default function Appointments({ patientappointments, patient }) {
 
   // Filter appointments based on the selected tab
   const filteredAppointments = patientappointments?.filter((appointment) => {
-    const appointmentDate = new Date(appointment.date);
+    // Extract the date part (YYYY-MM-DD) from appointment.date
+    const appointmentDate = appointment.date.split("T")[0]; // Get the date part only (YYYY-MM-DD)
+
+    // Get today's date in UTC (no time zone adjustment yet)
     const today = new Date();
 
+      const appointmentTime = convertTo24HourFormat(appointment.timeSlot); // Convert time slot to 24-hour format
+      // Get current IST date and time
+      const istDate = moment().tz("Asia/Kolkata");
+      const todayIST = istDate.format("YYYY-MM-DD"); // Get today's date in IST (YYYY-MM-DD)
+      const currentTime = istDate.hours() * 100 + istDate.minutes(); // Convert current time to 24-hour format
+    
+    // // Format the IST date as YYYY-MM-DD
+    // const year = istDate.getUTCFullYear();
+    // const month = String(istDate.getUTCMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+    // const day = String(istDate.getUTCDate()).padStart(2, "0");
+
+    // const todayIST = `${year}-${month}-${day}`;
+
+    console.log("Today IST: ", todayIST); // Debugging the IST date
+    // Handle the different tabs
     if (activeTab === "Today") {
-      return appointmentDate.toDateString() === today.toDateString();
+      return appointmentDate === todayIST && appointmentTime >= currentTime ; // Compare only the date part (date in IST)
     } else if (activeTab === "Upcoming") {
-      return appointmentDate > today;
+      return appointmentDate > todayIST; // Upcoming appointments (future dates)
     } else if (activeTab === "Past") {
-      return appointmentDate < today;
+      return appointmentDate <= todayIST && appointmentTime < currentTime ; // Past appointments (past dates)
     }
+
     return true;
   });
 
-  // Sort today's appointments by time slot
+  // Sort today's appointments by date and time slot
   const sortedAppointments = filteredAppointments.sort((a, b) => {
-    // Sort by Date
-    const dateA = new Date(a.date).getTime();
-    const dateB = new Date(b.date).getTime();
+    const dateA = a.date.split("T")[0];
+    const dateB = b.date.split("T")[0];
 
     if (dateA !== dateB) {
-      return dateA - dateB; // Date comparison
+      return dateA.localeCompare(dateB); // Sort by date
     }
 
-    const timeA = convertTo24HourFormat(a.timeSlot);
-    const timeB = convertTo24HourFormat(b.timeSlot);
-    return timeA - timeB;
+    const timeA = convertTo24HourFormat(a.timeSlot); // Convert time slot to 24-hour format
+    const timeB = convertTo24HourFormat(b.timeSlot); // Convert time slot to 24-hour format
+
+    return timeA - timeB; // Sort by time (ascending)
   });
 
   // Function to get the class for the active tab button
@@ -265,7 +283,11 @@ export default function Appointments({ patientappointments, patient }) {
                     <span>{appointment?.time}</span>
                     <span>
                       {appointment?.date &&
-                        new Date(appointment?.date).toLocaleDateString("en-CA")}
+                        appointment.date
+                        .split("T")[0] 
+                        .split("-") 
+                        .reverse()
+                        .join("-")}{" "}
                     </span>
                     <span>{appointment?.timeSlot}</span>
                     <span>•</span>

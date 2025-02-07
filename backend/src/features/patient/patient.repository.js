@@ -84,9 +84,41 @@ export default class PatientRepository {
           },
         })
         .exec();
-      patient.appointments.sort((a, b) => {
-        return new Date(a.date) - new Date(b.date);
-      });
+        patient.appointments.sort((a, b) => {
+          // First, compare by the date (ISO format)
+          const dateA = new Date(a.date);
+          const dateB = new Date(b.date);
+        
+          // If dates are different, return the comparison of the dates
+          if (dateA !== dateB) {
+            return dateA - dateB;
+          }
+        
+          // If the dates are the same, compare by time
+          const timeA = convertTo24HourFormat(a.timeSlot);
+          const timeB = convertTo24HourFormat(b.timeSlot);
+        
+          return timeA - timeB;
+        });
+        
+        // Helper function to convert 12-hour AM/PM time format to 24-hour format for sorting
+        function convertTo24HourFormat(timeSlot) {
+          const [time, modifier] = timeSlot.split(" ");
+          let [hours, minutes] = time.split(":").map(Number);
+        
+          if (modifier === "PM" && hours !== 12) {
+            hours += 12;
+          } else if (modifier === "AM" && hours === 12) {
+            hours = 0;
+          }
+        
+          return hours * 60 + minutes;  // Return time in minutes for easy comparison
+        }
+        
+      patient.appointments = patient.appointments.filter(
+        (appointment) => appointment.status === "Confirmed"
+      );
+      // console.log("Patient APpointment",patient.appointments);
       return patient.appointments;
     } catch (err) {
       console.log(err);

@@ -31,6 +31,7 @@ export default class FeedbackController {
 
     getAvgRatingByDoctorId = async(req, res,next)=> {
         try {
+            console.log(req.params);
             const avgRating = await this.feedbackRepository.getAvgRatingByDoctorId(req.params.did);
             if(avgRating === null){
                 return res.status(404).json({ message: "Feedback not found" });

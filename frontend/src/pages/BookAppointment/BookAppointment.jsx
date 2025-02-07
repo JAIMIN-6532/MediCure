@@ -60,6 +60,7 @@ const mockInvoice = {
 const BookAppointment = () => {
   const { doctorId } = useParams();
   const dispatch = useDispatch();
+  const [form, setForm] = useState({});
 
   const { selectedDoctor, fetchDoctorByIdStatus, error } = useSelector(
     (state) => state.doctors
@@ -83,7 +84,7 @@ const BookAppointment = () => {
 
   const [prevDoctorId, setPrevDoctorId] = useState(null);
   useEffect(() => {
-    socket = io.connect("https://medicure-go5v.onrender.com", {
+    socket = io.connect("http://localhost:3000", {
       transports: ["websocket", "polling"],
     });
     // return () => {
@@ -255,17 +256,20 @@ const BookAppointment = () => {
       // if(localStorage.getItem("lockedslotid")){
       //   localStorage.removeItem("lockedslotid");
       // }
+      // if(unlockedSlot === "No locked appointment found"){
+      //   return;
+      // }
       const unlockedDate = new Date(unlockedSlot.date)
-        .toISOString()
-        .split("T")[0];
+        ?.toISOString()
+        ?.split("T")[0];
 
       if (appointments && Array.isArray(appointments.availableSlots)) {
         const updatedAppointments = {
           ...appointments,
           availableSlots: appointments.availableSlots.map((slotGroup) => {
             const slotGroupDate = new Date(slotGroup.date)
-              .toISOString()
-              .split("T")[0];
+              ?.toISOString()
+              ?.split("T")[0];
 
             // If the date matches, add the unlocked timeSlot back to the available slots
             if (slotGroupDate === unlockedDate) {
@@ -292,6 +296,7 @@ const BookAppointment = () => {
           appointments
         );
       }
+      // if(user._id === unlockedSlot.patient )
       setStep(1); // Reset to slot selection step
     });
 
@@ -309,10 +314,11 @@ const BookAppointment = () => {
   }, [dispatch, doctorId, appointments]);
 
   const handleBookingConfirm = async (formData) => {
+    setForm(formData);
     if (formData.paymentMethod === "Online") {
       try {
         const response = await axios.post(
-          "https://medicure-go5v.onrender.com/api/payment/create-order",
+          "http://localhost:3000/api/payment/create-order",
           {
             doctor: formData.doctorId,
             amount: selectedDoctor.consultationFee,
@@ -337,7 +343,7 @@ const BookAppointment = () => {
               console.log(response);
               const orderId = response.razorpay_order_id;
               const isPaymentCaptured = await axios.post(
-                "https://medicure-go5v.onrender.com/api/payment/verify",{
+                "http://localhost:3000/api/payment/verify",{
                   orderId,
                 }
               )
@@ -347,6 +353,9 @@ const BookAppointment = () => {
                 bookAppointment({
                   doctorId: formData.doctorId,
                   patientId: formData.patientId,
+                  paymentId: orderId,
+                  paymentType : "Online",
+                  appointmentFees: selectedDoctor.consultationFee,
                   date: formData.selectedDate,
                   timeSlot: formData.selectedSlot,
                   type: formData.serviceType,
@@ -377,6 +386,8 @@ const BookAppointment = () => {
         bookAppointment({
           doctorId: formData.doctorId,
           patientId: formData.patientId,
+          appointmentFees: selectedDoctor.consultationFee,
+          paymentType: "Offline",
           date: formData.selectedDate,
           timeSlot: formData.selectedSlot,
           type: formData.serviceType,
@@ -426,7 +437,7 @@ const BookAppointment = () => {
   return (
     <div className="min-h-screen bg-gray-50 md:p-8">
       <div className="max-w-6xl mx-auto pt-16">
-        <DoctorInfo doctor={selectedDoctor} />
+       <DoctorInfo doctor={selectedDoctor} />
 
         {step === 1 && (
           <SlotSelection
@@ -458,6 +469,7 @@ const BookAppointment = () => {
               time: selectedSlot,
               city: selectedDoctor.city || selectedDoctor.clinicaddress,
             }}
+            
             patient={user}
             onViewInvoice={handleViewInvoice}
           />
@@ -468,6 +480,7 @@ const BookAppointment = () => {
             invoice={mockInvoice}
             doctor={selectedDoctor}
             patient={user}
+            form = {form}
           />
         )}
       </div>

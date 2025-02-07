@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import DoctorModel from "./doctor.model.js";
 import PatientModel from "../patient/patient.model.js";
 import AppointmentModel from "../appointments/appointments.model.js";
+// import PaymentModel from "../payment/payment.model.js";
 export default class DoctorRepository {
   signUp = async ({ name, email, password }) => {
     try {
@@ -146,6 +147,7 @@ export default class DoctorRepository {
 
   getDoctorById = async (doctorId) => {
     const objectId = new mongoose.Types.ObjectId(doctorId);
+    
     // console.log("objectid ",objectId);
     try {
       const doctor = await DoctorModel.findById(doctorId)

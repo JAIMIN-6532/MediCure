@@ -11,9 +11,41 @@ import SpecialtyCard from "./SpecialityCard";
 import homedoctor from "../../assets/homedoctor.png";
 import { useNavigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
-
+import { useEffect } from "react";
+import { gsap } from "gsap";
 const Home = () => {
   const navigate = useNavigate();
+      // Animation for individual letters of the "Make an Appointment" text
+      useEffect(() => {
+        const textWrapper = document.querySelector(".appointment-btn");
+        const letters = textWrapper?.textContent.split("") || [];
+    
+        textWrapper.innerHTML = letters
+          .map(letter => `<span class="letter">${letter}</span>`)
+          .join(""); // Wrap each letter with <span>
+    
+        // GSAP animation to animate each letter
+        gsap.fromTo(
+          ".appointment-btn .letter", // Targeting each individual letter inside the span
+          {
+            opacity: 0,
+            y: 20, // Start 20px lower
+          },
+          {
+            opacity: 1,
+            y: 0, // Move back to normal position
+            duration: 1.1, // Shorter duration for faster animation
+            ease: "easeOut",
+            stagger: 0.05, // A little stagger to make the animation feel more fluid
+            repeat: -1, // Repeat infinitely
+            yoyo: true, // Reverse the animation after it completes
+          }
+        );
+        
+      }, []);
+    
+
+
   // const handleFindDoctorsClick = () => {
   //   navigate("/doctors");
   // };
@@ -27,7 +59,7 @@ const Home = () => {
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
                 <span className="text-primary-blue">Search Doctors,</span>
                 <br />
-                <span className="text-dark-blue">Make an Appointment</span>
+                <span className="text-dark-blue appointment-btn">Make an Appointment</span>
               </h1>
               <p className="text-gray-600 mb-8 max-w-lg">
                 Discover the best doctors, clinics, and hospitals in your area.

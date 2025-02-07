@@ -1,9 +1,21 @@
-import { FaFileInvoice, FaUser, FaCreditCard } from 'react-icons/fa';
-import { jsPDF } from 'jspdf';
-import 'jspdf-autotable';
+import { FaFileInvoice, FaUser, FaCreditCard } from "react-icons/fa";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
-export default function Invoice({ invoice, doctor, patient }) {
+export default function Invoice({ invoice, doctor, patient, form }) {
   // Function to generate PDF
+  const formatDateInIST = (dateString) => {
+    const date = new Date(dateString);
+    const options = {
+      timeZone: "Asia/Kolkata",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    };
+
+    return new Intl.DateTimeFormat("en-GB", options).format(date);
+  };
+
   const generatePDF = () => {
     const doc = new jsPDF();
 
@@ -22,35 +34,43 @@ export default function Invoice({ invoice, doctor, patient }) {
     // Add Patient Details
     doc.text(`Invoice To: ${patient.name}`, 20, 50);
     doc.text(`${patient.email}`, 20, 55);
-    doc.text(`${patient.phone || 'N/A'}`, 20, 60);
+    doc.text(`${patient.phone || "N/A"}`, 20, 60);
 
     // Add Payment Details
-    doc.text(`Payment Method: ${invoice.payment.method || 'N/A'}`, 150, 50);
-    doc.text(`Card Number: ${invoice.payment.cardNumber || 'N/A'}`, 150, 55);
-    doc.text(`Bank: ${invoice.payment.bank || 'N/A'}`, 150, 60);
+    doc.text(`Payment Method: ${form.paymentMethod || "N/A"}`, 150, 50);
+    doc.text(
+      `Appointment-Date: ${formatDateInIST(form.selectedDate) || "N/A"}`,
+      150,
+      55
+    );
+    doc.text(`TimeSlot: ${form.selectedSlot || "N/A"}`, 150, 60);
+    // doc.text(`Card Number: ${invoice.payment.cardNumber || 'N/A'}`, 150, 55);
+    // doc.text(`Bank: ${invoice.payment.bank || 'N/A'}`, 150, 60);
 
     // Add Table with items
-    const tableData = invoice.items.map(item => [
-      item.description,
-      item.quantity,
-      `$${item.vat}`,
-      `$${item.total}`
-    ]);
-    
+    // Prepare Table Data
+    const tableData = [
+      [form.serviceType, `${"1"}`, `${"0"}`, `${doctor?.consultationFee}`],
+    ];
+
+    // Add Table with items
     doc.autoTable({
-      head: [['Description', 'Quantity', 'VAT', 'Total']],
+      head: [["Description", "Quantity", "VAT", "Total"]],
       body: tableData,
-      startY: 70,
-      theme: 'striped',
+      startY: 70, // This is where the table will start
+      theme: "striped",
     });
 
-    // Add Subtotal, Discount and Total
-    doc.text(`Subtotal: $${invoice.subtotal}`, 150, doc.lastAutoTable.finalY + 10);
-    doc.text(`Discount: -${invoice.discount}%`, 150, doc.lastAutoTable.finalY + 15);
-    doc.text(`Total Amount: $${invoice.total}`, 150, doc.lastAutoTable.finalY + 25);
+    // Get the Y position after the table has been rendered
+    const tableEndY = doc.lastAutoTable.finalY;
+
+    // Add Subtotal, Discount, and Total
+    doc.text(`Subtotal:  ${doctor.consultationFee}`, 150, tableEndY + 10);
+    // doc.text(`Discount: - 0`, 150, tableEndY + 15); // Replace with actual discount if any
+    doc.text(`Total Amount:  ${doctor.consultationFee}`, 150, tableEndY + 25);
 
     // Save the generated PDF
-    doc.save('invoice.pdf');
+    doc.save("invoice.pdf");
   };
 
   return (
@@ -72,8 +92,12 @@ export default function Invoice({ invoice, doctor, patient }) {
         </div>
         <div className="text-right">
           <div className="bg-gray-50 p-4 rounded-lg">
-            <p className="text-gray-600 mb-1">Order: <span className="font-semibold">#{invoice.orderId}</span></p>
-            <p className="text-gray-600">Issued: <span className="font-semibold">{invoice.issueDate}</span></p>
+            <p className="text-gray-600 mb-1">
+              Order: <span className="font-semibold">#{invoice.orderId}</span>
+            </p>
+            <p className="text-gray-600">
+              Issued: <span className="font-semibold">{invoice.issueDate}</span>
+            </p>
           </div>
         </div>
       </div>
@@ -92,7 +116,7 @@ export default function Invoice({ invoice, doctor, patient }) {
             </div>
           </div>
         </div>
-        <div className="flex-1">
+        {/* <div className="flex-1">
           <div className="bg-gray-50 p-6 rounded-lg">
             <p className="font-semibold mb-3 text-primary flex items-center gap-2">
               <FaCreditCard />
@@ -104,7 +128,7 @@ export default function Invoice({ invoice, doctor, patient }) {
               <p>{invoice.payment.bank || 'N/A'}</p>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div className="bg-gray-50 rounded-lg overflow-hidden mb-8">
@@ -118,14 +142,14 @@ export default function Invoice({ invoice, doctor, patient }) {
             </tr>
           </thead>
           <tbody>
-            {invoice.items.map((item, index) => (
-              <tr key={index} className="border-t border-gray-200">
-                <td className="py-4 px-6">{item.description}</td>
-                <td className="text-center py-4 px-6">{item.quantity}</td>
-                <td className="text-center py-4 px-6">${item.vat}</td>
-                <td className="text-right py-4 px-6 font-medium">${item.total}</td>
-              </tr>
-            ))}
+            <tr className="border-t border-gray-200">
+              <td className="py-4 px-6">{form.serviceType}</td>
+              <td className="text-center py-4 px-6">{"1"}</td>
+              <td className="text-center py-4 px-6">₹{"0"}</td>
+              <td className="text-right py-4 px-6 font-medium">
+                ₹{doctor?.consultationFee}
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -134,15 +158,17 @@ export default function Invoice({ invoice, doctor, patient }) {
         <div className="w-80 space-y-3">
           <div className="flex justify-between text-gray-600">
             <span>Subtotal:</span>
-            <span className="font-semibold">${invoice.subtotal}</span>
+            <span className="font-semibold">₹{doctor?.consultationFee}</span>
           </div>
           <div className="flex justify-between text-gray-600">
-            <span>Discount:</span>
-            <span className="font-semibold text-green-500">-{invoice.discount}%</span>
+            {/* <span>Discount:</span> */}
+            {/* <span className="font-semibold text-green-500">-{invoice.discount}%</span> */}
           </div>
           <div className="flex justify-between pt-3 border-t border-gray-200">
             <span className="text-lg font-semibold">Total Amount:</span>
-            <span className="text-2xl font-bold text-primary">${invoice.total}</span>
+            <span className="text-2xl font-bold text-primary">
+              ₹{doctor?.consultationFee}
+            </span>
           </div>
         </div>
       </div>

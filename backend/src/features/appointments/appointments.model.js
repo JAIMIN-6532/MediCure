@@ -10,6 +10,15 @@ const appointmentSchema = new mongoose.Schema({
     ref: 'Doctor', 
     required: true 
   },
+  appointmentFees: { type: Number, },
+  paymentId:{
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Payment', 
+  },
+  paymentType: { 
+    type: String, 
+    enum: ['Online', 'Offline']
+  },
   date: { type: Date, required: true },
   timeSlot: { type: String, required: true }, // e.g., "10:00 AM - 10:30 AM"
   type: { 

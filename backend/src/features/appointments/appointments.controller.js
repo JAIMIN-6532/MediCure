@@ -545,4 +545,17 @@ export default class AppointmentController {
       return res.status(500).json({ message: "Error unlocking appointment" });
     }
   }
+
+
+  getTotalRevenueByDoctorId = async (doctorId) => {
+    try {
+      const totalRevenue = await this.appointmentRepository.getTotalRevenueByDoctorId(doctorId);
+      return totalRevenue;
+    } catch (error) {
+      console.error(error);
+      return error;
+      // return res.status(500).json({ message: "Error getting total revenue" });
+    }
+  }
+
 }

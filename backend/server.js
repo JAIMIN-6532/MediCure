@@ -15,7 +15,7 @@ const httpServer = createServer(server);
 
 const io = new Server(httpServer, {
   cors: {
-    origin: "https://medicure-frontend-qii7.onrender.com", //https://medicure-frontend-qii7.onrender.com
+    origin: "http://localhost:5173", //https://medicure-frontend-qii7.onrender.com
     methods: ["GET", "POST"],
     transports: ["websocket", "polling"],
   },
@@ -60,7 +60,7 @@ io.on("connection", (socket) => {
         );
         console.log("Unlocked Slot before emit:", unlockedSlot);
         io.emit("slotUnlocked", unlockedSlot);
-      }, 15 * 60 * 1000); // Unlock slot after 15 minutes
+      }, 1 * 60 * 1000); // Unlock slot after 15 minutes
     } catch (error) {
       console.error("Error locking slot:", error);
       socket.emit("error", "Error locking slot");

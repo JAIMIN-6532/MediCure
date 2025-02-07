@@ -1,5 +1,9 @@
 import React, { useEffect,useState } from "react";
 import { gsap } from "gsap";
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchDoctorAvgRatingByDoctorId } from "../../../reduxToolkit/reducers/DoctorReducer.js";
+import patient from "../../../assets/patient.png";
 const patients = [
   {
     id: 1,
@@ -43,70 +47,61 @@ const patients = [
   }
 ];
 
-export default function Patients() {
+export default function Patients({doctor}) {
+
+  const dispatch = useDispatch();
   useEffect(() => {
     gsap.fromTo('.patients-title', { opacity: 0 }, { opacity: 1, duration: 0.5 });
     gsap.fromTo('.patients-list', { x: -50, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, stagger: 0.1 });
   }, []);
-
+  const  avgRating  = useSelector((state) => state.doctors.avgRating);
+  const {doctorId} = useParams();
+    useEffect(() => {
+      if (doctorId) {
+        
+        dispatch(fetchDoctorAvgRatingByDoctorId(doctorId)); 
+      }
+    }, [doctorId, dispatch]);
+  
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between flex-col rounded-xl shadow-lg p-6">
+        
         <div>
-          <h1 className="patients-title text-2xl font-bold">My Patients</h1>
-          <p className="text-gray-500 mt-1">View and manage your patient records</p>
+          <h1 className="patients-title text-2xl font-bold">My Reviews</h1>
         </div>
-        <div className="flex gap-4">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search patients..."
-              className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 w-64"
-            />
-            <span className="absolute left-3 top-2.5 text-gray-400">🔍</span>
-          </div>
-          <button className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2">
-            <span>Add Patient</span>
-            <span className="text-xl">+</span>
-          </button>
-        </div>
+        <div>
+        <h1 className="patients-title text-2xl text-yellow-500 font-bold">⭐ {avgRating?.toFixed(2)}/5</h1>
       </div>
-
-      <div className="bg-white rounded-xl shadow-sm p-6">
-        <div className="patients-list space-y-4">
-          {patients.map((patient, index) => (
+      </div>
+      
+      <div className="bg-white rounded-xl shadow-sm p-6 overflow-y-auto" style={{ maxHeight: "70vh" }}>
+        <div className="patients-list space-y-4 ">
+          {doctor?.feedbacks.map((fb, index) => (
             <div
-              key={patient.id}
-              className="flex items-center justify-between p-4 hover:bg-gray-50 rounded-lg transition-colors border border-gray-100"
+              key={doctor.id}
+              className="flex items-center justify-between p-4 hover:bg-gray-50 rounded-lg transition-colors border border-gray-100 relative"
             >
               <div className="flex items-center gap-4">
                 <img
-                  src={patient.image}
-                  alt={patient.name}
+                  src={patient}
+                  alt={fb.patient.name}
                   className="w-12 h-12 rounded-full object-cover"
                 />
+               
                 <div>
-                  <h4 className="font-medium">{patient.name}</h4>
-                  <div className="flex items-center gap-2 text-sm text-gray-500">
-                    <span>Age: {patient.age}</span>
-                    <span>•</span>
-                    <span>{patient.condition}</span>
-                    <span>•</span>
-                    <span>Last visit: {patient.lastVisit}</span>
+                  <div className="flex items-center gap-2">
+                  <h4 className="font-medium">{fb.patient.name}  <span className="text-green-500">⭐ {fb.rating.toFixed(2)}/5.00</span></h4>
+                  </div>
+                  <div className="flex items-center  gap-2 text-md text-gray-600">
+                    <div>
+                      <span >{fb.comment}</span>
+                    </div>
                   </div>
                 </div>
+                <h4 className="absolute top-2 right-4">{fb?.createdAt.split("T")[0]}</h4>
               </div>
-              <div className="flex gap-2">
-                <button className="px-4 py-2 bg-blue-50 text-primary rounded-lg hover:bg-blue-100 transition-colors">
-                  View Profile
-                </button>
-                <button className="px-4 py-2 bg-gray-50 text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
-                  Medical History
-                </button>
-                <button className="px-4 py-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors">
-                  Schedule Visit
-                </button>
-              </div>
+              
             </div>
           ))}
         </div>

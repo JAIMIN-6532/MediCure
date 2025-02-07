@@ -1,6 +1,7 @@
 import AppointmentModel from "./appointments.model.js";
 import DoctorModel from "../doctor/doctor.model.js";
 import PatientModel from "../patient/patient.model.js";
+import PaymentModel from "../payment/payment.model.js";
 import mongoose from "mongoose";
 export default class AppointmentRepository {
   // bookAppointment = async (appointmentData, res, next) => {
@@ -54,22 +55,23 @@ export default class AppointmentRepository {
   //   }
   // };
   bookAppointment = async (appointmentData, res, next) => {
-    
     try {
-      const { doctorId, patientId, date, timeSlot, type } = appointmentData;
+      const { doctorId, patientId, paymentId, appointmentFees ,paymentType,date, timeSlot, type } =
+        appointmentData;
       console.log("Appointment Data:", appointmentData);
       console.log("Appointment Data:", {
         doctorId,
         patientId,
+        paymentId,
         date: new Date(date).toISOString(),
         timeSlot,
         type,
       });
-  
+
       let parsedDate;
       if (typeof date === "string") {
         parsedDate = new Date(date);
-  
+
         // Validate the date
         if (isNaN(parsedDate)) {
           return "Invalid date format provided";
@@ -79,7 +81,7 @@ export default class AppointmentRepository {
       } else {
         return "Date is required and must be a valid date";
       }
-  
+
       // Check if the appointment slot is already taken
       const existingAppointment = await AppointmentModel.findOne({
         doctor: doctorId,
@@ -88,38 +90,79 @@ export default class AppointmentRepository {
         status: { $eq: "Confirmed" },
       });
 
-      console.log("locked before",{doctorId,
+      console.log("locked before", {
+        doctorId,
         patientId,
         date: parsedDate,
         timeSlot,
-        type,});
-  
+        type,
+      });
+
       // Check if there's a locked appointment
       const lockedAppointment = await AppointmentModel.findOne({
         doctor: doctorId,
-        patient: patientId,    //compare date also remaining
+        patient: patientId, //compare date also remaining
         timeSlot,
         status: { $eq: "Locked" },
       });
-  
+
       console.log("Locked Appointment:", lockedAppointment);
-  
+
       if (existingAppointment) {
         return "Appointment slot is already taken"; // Slot is already confirmed
       }
-  
+
       if (lockedAppointment) {
+        if(paymentType === "Offline"){
+
+        }
+        // const { _id } = await PaymentModel.findOne({ orderId: paymentId });
+        const payment = await PaymentModel.findOne({ orderId: paymentId });
+        console.log("Payment:", payment);
+        // console.log("Payment ID:", _id);
+        let updatedAppointment;
         // Update the locked appointment to confirmed status
-        const updatedAppointment = await AppointmentModel.updateOne(
+        if(paymentType === "Online"){
+         updatedAppointment = await AppointmentModel.updateOne(
           { _id: lockedAppointment._id },
-          { $set: { status: "Confirmed" } }
+          {
+            $set: {
+              status: "Confirmed",
+              paymentId: payment._id ,
+              paymentType,
+              appointmentFees,
+            },
+          }
         );
-  
-        console.log("Updated Locked Appointment to Confirmed:", updatedAppointment);
-  
+      }else{
+         updatedAppointment = await AppointmentModel.updateOne(
+          { _id: lockedAppointment._id },
+          {
+            $set: {
+              status: "Confirmed",
+              // paymentId: payment._id ,
+              appointmentFees,
+              paymentType,
+            },
+          }
+        );
+      }
+
+        const doctor = await DoctorModel.findByIdAndUpdate(
+          doctorId,
+          { $inc: { totalRevenue: appointmentFees } },  // Increment the totalRevenue
+          { new: true }  // Return the updated document
+        );
+        
+
+        console.log(
+          "Updated Locked Appointment to Confirmed:",
+          updatedAppointment
+        );
+
         return updatedAppointment; // Return the updated appointment
       }
-  
+
       // If no locked appointment, create a new appointment
       const newAppointment = await AppointmentModel.create({
         doctor: doctorId,
@@ -128,29 +171,28 @@ export default class AppointmentRepository {
         timeSlot,
         type,
       });
-  
+
       // Update doctor's and patient's appointments array
       await DoctorModel.findByIdAndUpdate(
         doctorId,
         { $push: { appointments: newAppointment._id } },
         { new: true }
       );
-  
+
       await PatientModel.findByIdAndUpdate(
         patientId,
         { $push: { appointments: newAppointment._id } },
         { new: true }
       );
-  
+
       console.log("New Appointment Booked:", newAppointment);
-  
+
       return newAppointment; // Return the newly created appointment
     } catch (error) {
       console.error("Error booking appointment:", error);
       return "Error booking appointment: " + error.message;
     }
   };
-  
 
   getAppointmentByAId = async (id) => {
     try {
@@ -161,17 +203,17 @@ export default class AppointmentRepository {
     }
   };
 
-   lockAppointment = async (appointmentData, res) => {
+  lockAppointment = async (appointmentData, res) => {
     console.log("Appointment Data for LOck:", appointmentData);
     const { doctorId, patientId, date, timeSlot } = appointmentData;
-  
+
     try {
       let parsedDate;
-  
+
       // Handle the date input
       if (typeof date === "string") {
         parsedDate = new Date(date); // This will create a Date object in UTC if the date is valid string
-  
+
         // Validate the date
         if (isNaN(parsedDate)) {
           return res
@@ -185,14 +227,14 @@ export default class AppointmentRepository {
           .status(400)
           .json({ message: "Date is required and must be a valid date" });
       }
-  
+
       // Convert the parsedDate to IST (UTC + 5:30 hours)
       const istOffset = 5.5 * 60 * 60 * 1000; // 5 hours 30 minutes in milliseconds
       const istDate = new Date(parsedDate.getTime() + istOffset); // Adjust date to IST time
-  
+
       // The `istDate` is now in IST (Indian Standard Time)
       console.log("Converted IST Date:", istDate); // This will be in IST time
-  
+
       // Check if there's already a locked appointment for this time slot in IST
       const existingLockedAppointment = await AppointmentModel.findOne({
         doctor: doctorId,
@@ -200,12 +242,12 @@ export default class AppointmentRepository {
         timeSlot,
         status: "Locked",
       });
-  
+
       if (existingLockedAppointment) {
         // Return existing locked appointment if already locked
         return res.status(200).json(existingLockedAppointment);
       }
-  
+
       // Create a new locked appointment (storing in IST)
       const lockedAppointment = await AppointmentModel.create({
         doctor: doctorId,
@@ -215,20 +257,20 @@ export default class AppointmentRepository {
         type: "Offline",
         status: "Locked",
       });
-  
+
       // Update doctor's and patient's appointments arrays with the locked appointment
       await DoctorModel.findByIdAndUpdate(
         doctorId,
         { $push: { appointments: lockedAppointment._id } },
         { new: true }
       );
-  
+
       await PatientModel.findByIdAndUpdate(
         patientId,
         { $push: { appointments: lockedAppointment._id } },
         { new: true }
       );
-  
+
       // Save the locked appointment
       const savedAppointment = await lockedAppointment.save();
       console.log("Saved Locked Appointment:", savedAppointment);
@@ -259,7 +301,7 @@ export default class AppointmentRepository {
 
       const istOffset = 5.5 * 60 * 60 * 1000; // 5 hours 30 minutes in milliseconds
       const istDate = new Date(parsedDate.getTime() + istOffset); // Adjust date to IST time
-  
+
       console.log("Converted IST Date:", istDate); // This will be in IST time
 
       const lockedAppointment = await AppointmentModel.findOne({
@@ -291,8 +333,25 @@ export default class AppointmentRepository {
         { new: true }
       );
 
+      return lockedAppointment; // Return the deleted appointment
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-      return lockedAppointment; // Return the deleted appointment 
+  getTotalRevenueByDoctorId = async (doctorId) => {
+    try {
+      const appointments = await AppointmentModel.find({
+        doctor: doctorId,
+        status: "Confirmed",
+      });
+
+      let totalRevenue = 0;
+      appointments.forEach((appointment) => {
+        totalRevenue += appointment.appointmentFees;
+      });
+
+      return totalRevenue;
     } catch (error) {
       console.error(error);
     }

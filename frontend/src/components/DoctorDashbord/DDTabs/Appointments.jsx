@@ -1,55 +1,4 @@
-const appointments = [
-  {
-    id: 1,
-    name: "Emma Thompson",
-    time: "09:00 AM",
-    type: "General Checkup",
-    image:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&auto=format&fit=crop&q=80",
-    status: "Upcoming",
-    duration: "30 mins",
-  },
-  {
-    id: 2,
-    name: "Michael Chen",
-    time: "10:30 AM",
-    type: "Follow-up",
-    image:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
-    status: "In Progress",
-    duration: "45 mins",
-  },
-  {
-    id: 3,
-    name: "Sofia Rodriguez",
-    time: "02:00 PM",
-    type: "Consultation",
-    image:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
-    status: "Upcoming",
-    duration: "1 hour",
-  },
-  {
-    id: 4,
-    name: "James Wilson",
-    time: "03:30 PM",
-    type: "Emergency",
-    image:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
-    status: "Pending",
-    duration: "1 hour",
-  },
-  {
-    id: 5,
-    name: "Olivia Brown",
-    time: "04:45 PM",
-    type: "Regular Checkup",
-    image:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80",
-    status: "Confirmed",
-    duration: "30 mins",
-  },
-];
+import moment from "moment-timezone";
 import { useState, useEffect } from "react";
 import { gsap } from "gsap";
 
@@ -88,48 +37,74 @@ export default function Appointments({ appointments, doctor }) {
     setActiveTab(tab);
   };
 
-  // Helper function to convert time to 24-hour format for sorting
-  // Helper function to convert time to 24-hour format for sorting
   const convertTo24HourFormat = (timeSlot) => {
     const [time, period] = timeSlot.split(" ");
     let [hours, minutes] = time.split(":").map(Number);
-  
+
     if (period === "PM" && hours !== 12) hours += 12; // Convert PM hours to 24-hour format
     if (period === "AM" && hours === 12) hours = 0; // Convert 12 AM to 00:00
-  
+
     return hours * 100 + minutes; // Convert to HHMM format for easier comparison
   };
-  
 
   // Filter appointments based on the selected tab
   const filteredAppointments = appointments?.filter((appointment) => {
-    const appointmentDate = new Date(appointment.date);
-    const today = new Date();
+    // Extract the date part (YYYY-MM-DD) from appointment.date
+    const appointmentDate = appointment.date.split("T")[0]; // Get the date part only (YYYY-MM-DD)
 
-    if (activeTab === "Today") {
-      return appointmentDate.toDateString() === today.toDateString();
-    } else if (activeTab === "Upcoming") {
-      return appointmentDate > today;
-    } else if (activeTab === "Past") {
-      return appointmentDate < today;
+    // Get today's date in UTC (no time zone adjustment yet)
+    // Get current IST date and time
+     const istDate = moment().tz("Asia/Kolkata");
+     const todayIST = istDate.format("YYYY-MM-DD"); // Get today's date in IST (YYYY-MM-DD)
+     const currentTime = istDate.hours() * 100 + istDate.minutes(); // Convert current time to 24-hour format
+   
+     console.log("Today IST: ", todayIST);
+     console.log("Current Time in IST: ", currentTime);
+    // Convert appointment time slot to 24-hour format
+    const appointmentTime = convertTo24HourFormat(appointment.timeSlot);
+
+    // Create a new appointment object to avoid mutating the original object
+    const appointmentCopy = { ...appointment };
+
+    // Automatically mark appointments as "Past" if the time has passed
+    if (
+      appointmentDate < todayIST ||
+      (appointmentDate === todayIST && appointmentTime < currentTime)
+    ) {
+      appointmentCopy.status = "Past"; // Modify the copy, not the original
     }
+    console.log("Today IST: ", todayIST); // Debugging the IST date
+    // Handle the different tabs
+    if (activeTab === "Today") {
+      return appointmentDate === todayIST && appointmentTime >= currentTime; // Compare only the date part (date in IST)
+    } else if (activeTab === "Upcoming") {
+      return appointmentDate > todayIST; // Upcoming appointments (future dates)
+    } else if (activeTab === "Past") {
+      return (
+        appointmentDate < todayIST ||
+        (appointmentDate === todayIST && appointmentTime < currentTime)
+      ); // Past appointments (before current time)
+    }
+
     return true;
   });
 
-  // Sort today's appointments by time slot
+  // Sort today's appointments by date and time slot
   const sortedAppointments = filteredAppointments.sort((a, b) => {
-     // Sort by Date
-     const dateA = new Date(a.date).getTime();
-    const dateB = new Date(b.date).getTime();
+    const dateA = a.date.split("T")[0];
+    const dateB = b.date.split("T")[0];
 
     if (dateA !== dateB) {
-      return dateA - dateB; // Date comparison
+      return dateA.localeCompare(dateB); // Sort by date
     }
- 
-    const timeA = convertTo24HourFormat(a.timeSlot);
-    const timeB = convertTo24HourFormat(b.timeSlot);
-    return timeA - timeB;
+
+    const timeA = convertTo24HourFormat(a.timeSlot); // Convert time slot to 24-hour format
+    const timeB = convertTo24HourFormat(b.timeSlot); // Convert time slot to 24-hour format
+
+    return timeA - timeB; // Sort by time (ascending)
   });
+
+  console.log(sortedAppointments);
 
   // Function to get the class for the active tab button
   const getButtonClass = (tab) => {
@@ -149,10 +124,6 @@ export default function Appointments({ appointments, doctor }) {
             Manage your appointments and schedule
           </p>
         </div>
-        <button className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2">
-          <span>New Appointment</span>
-          <span className="text-xl">+</span>
-        </button>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm p-6">
@@ -176,10 +147,6 @@ export default function Appointments({ appointments, doctor }) {
             Past
           </button>
           <div className="flex-1"></div>
-          <input
-            type="date"
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
-          />
         </div>
 
         <div className="appointments-list space-y-4">
@@ -208,7 +175,11 @@ export default function Appointments({ appointments, doctor }) {
                     <span>{appointment.time}</span>
                     <span>
                       {appointment.date &&
-                        new Date(appointment.date).toLocaleDateString("en-CA")}
+                        appointment.date
+                          .split("T")[0]
+                          .split("-")
+                          .reverse()
+                          .join("-")}{" "}
                     </span>
                     <span>{appointment.timeSlot}</span>
                     <span>•</span>
@@ -226,10 +197,11 @@ export default function Appointments({ appointments, doctor }) {
                 >
                   {appointment.status}
                 </span>
-                <button className="px-4 py-2 bg-blue-50 text-primary rounded-lg hover:bg-blue-100 transition-colors">
-                  Start Session
-                </button>
-                
+                {activeTab === "Today" && appointment.status !== "Completed"  && (
+                  <button className="px-4 py-2 bg-blue-50 text-primary rounded-lg hover:bg-blue-100 transition-colors">
+                    Start Session
+                  </button>
+                )}
               </div>
             </div>
           ))}
@@ -238,4 +210,3 @@ export default function Appointments({ appointments, doctor }) {
     </div>
   );
 }
-

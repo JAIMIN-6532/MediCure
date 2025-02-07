@@ -41,9 +41,11 @@ export default class FeedbackRepository {
   };
 
   getAvgRatingByDoctorId = async (did) => {
+    console.log("did",did);
     try {
+      const doctorId = new mongoose.Types.ObjectId(did);
       const avgRating = await FeedbackModel.aggregate([
-        { $match: { doctor:new mongoose.Types.ObjectId(did) } },
+        { $match: { doctor:doctorId} },
         {
           $group: {
             _id: "$doctor",

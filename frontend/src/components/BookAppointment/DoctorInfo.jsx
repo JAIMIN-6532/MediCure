@@ -50,8 +50,8 @@ export default function DoctorInfo({ doctor }) {
         
         <div className="text-center bg-gray-50 p-6 rounded-xl">
           <p className="text-sm text-gray-600 mb-2 flex items-center justify-center gap-2">
-            <FaDollarSign className="text-primary" />
-            Consultation Fee
+            {/* <FaDollarSign className="text-primary" /> */}
+            <span className='text-primary text-2xl font-bold'>₹</span> Consultation Fee
           </p>
           <p className="text-3xl font-bold text-primary">{doctor.consultationFee}</p>
           <p className="text-sm text-gray-500 mt-2">per visit</p>

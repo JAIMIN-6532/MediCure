@@ -287,6 +287,7 @@ export default class DoctorController {
   getDoctorById = async (req, res, next) => {
     try {
       const doctorId = req.params.doctorId;
+      
       console.log("doctorId in inside con", doctorId);
       const doctor = await this.doctorRepository.getDoctorById(doctorId);
       console.log("doctor in controller", doctor);
@@ -358,4 +359,6 @@ export default class DoctorController {
       next(err);
     }
   };
+
+
 }

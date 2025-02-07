@@ -1,31 +1,32 @@
 import { useEffect } from 'react';
 import gsap from 'gsap';
+// import { filteredAppointments } from './AppointmentList';
 
 const stats = [
   { 
-    title: 'Total Patients', 
+    title: 'Total Appointments', 
     value: '978', 
     change: '+15% from last week',
     icon: '👥',
     color: 'bg-blue-50 text-blue-600'
   },
-  { 
-    title: 'Today\'s Patients', 
-    value: '80', 
-    change: '+15% from yesterday',
-    icon: '📅',
-    color: 'bg-purple-50 text-purple-600'
-  },
+  // { 
+  //   title: 'Today\'s Patients', 
+  //   value: '80', 
+  //   change: '+15% from yesterday',
+  //   icon: '📅',
+  //   color: 'bg-purple-50 text-purple-600'
+  // },
   { 
     title: 'Appointments Today', 
-    value: '50', 
+    value: "ta",
     change: '+20% from yesterday',
     icon: '🕒',
     color: 'bg-green-50 text-green-600'
   },
   { 
     title: 'Total Revenue', 
-    value: '$12,850', 
+    value: 'tr', 
     change: '+25% from last month',
     icon: '💰',
     color: 'bg-yellow-50 text-yellow-600'
@@ -37,7 +38,9 @@ const sanitizeTitle = (title) => {
   return title.replace(/[^a-zA-Z0-9-_]/g, '-'); // Replace spaces, apostrophes, etc., with hyphens
 };
 
-export default function Stats() {
+export default function Stats({ filteredAppointments ,doctor,appointments}) {
+  console.log(doctor);
+  console.log(appointments)
   useEffect(() => {
     // Animate each stat card when they appear
     stats.forEach((stat, index) => {
@@ -69,8 +72,8 @@ export default function Stats() {
             <div className="flex items-start justify-between">
               <div>
                 <h3 className="text-lg font-medium text-gray-600">{stat.title}</h3>
-                <p className="text-3xl font-bold text-gray-900 mt-2">{stat.value}</p>
-                <p className="text-sm text-green-500 mt-1">{stat.change}</p>
+                <p className="text-3xl font-bold text-gray-900 mt-2">{stat.value==="ta"?  filteredAppointments?.length : stat.value==="tr"?  "₹ "+doctor?.totalRevenue : appointments?.length}</p>
+                {/* <p className="text-sm text-green-500 mt-1">{stat.change}</p> */}
               </div>
               <span className={`text-2xl p-3 rounded-xl ${stat.color}`}>{stat.icon}</span>
             </div>

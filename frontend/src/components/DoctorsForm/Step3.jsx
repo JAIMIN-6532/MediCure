@@ -106,10 +106,10 @@
 // };
 
 // export default Step3;
-import React from 'react';
+import React from "react";
 const Step3 = ({ formData, handleChange }) => {
   // Days of the week
-  const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
   // Generate 30-minute interval time slots from 9:00 AM to 5:00 PM
   const timeSlots = [];
@@ -118,11 +118,12 @@ const Step3 = ({ formData, handleChange }) => {
 
   // Function to convert 24-hour time to 12-hour format with AM/PM
   const convertTo12HourFormat = (hour, minute) => {
-    const suffix = hour >= 12 ? 'PM' : 'AM';
+    const suffix = hour >= 12 ? "PM" : "AM";
     let hour12 = hour % 12;
     if (hour12 === 0) hour12 = 12; // Adjust 0 to 12 for 12:00 PM
-    const minuteStr = minute < 10 ? `0${minute}` : minute;
-    return `${hour12}:${minuteStr} ${suffix}`;
+    const hourStr = hour12 < 10 ? `0${hour12}` : `${hour12}`; // Ensure hour is 2 digits
+    const minuteStr = minute < 10 ? `0${minute}` : `${minute}`; // Ensure minute is 2 digits
+    return `${hourStr}:${minuteStr} ${suffix}`;
   };
 
   while (startTime < endTime) {
@@ -146,7 +147,7 @@ const Step3 = ({ formData, handleChange }) => {
     }
 
     // Update formData with new availability (just the days selected)
-    handleChange({ target: { name: 'availability', value: newAvailability } });
+    handleChange({ target: { name: "availability", value: newAvailability } });
   };
 
   // Handle slot selection for a given day
@@ -168,7 +169,7 @@ const Step3 = ({ formData, handleChange }) => {
     });
 
     // Update formData with the updated availability (days and slots)
-    handleChange({ target: { name: 'availability', value: newAvailability } });
+    handleChange({ target: { name: "availability", value: newAvailability } });
   };
 
   // Check if any days are selected
@@ -178,7 +179,9 @@ const Step3 = ({ formData, handleChange }) => {
     <div className="space-y-8">
       {/* Available Days Section */}
       <div>
-        <label className="block text-lg font-medium text-gray-700 mb-4">Available Days</label>
+        <label className="block text-lg font-medium text-gray-700 mb-4">
+          Available Days
+        </label>
         <div className="flex flex-wrap gap-4">
           {daysOfWeek.map((day) => (
             <button
@@ -187,8 +190,8 @@ const Step3 = ({ formData, handleChange }) => {
               onClick={() => handleDayClick(day)}
               className={`px-6 py-2 rounded-full text-sm font-medium ${
                 formData.availability.some((item) => item.day === day)
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-blue-500 hover:text-white'
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 text-gray-700 hover:bg-blue-500 hover:text-white"
               } transition-all duration-200`}
             >
               {day}
@@ -199,7 +202,9 @@ const Step3 = ({ formData, handleChange }) => {
 
       {/* Time Slots Section */}
       <div>
-        <label className="block text-lg font-medium text-gray-700 mb-4">Select Time Slots</label>
+        <label className="block text-lg font-medium text-gray-700 mb-4">
+          Select Time Slots
+        </label>
         <div className="grid grid-cols-4 gap-4">
           {timeSlots.map((slot) => (
             <button
@@ -208,10 +213,12 @@ const Step3 = ({ formData, handleChange }) => {
               onClick={() => handleSlotClick(slot)}
               disabled={!areDaysSelected} // Disable slots if no days are selected
               className={`px-6 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                formData.availability.some((item) => item.slots && item.slots.includes(slot))
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-blue-500 hover:text-white'
-              } ${!areDaysSelected ? 'opacity-50 cursor-not-allowed' : ''}`} // Style for disabled state
+                formData.availability.some(
+                  (item) => item.slots && item.slots.includes(slot)
+                )
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 text-gray-700 hover:bg-blue-500 hover:text-white"
+              } ${!areDaysSelected ? "opacity-50 cursor-not-allowed" : ""}`} // Style for disabled state
             >
               {slot}
             </button>
@@ -221,7 +228,9 @@ const Step3 = ({ formData, handleChange }) => {
 
       {/* Consultation Fee Section */}
       <div>
-        <label className="block text-lg font-medium text-gray-700 mb-4">Consultation Fee (₹)</label>
+        <label className="block text-lg font-medium text-gray-700 mb-4">
+          Consultation Fee (₹)
+        </label>
         <input
           type="number"
           name="consultationFee"
