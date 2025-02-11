@@ -13,8 +13,8 @@ export default async function zegoCloud(req, res, next) {
     const payload = "";
     const token = generateToken04(
       appId,
-      appointmentId,
-      serverSecret,
+      appointmentId.toString(),
+      serverSecret.toString(),
       effectiveTimeInSeconds,
       payload
     );
