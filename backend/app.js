@@ -33,7 +33,7 @@ app.use(cookieParser());
 // CORS policy configuration
 const allowedOrigins = [
   "https://medicure-frontend-qii7.onrender.com",
-  "https://medicure-frontend-qii7.onrender.com/api/doctor/generateToken", // Add more URLs here as needed
+  "https://medicure-go5v.onrender.com/api/doctor/generateToken", // Add more URLs here as needed
 ];
 app.use((req, res, next) => {
   const origin = req.headers.origin;

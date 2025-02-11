@@ -15,10 +15,10 @@
 
   const io = new Server(httpServer, {
     cors: {
-      // origin: ["https://medicure-frontend-qii7.onrender.com",
-      //           "https://medicure-frontend-qii7.onrender.com/api/doctor/generateToken"
-      // ] ,//https://medicure-frontend-qii7.onrender.com
-      origin: "*",
+      origin: ["https://medicure-frontend-qii7.onrender.com",
+                "https://medicure-go5v.onrender.com/api/doctor/generateToken"
+      ] ,//https://medicure-frontend-qii7.onrender.com
+      // origin: "*",
       methods: ["GET", "POST"],
       transports: ["websocket", "polling"],
     },
