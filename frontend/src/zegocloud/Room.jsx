@@ -63,11 +63,11 @@ const Room = () => {
     const userStream = await getUserMedia();
     if (!userStream) return;
 
-    const appID = Number(import.meta.env.VITE_APP_ID);
-    const serverSecret = import.meta.env.VITE_APP_SERVERSECRET;
+    const appID = Number(`${import.meta.env.VITE_APP_ID}`);
+    const serverSecret = `${import.meta.env.VITE_APP_SERVERSECRET}`;
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
       appID,
-      serverSecret,
+      serverSecret.toString(),
       appointmentId.toString(),
       Date.now().toString(),
       "test"
@@ -92,7 +92,8 @@ const Room = () => {
       onLeaveRoom: () => {
         console.log("User left the room");
         // setUserCount(userCount - 1);
-        navigate("/");
+        endSession();
+        // navigate("/");
       },
     });
 
