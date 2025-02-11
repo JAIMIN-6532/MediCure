@@ -15,9 +15,10 @@ const httpServer = createServer(server);
 
 const io = new Server(httpServer, {
   cors: {
-    origin: ["https://medicure-frontend-qii7.onrender.com",
-              "https://medicure-frontend-qii7.onrender.com/api/doctor/generateToken"
-    ] ,//https://medicure-frontend-qii7.onrender.com
+    // origin: ["https://medicure-frontend-qii7.onrender.com",
+    //           "https://medicure-frontend-qii7.onrender.com/api/doctor/generateToken"
+    // ] ,//https://medicure-frontend-qii7.onrender.com
+    origin: "*",
     methods: ["GET", "POST"],
     transports: ["websocket", "polling"],
   },
