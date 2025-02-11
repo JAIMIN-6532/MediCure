@@ -59,6 +59,7 @@ app.use("/api/otp",OtpRouter);
 app.use("/api/appointment",appointmentRouter);
 app.use("/api/feedback",feedbackRouter);
 app.use("/api/payment",paymentRouter);
+
 // app.use("/api/service/",serviceRouter);
 // app.use(express.static(path.join(__dirname, "build")));
 // Send React's index.html for all other routes (client-side routing)

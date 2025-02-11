@@ -4,6 +4,9 @@ import DoctorController from "./doctor.controller.js";
 import upload from "../../middleware/uploadfile.middleware.js";
 import jwtAuth from "../../middleware/jwt.middleware.js";
 import DoctorRepository from "./doctor.repository.js";
+import zegoCloud from "../../utils/zegoCloud.js";
+
+
 const doctorRepository = new DoctorRepository();
 const doctorRouter = express.Router();
 const doctorController = new DoctorController();
@@ -64,6 +67,10 @@ doctorRouter.post("/addavailability/:did", (req, res, next) => {
 
 doctorRouter.post("/deletedidappointment/:did", (req, res, next) => {
   doctorRepository.deleteDoctorAppointments(req.params.did, res, next);
+});
+
+doctorRouter.get("/generateToken", (req, res, next) => {
+  zegoCloud(req, res, next);
 });
 
 
