@@ -44,7 +44,7 @@ function aesEncrypt(plainText, key, iv) {
     return Uint8Array.from(out).buffer;
 }
 // Function to generate token using given parameters
-function generateToken04(appId, userId, secret, effectiveTimeInSeconds, payload) {
+export default function generateToken04(appId, userId, secret, effectiveTimeInSeconds, payload) {
     if (!appId || typeof appId !== 'number') { // Check if appID is valid
         throw {
             errorCode: ErrorCode.appIDInvalid,

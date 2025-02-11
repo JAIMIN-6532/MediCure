@@ -2,7 +2,7 @@
 // const { generateToken04 } = require('../server/zegoServerAssistant');
 
 
-import {generateToken04} from "./server/zegoServerAssistant.js";
+import generateToken04 from "./server/zegoServerAssistant.js";
 import dotenv from 'dotenv';
 dotenv.config();
 // Please modify appID to your own appId. appid is a number.
