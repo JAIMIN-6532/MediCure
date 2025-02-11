@@ -71,8 +71,8 @@ const Room = () => {
       appointmentId,
     })
     console.log("zego res:",res);
-
-    const kitToken = ZegoUIKitPrebuilt.generateKitTokenForProduction(appID,res.data.token,appointmentId.toString(),Date.now().toString(),"name");
+    const {token} = await res.json();
+    const kitToken = ZegoUIKitPrebuilt.generateKitTokenForProduction(appID,token,appointmentId.toString(),Date.now().toString(),"name");
 
     // const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
     //   appID,
