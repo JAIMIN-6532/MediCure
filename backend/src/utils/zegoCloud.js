@@ -7,7 +7,7 @@ dotenv.config();
 export default async function zegoCloud(req, res, next) {
   try {
     const { appointmentId } = req.body;
-    const appId = process.env.APP_ID;
+    const appId = Number(process.env.APP_ID);
     const serverSecret = process.env.APP_SERVERSECRET;
     const effectiveTimeInSeconds = 3600;
     const payload = "";
