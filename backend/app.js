@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 // import userRouter from "./src/features/users/user.routes.js";
 import jwtAuth from "./src/middleware/jwt.middleware.js";
-import cookieParser from 'cookie-parser';
+import cookieParser from "cookie-parser";
 // import serviceRouter from "./src/features/service/service.routes.js";
 import OtpRouter from "./src/features/otp/otp.routes.js";
 import patientRouter from "./src/features/patient/patient.routes.js";
@@ -32,37 +32,35 @@ app.use(cookieParser());
 
 // CORS policy configuration
 const allowedOrigins = [
-  'https://medicure-frontend-qii7.onrender.com',
-  'https://medicure-frontend-qii7.onrender.com/api/doctor/generateToken', // Add more URLs here as needed
+  "https://medicure-frontend-qii7.onrender.com",
+  "https://medicure-frontend-qii7.onrender.com/api/doctor/generateToken", // Add more URLs here as needed
 ];
 app.use((req, res, next) => {
-    res.header(
-      'Access-Control-Allow-Origin',
-      '*'
-    );
-    res.header('Access-Control-Allow-Headers', '*');
-    res.header('Access-Control-Allow-Methods', '*');
-    // return ok for preflight request.
-    if (req.method == 'OPTIONS') {
-      return res.sendStatus(200);
-    }
-    next();
-  });
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200); // pre-flight response
+  }
+  next();
+});
 
-
-  
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('uploads'));
-app.use("/api/patient",patientRouter);
-app.use("/api/doctor" , doctorRouter)
-app.use("/api/otp",OtpRouter);
+app.use(express.static("uploads"));
+app.use("/api/patient", patientRouter);
+app.use("/api/doctor", doctorRouter);
+app.use("/api/otp", OtpRouter);
 
-
-
-app.use("/api/appointment",appointmentRouter);
-app.use("/api/feedback",feedbackRouter);
-app.use("/api/payment",paymentRouter);
+app.use("/api/appointment", appointmentRouter);
+app.use("/api/feedback", feedbackRouter);
+app.use("/api/payment", paymentRouter);
 
 // app.use("/api/service/",serviceRouter);
 // app.use(express.static(path.join(__dirname, "build")));
@@ -73,16 +71,11 @@ app.use("/api/payment",paymentRouter);
 app.use(errorHandler);
 
 app.use((req, res) => {
-    res
-      .status(404)
-      .send(
-        'API not found.'
-      );
-  });
+  res.status(404).send("API not found.");
+});
 
-  // app.use("/",(req,res)=>{
-  //   res.send("Welcome to the home page");
-  // })
-  
+// app.use("/",(req,res)=>{
+//   res.send("Welcome to the home page");
+// })
 
 export default app;

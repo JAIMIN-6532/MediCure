@@ -67,12 +67,21 @@ const Room = () => {
     const appID = Number(`${import.meta.env.VITE_APP_ID}`);
     const serverSecret = `${import.meta.env.VITE_APP_SERVERSECRET}`;
 
-    const res = await axios.get(`${import.meta.env.VITE_APP_API_URL}/api/doctor/generateToken`,{
-      appointmentId,
-    })
-    console.log("zego res:",res);
-    const {token} = await res.json();
-    const kitToken = ZegoUIKitPrebuilt.generateKitTokenForProduction(appID,token,appointmentId.toString(),Date.now().toString(),"name");
+    const res = await axios.get(
+      `${import.meta.env.VITE_APP_API_URL}/api/doctor/generateToken`,
+      {
+        appointmentId,
+      }
+    );
+    console.log("zego res:", res);
+    const { token } = res.data;
+    const kitToken = ZegoUIKitPrebuilt.generateKitTokenForProduction(
+      appID,
+      token,
+      appointmentId.toString(),
+      Date.now().toString(),
+      "name"
+    );
 
     // const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
     //   appID,
