@@ -1,5 +1,5 @@
 
-import crypto from "crypto"; // Import crypto module
+import crypto_1 from "crypto"; // Import crypto module
 var ErrorCode; // Define enum for error codes
 (function (ErrorCode) {
     ErrorCode[ErrorCode["success"] = 0] = "success";
