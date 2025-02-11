@@ -45,7 +45,7 @@ const getStatusColor = (status) => {
   }
 };
 
-export default function AppointmentList({ appointments}) {
+export default function AppointmentList({ appointments }) {
   // console.log("Appointments: ", appointments);
 
   const convertTo24HourFormat = (timeSlot) => {
@@ -66,17 +66,15 @@ export default function AppointmentList({ appointments}) {
   console.log("Today IST: ", todayIST);
   console.log("Current Time in IST: ", currentTime);
   // Filter appointments based on today's date
-   const filteredAppointments = appointments?.filter((appointment) => {
-    
-  const appointmentTime = convertTo24HourFormat(appointment.timeSlot); // Convert time slot to 24-hour format
-  
-  console.log("currentTime",currentTime);
-  console.log("appointmentTime",appointmentTime);
+  const filteredAppointments = appointments?.filter((appointment) => {
+    const appointmentTime = convertTo24HourFormat(appointment.timeSlot); // Convert time slot to 24-hour format
+
+    console.log("currentTime", currentTime);
+    console.log("appointmentTime", appointmentTime);
     // Extract the date part (YYYY-MM-DD) from appointment.date
     const appointmentDate = appointment.date.split("T")[0]; // Get the date part only (YYYY-MM-DD)
-    return appointmentDate === todayIST && appointmentTime >currentTime; ; // Only include appointments for today
+    return appointmentDate === todayIST && appointmentTime > currentTime; // Only include appointments for today
   });
-  
 
   // Sort today's appointments by time slot
   // onFilteredAppointments(filteredAppointments);
@@ -89,7 +87,7 @@ export default function AppointmentList({ appointments}) {
 
   useEffect(() => {
     // Animate each appointment item when they appear
-   
+
     sortedAppointments.forEach((appointment, index) => {
       gsap.fromTo(
         `.appointment-${appointment._id}`,
@@ -131,9 +129,13 @@ export default function AppointmentList({ appointments}) {
               <div>
                 <h4 className="font-medium">{appointment?.patient.name}</h4>
                 <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <span className="font-bold text-blue-600">{appointment?.timeSlot}</span>
+                  <span className="font-bold text-blue-600">
+                    {appointment?.timeSlot}
+                  </span>
                   <span className="text-bold">•</span>
-                  <span className="text-bold">{appointment?.type === "Offline" ? "In-person":"Online"}</span>
+                  <span className="text-bold">
+                    {appointment?.type === "Offline" ? "In-person" : "Online"}
+                  </span>
                 </div>
               </div>
             </div>
@@ -145,15 +147,15 @@ export default function AppointmentList({ appointments}) {
               >
                 {appointment.status}
               </span>
-              <button className="px-4 py-2 bg-blue-50 text-primary rounded-lg hover:bg-blue-100 transition-colors">
-                Start Session
-              </button>
+              {appointment.type === "Online" && (
+                <button className="px-4 py-2 bg-blue-50 text-primary rounded-lg hover:bg-blue-100 transition-colors">
+                  Start Session
+                </button>
+              )}
             </div>
           </div>
         ))}
       </div>
     </div>
   );
-  
 }
-

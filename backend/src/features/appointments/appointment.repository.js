@@ -3,6 +3,10 @@ import DoctorModel from "../doctor/doctor.model.js";
 import PatientModel from "../patient/patient.model.js";
 import PaymentModel from "../payment/payment.model.js";
 import mongoose from "mongoose";
+import { sendBookingConfirmationToPatient } from "../../utils/emails/bookingConfirmationPatient.js";
+import { sendBookingConfirmationToDoctor } from "../../utils/emails/bookingConfirmationDoctor.js";
+import { sendBookingCancelToPatient } from "../../utils/emails/bookingCancelPatient.js";
+import { sendVideoCallLink } from "../../utils/emails/sendVideoCallLink.js";
 export default class AppointmentRepository {
   // bookAppointment = async (appointmentData, res, next) => {
   //   try {
@@ -56,8 +60,16 @@ export default class AppointmentRepository {
   // };
   bookAppointment = async (appointmentData, res, next) => {
     try {
-      const { doctorId, patientId, paymentId, appointmentFees ,paymentType,date, timeSlot, type } =
-        appointmentData;
+      const {
+        doctorId,
+        patientId,
+        paymentId,
+        appointmentFees,
+        paymentType,
+        date,
+        timeSlot,
+        type,
+      } = appointmentData;
       console.log("Appointment Data:", appointmentData);
       console.log("Appointment Data:", {
         doctorId,
@@ -113,8 +125,7 @@ export default class AppointmentRepository {
       }
 
       if (lockedAppointment) {
-        if(paymentType === "Offline"){
-
+        if (paymentType === "Offline") {
         }
         // const { _id } = await PaymentModel.findOne({ orderId: paymentId });
         const payment = await PaymentModel.findOne({ orderId: paymentId });
@@ -122,38 +133,53 @@ export default class AppointmentRepository {
         // console.log("Payment ID:", _id);
         let updatedAppointment;
         // Update the locked appointment to confirmed status
-        if(paymentType === "Online"){
-         updatedAppointment = await AppointmentModel.updateOne(
-          { _id: lockedAppointment._id },
-          {
-            $set: {
-              status: "Confirmed",
-              paymentId: payment._id ,
-              paymentType,
-              appointmentFees,
-            },
-          }
-        );
-      }else{
-         updatedAppointment = await AppointmentModel.updateOne(
-          { _id: lockedAppointment._id },
-          {
-            $set: {
-              status: "Confirmed",
-              // paymentId: payment._id ,
-              appointmentFees,
-              paymentType,
-            },
-          }
-        );
-      }
+        if (paymentType === "Online") {
+          updatedAppointment = await AppointmentModel.updateOne(
+            { _id: lockedAppointment._id },
+            {
+              $set: {
+                status: "Confirmed",
+                paymentId: payment._id,
+                paymentType,
+                type: appointmentData.type,
+                appointmentFees,
+              },
+            }
+          );
+        } else {
+          updatedAppointment = await AppointmentModel.updateOne(
+            { _id: lockedAppointment._id },
+            {
+              $set: {
+                status: "Confirmed",
+                // paymentId: payment._id ,
+                appointmentFees,
+                paymentType,
+              },
+            }
+          );
+        }
+        const finddoctor = await DoctorModel.findById(doctorId);
+        const doctoremail = finddoctor.email;
+        const findpatient = await PatientModel.findById(patientId);
+        const patientemail = findpatient.email;
 
         const doctor = await DoctorModel.findByIdAndUpdate(
           doctorId,
-          { $inc: { totalRevenue: appointmentFees } },  // Increment the totalRevenue
-          { new: true }  // Return the updated document
+          { $inc: { totalRevenue: appointmentFees } }, // Increment the totalRevenue
+          { new: true } // Return the updated document
         );
-        
+
+        await sendBookingConfirmationToPatient(
+          patientemail,
+          appointmentData,
+          finddoctor.name
+        );
+        await sendBookingConfirmationToDoctor(
+          doctoremail,
+          appointmentData,
+          findpatient.name
+        );
 
         console.log(
           "Updated Locked Appointment to Confirmed:",
@@ -202,6 +228,56 @@ export default class AppointmentRepository {
       console.error(error);
     }
   };
+
+  cancelAppointment = async (appointmentId) => {
+    try {
+      const appointment = await AppointmentModel.findById(appointmentId);
+      const cancelappointment = await AppointmentModel.deleteOne({
+        _id: new mongoose.Types.ObjectId(appointmentId),
+      });
+      console.log("Cancel Appointment:", appointment);
+      console.log("date", appointment.date);
+      const updateDoctor = await DoctorModel.findByIdAndUpdate(
+        {
+          _id: new mongoose.Types.ObjectId(appointment.doctor),
+        },
+        {
+          $pull: { appointments:new  mongoose.Types.ObjectId(appointmentId) },
+          $inc: { totalRevenue: -appointment.appointmentFees }, // Use $inc for atomic operation
+        },
+        { new: true } // to return the updated doctor document
+      );
+      // Update Patient's appointments
+      const updatePatient = await PatientModel.findByIdAndUpdate(
+        {
+          _id: new mongoose.Types.ObjectId(appointment.patient),
+        },
+        {
+          $pull: { appointments: new  mongoose.Types.ObjectId(appointmentId) },
+        },
+        { new: true } // to return the updated patient document
+      );
+
+      // const findpatient = await PatientModel.findById(appointment.patient);
+
+      await sendBookingCancelToPatient(updatePatient.email,appointment,updateDoctor.name);
+
+      return appointment;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  sendVideoCallLinkMail = async (aid,link,patient) => {
+    try{
+     console.log("patient",patient);
+     const sendMail =  await sendVideoCallLink(patient,link);
+     console.log("sendMail in Repo:",sendMail);
+      return sendMail;
+    }catch(err){
+      console.error(err);
+    }
+  }
 
   lockAppointment = async (appointmentData, res) => {
     console.log("Appointment Data for LOck:", appointmentData);
@@ -355,6 +431,5 @@ export default class AppointmentRepository {
     } catch (error) {
       console.error(error);
     }
-  }
-
+  };
 }

@@ -21,9 +21,19 @@ appointmentRouter.post("/bookappointment", jwtAuth, (req, res, next) => {
   appointmentController.bookAppointment(req, res, next);
 });
 
+appointmentRouter.post("/cancel/:aid", (req, res, next) => {
+  console.log("inside cancel route");
+  appointmentController.cancelAppointment(req, res, next);
+});
+
 appointmentRouter.get("/getappointment/:aid", (req, res, next) => {
   console.log("getappointmentbyaid", req.params.aid);
   appointmentController.getAppointmentByAId(req, res, next);
+});
+
+appointmentRouter.post("/sendmail/:aid", (req, res, next) => {
+  console.log("inside sendmail route");
+  appointmentController.sendVideoCallLinkMail(req, res, next);
 });
 
 appointmentRouter.post(

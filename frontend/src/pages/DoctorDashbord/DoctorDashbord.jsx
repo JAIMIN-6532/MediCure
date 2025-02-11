@@ -64,6 +64,11 @@ const DoctorDashbord= ()=>{
     const appointmentDate = appointment.date.split("T")[0]; // Get the date part only (YYYY-MM-DD)
     return appointmentDate === todayIST; // Only include appointments for today
   });
+
+  const dispatchCancelAppointement = ()=>{
+    dispatch(fetchAppointmentsByDoctorId(doctorId));
+  }
+
   
   
 
@@ -77,7 +82,7 @@ const DoctorDashbord= ()=>{
           </>
         );
       case 'Appointments':
-        return <Appointments appointments={appointments} doctor={doctor} />;
+        return <Appointments appointments={appointments} doctor={doctor} dispatchCancelAppointement={dispatchCancelAppointement}/>;
       case 'Available Timings':
         return <AvailableTimings doctor={doctor}/>;
       case 'Reviews':

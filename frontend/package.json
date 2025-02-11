@@ -28,6 +28,7 @@
     "react-router-dom": "^7.1.1",
     "react-spinners": "^0.15.0",
     "react-toastify": "^11.0.3",
+    "@zegocloud/zego-uikit-prebuilt": "^2.14.1",
     "socket.io-client": "^4.8.1"
   },
   "devDependencies": {

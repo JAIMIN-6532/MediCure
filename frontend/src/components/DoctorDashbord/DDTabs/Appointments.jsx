@@ -1,7 +1,11 @@
 import moment from "moment-timezone";
 import { useState, useEffect } from "react";
 import { gsap } from "gsap";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
 
+import Room from "../../../zegocloud/Room";
 // Helper function to get status colors
 const getStatusColor = (status) => {
   const colors = {
@@ -16,9 +20,16 @@ const getStatusColor = (status) => {
 };
 
 // Appointments Component
-export default function Appointments({ appointments, doctor }) {
+export default function Appointments({
+  appointments,
+  doctor,
+  dispatchCancelAppointement,
+}) {
   const [activeTab, setActiveTab] = useState("Today"); // State to handle active tab (Today, Upcoming, Past)
+  const [startRoom, setStartRoom] = useState(false);
+  const [appointmentId, setAppointmentId] = useState("");
   console.log(appointments);
+  const navigate = useNavigate();
   useEffect(() => {
     gsap.fromTo(
       ".appointments-title",
@@ -54,12 +65,12 @@ export default function Appointments({ appointments, doctor }) {
 
     // Get today's date in UTC (no time zone adjustment yet)
     // Get current IST date and time
-     const istDate = moment().tz("Asia/Kolkata");
-     const todayIST = istDate.format("YYYY-MM-DD"); // Get today's date in IST (YYYY-MM-DD)
-     const currentTime = istDate.hours() * 100 + istDate.minutes(); // Convert current time to 24-hour format
-   
-     console.log("Today IST: ", todayIST);
-     console.log("Current Time in IST: ", currentTime);
+    const istDate = moment().tz("Asia/Kolkata");
+    const todayIST = istDate.format("YYYY-MM-DD"); // Get today's date in IST (YYYY-MM-DD)
+    const currentTime = istDate.hours() * 100 + istDate.minutes(); // Convert current time to 24-hour format
+
+    console.log("Today IST: ", todayIST);
+    console.log("Current Time in IST: ", currentTime);
     // Convert appointment time slot to 24-hour format
     const appointmentTime = convertTo24HourFormat(appointment.timeSlot);
 
@@ -111,6 +122,39 @@ export default function Appointments({ appointments, doctor }) {
     return activeTab === tab
       ? "px-4 py-2 bg-primary text-white rounded-lg"
       : "px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg";
+  };
+
+  const handleStartSession = async (appointmentId, patient) => {
+    console.log("Start Session for appointment ID: ", appointmentId);
+    const sendmail = await axios.post(
+      `https://medicure-go5v.onrender.com/api/appointment/sendmail/${appointmentId}`,{
+        patient,
+      }
+    );
+    if (sendmail.data.success){
+      console.log("Mail sent");
+      // <Room appointmentId={appointmentId} />
+      setStartRoom(true);
+      setAppointmentId(appointmentId);
+      navigate(`/room/${appointmentId}`);
+      }
+    else console.log("Mail not sent");
+  };
+
+  const handleCancelAppointement = async (appointmentId) => {
+    console.log("Cancel Appointment for appointment ID: ", appointmentId);
+    const res = await axios.post(
+      `https://medicure-go5v.onrender.com/api/appointment/cancel/${appointmentId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    dispatchCancelAppointement();
+
+    console.log("Cancel Appointment Response: ", res.data);
   };
 
   return (
@@ -170,8 +214,11 @@ export default function Appointments({ appointments, doctor }) {
                   </span>
                 )}
                 <div>
-                  <h4 className="font-medium">{appointment.patient?.name}</h4>
+                  <h4 className="font-medium">{appointment.patient?.name} </h4>
                   <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <span className="text-grey-600 font-semibold">
+                      {appointment.patient?.email}
+                    </span>
                     <span>{appointment.time}</span>
                     <span>
                       {appointment.date &&
@@ -197,16 +244,38 @@ export default function Appointments({ appointments, doctor }) {
                 >
                   {appointment.status}
                 </span>
-                {activeTab === "Today" && appointment.status !== "Completed"  && (
-                  <button className="px-4 py-2 bg-blue-50 text-primary rounded-lg hover:bg-blue-100 transition-colors">
-                    Start Session
-                  </button>
-                )}
+                {(activeTab === "Today" || activeTab === "Upcoming") &&
+                  appointment.status !== "Completed" &&
+                  appointment.type === "Online" && (
+                    <button
+                      className="px-4 py-2 bg-blue-50 text-primary rounded-lg hover:bg-blue-100 transition-colors"
+                      onClick={() => {
+                        handleStartSession(
+                          appointment._id,
+                          appointment.patient
+                        );
+                      }}
+                    >
+                      Start Session
+                    </button>
+                  )}
+                {(activeTab === "Today" || activeTab === "Upcoming") &&
+                  appointment.status !== "Completed" && (
+                    <button
+                      className="px-4 py-2 bg-blue-50 text-primary rounded-lg hover:bg-blue-100 transition-colors"
+                      onClick={() => {
+                        handleCancelAppointement(appointment._id);
+                      }}
+                    >
+                      Cancel Appointment
+                    </button>
+                  )}
               </div>
             </div>
           ))}
         </div>
       </div>
     </div>
+    
   );
 }

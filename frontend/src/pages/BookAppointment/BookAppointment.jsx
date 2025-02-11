@@ -343,7 +343,7 @@ const BookAppointment = () => {
               console.log(response);
               const orderId = response.razorpay_order_id;
               const isPaymentCaptured = await axios.post(
-                "https://medicure-go5v.onrender.com/api/payment/verify",{
+                "hhttps://medicure-go5v.onrender.com/api/payment/verify",{
                   orderId,
                 }
               )
