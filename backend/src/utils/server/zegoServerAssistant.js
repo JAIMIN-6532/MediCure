@@ -102,4 +102,4 @@ export default function generateToken04(appId, userId, secret, effectiveTimeInSe
     // console.log('-----------------');
     return '04' + Buffer.from(dv.buffer).toString('base64'); // Return final token string in Base64 format
 }
-exports.generateToken04 = generateToken04;
+// exports.generateToken04 = generateToken04;
