@@ -7,6 +7,8 @@ import axios from "axios";
 const Room = () => {
   //   const { id } = useParams();
   const { appointmentId } = useParams();
+  const user = localStorage?.getItem("user");
+  const userId= user._id;
   console.log("appointmentId In ROOM:", appointmentId);
   const navigate = useNavigate();
   const roomContainerRef = useRef(null);
@@ -15,6 +17,7 @@ const Room = () => {
   const [userCount, setUserCount] = useState(0); // Track number of users in the room
   const [timer, setTimer] = useState(null); // Timer state to track session time
   const sessionDuration = 30 * 60 * 1000; // Session duration in milliseconds (e.g., 30 minutes)
+
 
   // Function to get media stream and handle permissions
   const getUserMedia = async () => {
@@ -71,6 +74,7 @@ const Room = () => {
     const res = await axios.post(
       `${import.meta.env.VITE_APP_API_URL}/api/doctor/generateToken`,{
         appointmentId: appointmentId.toString(),
+        userId: userId.toString(),
       }
     );
     console.log("zego res:", res);
@@ -82,7 +86,7 @@ const Room = () => {
       appID,
       token,
       appointmentId.toString(),
-      Date.now().toString(),
+      userId,
       "Name"
     );
 
