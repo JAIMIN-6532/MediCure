@@ -24,39 +24,39 @@
 
 
 // import { FaTooth, FaBrain, FaHeartbeat, FaBone, FaStethoscope } from 'react-icons/fa';
-// import cardiology from "../../assets/cardio.jpeg";
-// import neurology from "../../assets/neuro.jpeg";
-// import orthopedic from "../../assets/ortho.jpeg";
-// import dentist from "../../assets/dentist.jpeg";
-// import urologyimg from "../../assets/urology.jpeg";
+import cardiology from "../../assets/cardio.jpeg";
+import neurology from "../../assets/neuro.jpeg";
+import orthopedic from "../../assets/ortho.jpeg";
+import dentist from "../../assets/dentist.jpeg";
+import urologyimg from "../../assets/urology.jpeg";
 
-// const specialties = [
-//   {
-//     icon: FaTooth,
-//     name: 'Dentist',
-//     bgImage: dentist
-//   },
-//   {
-//     icon: FaBrain,
-//     name: 'Neurology',
-//     bgImage: neurology
-//   },
-//   {
-//     icon: FaHeartbeat,
-//     name: 'Cardiology',
-//     bgImage: cardiology
-//   },
-//   {
-//     icon: FaBone,
-//     name: 'Orthopedic',
-//     bgImage: orthopedic
-//   },
-//   {
-//     icon: FaStethoscope,
-//     name: 'Urology',
-//     bgImage: urologyimg
-//   },
-// ];
+const specialties = [
+  {
+    icon: FaTooth,
+    name: 'Dentist',
+    bgImage: dentist
+  },
+  {
+    icon: FaBrain,
+    name: 'Neurology',
+    bgImage: neurology
+  },
+  {
+    icon: FaHeartbeat,
+    name: 'Cardiology',
+    bgImage: cardiology
+  },
+  {
+    icon: FaBone,
+    name: 'Orthopedic',
+    bgImage: orthopedic
+  },
+  {
+    icon: FaStethoscope,
+    name: 'Urology',
+    bgImage: urologyimg
+  },
+];
 
 // const SpecialityCard = () => {
 //   return (
