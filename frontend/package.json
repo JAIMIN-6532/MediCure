@@ -12,6 +12,7 @@
   "dependencies": {
     "@heroicons/react": "^2.1.1",
     "@reduxjs/toolkit": "^2.5.0",
+    "@zegocloud/zego-uikit-prebuilt": "^2.14.1",
     "axios": "^1.7.9",
     "date-fns": "^2.30.0",
     "dotenv": "^16.4.7",
@@ -28,8 +29,8 @@
     "react-router-dom": "^7.1.1",
     "react-spinners": "^0.15.0",
     "react-toastify": "^11.0.3",
-    "@zegocloud/zego-uikit-prebuilt": "^2.14.1",
-    "socket.io-client": "^4.8.1"
+    "socket.io-client": "^4.8.1",
+    "swiper": "^11.2.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
