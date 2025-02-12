@@ -70,7 +70,8 @@ const Room = () => {
 
     const appID = Number(`${import.meta.env.VITE_APP_ID}`);
     const serverSecret = `${import.meta.env.VITE_APP_SERVERSECRET}`;
-
+    console.log("userId in Room function:", userId);
+    console.log("appointmentId in Room function:", appointmentId);
     const res = await axios.post(
       `${import.meta.env.VITE_APP_API_URL}/api/doctor/generateToken`,{
         appointmentId: appointmentId.toString(),
