@@ -7,8 +7,8 @@ import axios from "axios";
 const Room = () => {
   //   const { id } = useParams();
   const { appointmentId } = useParams();
-  const user = localStorage?.getItem("user");
-  const userId= user._id;
+  const user = JSON.parse(localStorage?.getItem("user")); // Parse the string back to an object
+  const userId = user?._id;
   console.log("appointmentId In ROOM:", appointmentId);
   const navigate = useNavigate();
   const roomContainerRef = useRef(null);
@@ -17,7 +17,6 @@ const Room = () => {
   const [userCount, setUserCount] = useState(0); // Track number of users in the room
   const [timer, setTimer] = useState(null); // Timer state to track session time
   const sessionDuration = 30 * 60 * 1000; // Session duration in milliseconds (e.g., 30 minutes)
-
 
   // Function to get media stream and handle permissions
   const getUserMedia = async () => {
@@ -73,7 +72,8 @@ const Room = () => {
     console.log("userId in Room function:", userId);
     console.log("appointmentId in Room function:", appointmentId);
     const res = await axios.post(
-      `${import.meta.env.VITE_APP_API_URL}/api/doctor/generateToken`,{
+      `${import.meta.env.VITE_APP_API_URL}/api/doctor/generateToken`,
+      {
         appointmentId: appointmentId.toString(),
         userId: userId.toString(),
       }
