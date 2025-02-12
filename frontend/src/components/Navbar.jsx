@@ -168,8 +168,8 @@ const Navbar = () => {
   // Function to decode JWT token and extract the userType
   const decodeToken = (token) => {
     try {
-      const base64Url = token.split('.')[1]; // Get the payload part of the token
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/'); // Replace URL-safe characters
+      const base64Url = token.split(".")[1]; // Get the payload part of the token
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/"); // Replace URL-safe characters
       const decodedPayload = JSON.parse(atob(base64)); // Decode and parse the payload
       return decodedPayload.userType; // Return userType from the decoded payload
     } catch (error) {
@@ -189,7 +189,7 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem("token"); // Remove token from localStorage
     //if localstorage have did then remove it
-    if(localStorage.getItem("doctor")){
+    if (localStorage.getItem("doctor")) {
       localStorage.removeItem("doctor");
     }
     if (localStorage.getItem("did")) {
@@ -201,9 +201,8 @@ const Navbar = () => {
   };
 
   // Handle profile click for both image and initials
-  const handleProfileClick = () => 
-    {
-      const userId = user._id;
+  const handleProfileClick = () => {
+    const userId = user._id;
     if (userType === "doctor") {
       window.location.href = `/d-dashbord/${userId}`;
     } else if (userType === "patient") {
@@ -220,24 +219,37 @@ const Navbar = () => {
               <Stethoscope className="w-8 h-7 text-blue-600 inline " /> MEDICURE
             </NavLink>
           </div>
-
-          <div className="hidden md:flex items-center space-x-8">
-            <NavLink to="/" className="hover:text-primary-blue transition-colors">
-              Home
-            </NavLink>
-            <NavLink to="/doctors" className="hover:text-primary-blue transition-colors">
-              Doctors
-            </NavLink>
-            <NavLink to="/about" className="hover:text-primary-blue transition-colors">
-              About Us
-            </NavLink>
-            <NavLink to="/contact" className="hover:text-primary-blue transition-colors">
-              Contact
-            </NavLink>
-          </div>
+          {userType !== "doctor" && (
+            <div className="hidden md:flex items-center space-x-8">
+              <NavLink
+                to="/"
+                className="hover:text-primary-blue transition-colors"
+              >
+                Home
+              </NavLink>
+              <NavLink
+                to="/doctors"
+                className="hover:text-primary-blue transition-colors"
+              >
+                Doctors
+              </NavLink>
+              <NavLink
+                to="/about"
+                className="hover:text-primary-blue transition-colors"
+              >
+                About Us
+              </NavLink>
+              <NavLink
+                to="/contact"
+                className="hover:text-primary-blue transition-colors"
+              >
+                Contact
+              </NavLink>
+            </div>
+          )}
 
           <div className="hidden md:flex items-center space-x-4">
-            {isLoggedIn  && (user || doctor) ? (
+            {isLoggedIn && (user || doctor) ? (
               <div className="flex items-center space-x-2">
                 {/* Display user's profile image if available */}
                 {user.profileImageUrl ? (
@@ -267,13 +279,13 @@ const Navbar = () => {
                 Logout
               </button>
             ) : (
-              <NavLink to="/signin" className="hover:text-primary-blue transition-colors">
-              <button
-                
-                className="bg-primary-blue text-white px-6 py-2 rounded-full hover:bg-dark-blue transition-colors"
+              <NavLink
+                to="/signin"
+                className="hover:text-primary-blue transition-colors"
               >
-                Login/Register
-              </button>
+                <button className="bg-primary-blue text-white px-6 py-2 rounded-full hover:bg-dark-blue transition-colors">
+                  Login/Register
+                </button>
               </NavLink>
             )}
           </div>
@@ -293,16 +305,32 @@ const Navbar = () => {
       {isOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 bg-light-blue">
-            <NavLink to="/" className="block px-3 py-2 hover:text-primary-blue" onClick={() => setIsOpen(false)}>
+            <NavLink
+              to="/"
+              className="block px-3 py-2 hover:text-primary-blue"
+              onClick={() => setIsOpen(false)}
+            >
               Home
             </NavLink>
-            <NavLink to="/doctors" className="block px-3 py-2 hover:text-primary-blue" onClick={() => setIsOpen(false)}>
+            <NavLink
+              to="/doctors"
+              className="block px-3 py-2 hover:text-primary-blue"
+              onClick={() => setIsOpen(false)}
+            >
               Doctors
             </NavLink>
-            <NavLink to="/about" className="block px-3 py-2 hover:text-primary-blue" onClick={() => setIsOpen(false)}>
+            <NavLink
+              to="/about"
+              className="block px-3 py-2 hover:text-primary-blue"
+              onClick={() => setIsOpen(false)}
+            >
               About Us
             </NavLink>
-            <NavLink to="/contact" className="block px-3 py-2 hover:text-primary-blue" onClick={() => setIsOpen(false)}>
+            <NavLink
+              to="/contact"
+              className="block px-3 py-2 hover:text-primary-blue"
+              onClick={() => setIsOpen(false)}
+            >
               Contact
             </NavLink>
 
@@ -315,12 +343,13 @@ const Navbar = () => {
                   Logout
                 </button>
               ) : (
-                <NavLink to="/signin" className="hover:text-primary-blue transition-colors">
-                <button
-                  className="bg-primary-blue text-white px-6 py-2 rounded-full hover:bg-dark-blue transition-colors"
+                <NavLink
+                  to="/signin"
+                  className="hover:text-primary-blue transition-colors"
                 >
-                  Login/Register
-                </button>
+                  <button className="bg-primary-blue text-white px-6 py-2 rounded-full hover:bg-dark-blue transition-colors">
+                    Login/Register
+                  </button>
                 </NavLink>
               )}
             </div>
@@ -332,4 +361,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
