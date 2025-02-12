@@ -69,10 +69,7 @@ const Room = () => {
     const serverSecret = `${import.meta.env.VITE_APP_SERVERSECRET}`;
 
     const res = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}/api/doctor/generateToken`,
-      {
-        appointmentId: appointmentId,
-      }
+      `${import.meta.env.VITE_APP_API_URL}/api/doctor/generateToken?appointmentId=${appointmentId}`
     );
     console.log("zego res:", res);
     console.log("appoinmentId in ROom function:", appointmentId);

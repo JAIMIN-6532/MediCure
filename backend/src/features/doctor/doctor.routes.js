@@ -70,6 +70,7 @@ doctorRouter.post("/deletedidappointment/:did", (req, res, next) => {
 });
 
 doctorRouter.get("/generateToken", (req, res, next) => {
+  console.log("generateToken", req.body);
   zegoCloud(req, res, next);
 });
 
