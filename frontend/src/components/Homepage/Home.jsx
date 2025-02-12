@@ -7,6 +7,7 @@ import {
 } from "react-icons/fa"; // Import React Icons
 import { Link } from "react-router-dom";
 import DoctorCard from "./DoctorCard";
+import { useState } from "react";
 import SpecialtyCard from "./SpecialityCard";
 import homedoctor from "../../assets/homedoctor.png";
 import { useNavigate } from "react-router-dom";
