@@ -7,6 +7,7 @@ import axios from "axios";
 const Room = () => {
   //   const { id } = useParams();
   const { appointmentId } = useParams();
+  console.log("appointmentId In ROOM:", appointmentId);
   const navigate = useNavigate();
   const roomContainerRef = useRef(null);
   const [hasJoined, setHasJoined] = useState(false);
@@ -70,10 +71,11 @@ const Room = () => {
     const res = await axios.get(
       `${import.meta.env.VITE_APP_API_URL}/api/doctor/generateToken`,
       {
-        appointmentId,
+        appointmentId: appointmentId,
       }
     );
     console.log("zego res:", res);
+    console.log("appoinmentId in ROom function:", appointmentId);
     const { token } = res.data;
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForProduction(
       appID,

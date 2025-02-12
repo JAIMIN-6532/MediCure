@@ -135,6 +135,7 @@ export default function Appointments({
       console.log("Mail sent");
       // <Room appointmentId={appointmentId} />
       setStartRoom(true);
+      console.log("Appointment ID: ", appointmentId);
       setAppointmentId(appointmentId);
       navigate(`/room/${appointmentId}`);
       }

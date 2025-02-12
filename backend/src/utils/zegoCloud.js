@@ -8,6 +8,7 @@ export default async function zegoCloud(req, res, next) {
   try {
     const { appointmentId } = req.body;
     let aid;
+    console.log("appointmentId", appointmentId);
     if(appointmentId){
         aid = appointmentId.toString();
     }
