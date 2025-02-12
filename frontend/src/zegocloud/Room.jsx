@@ -85,7 +85,7 @@ const Room = () => {
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForProduction(
       appID,
       token,
-      appointmentId.toString(),
+      appointmentId,
       userId,
       "Name"
     );
