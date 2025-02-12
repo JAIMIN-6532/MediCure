@@ -8,7 +8,8 @@ const Room = () => {
   //   const { id } = useParams();
   const { appointmentId } = useParams();
   const user = JSON.parse(localStorage?.getItem("user")); // Parse the string back to an object
-  const userId = user?._id;
+  const userId = user?._id || "123456789" ;
+  
   console.log("appointmentId In ROOM:", appointmentId);
   const navigate = useNavigate();
   const roomContainerRef = useRef(null);
