@@ -70,7 +70,7 @@ const Room = () => {
 
     const res = await axios.post(
       `${import.meta.env.VITE_APP_API_URL}/api/doctor/generateToken`,{
-        appointmentId: appointmentId,
+        appointmentId: appointmentId.toString(),
       }
     );
     console.log("zego res:", res);
@@ -83,7 +83,7 @@ const Room = () => {
       tkn,
       appointmentId.toString(),
       Date.now().toString(),
-      "name"
+      "Name"
     );
 
     // const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
