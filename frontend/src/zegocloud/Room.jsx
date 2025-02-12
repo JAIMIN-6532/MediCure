@@ -68,15 +68,19 @@ const Room = () => {
     const appID = Number(`${import.meta.env.VITE_APP_ID}`);
     const serverSecret = `${import.meta.env.VITE_APP_SERVERSECRET}`;
 
-    const res = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}/api/doctor/generateToken?appointmentId=${appointmentId}`
+    const res = await axios.post(
+      `${import.meta.env.VITE_APP_API_URL}/api/doctor/generateToken`,{
+        appointmentId: appointmentId,
+      }
     );
     console.log("zego res:", res);
     console.log("appoinmentId in ROom function:", appointmentId);
     const { token } = res.data;
+    console.log("token in Room function:", token);
+    const tkn = token.toString();
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForProduction(
       appID,
-      token,
+      tkn,
       appointmentId.toString(),
       Date.now().toString(),
       "name"

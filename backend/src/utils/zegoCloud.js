@@ -6,14 +6,14 @@ dotenv.config();
 // Please modify appID to your own appId. appid is a number.
 export default async function zegoCloud(req, res, next) {
   try {
-    const { appointmentId } = req.query;
+    const { appointmentId } = req.body;
     let aid;
     console.log("appointmentId", appointmentId);
     if(appointmentId){
         aid = appointmentId.toString();
     }
     else{
-        aid = appointmentId;
+        aid = appointmentId.toString();
     }
     const appId = Number(process.env.APP_ID);
     const serverSecret = String(process.env.APP_SERVERSECRET);
