@@ -61,14 +61,14 @@ export const fetchAppointmentsByDoctorId = createAsyncThunk(
 
 // Initial state
 const initialState = {
-  doctors: [], // stores all doctors data
-  selectedDoctor: {}, // stores the fetched doctor data by ID
-  appointments: [], // stores the fetched appointments data by doctor ID
-  avgRating: null, // Store the avgRating
-  fetchDoctorsStatus: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed' for fetching doctors
-  fetchDoctorByIdStatus: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed' for fetching a single doctor
-  fetchDoctorAvgRatingStatus: "idle", // Track the fetch status for avgRating
-  fetchAppointmentsStatus: "idle", // Track the fetch status for appointments
+  doctors: [],
+  selectedDoctor: {}, 
+  appointments: [], 
+  avgRating: null,
+  fetchDoctorsStatus: "idle",
+  fetchDoctorByIdStatus: "idle", 
+  fetchDoctorAvgRatingStatus: "idle", 
+  fetchAppointmentsStatus: "idle",
   error: null,
 };
 

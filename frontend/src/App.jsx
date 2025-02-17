@@ -17,7 +17,10 @@ import BookAppointment from "./pages/BookAppointment/BookAppointment";
 import PatientDashbord from "./pages/PatientDashbord/PatientDashbord";
 import PrivateRoutePatient from "./components/PrivateRoutePatient";
 import Room from "./zegocloud/Room";
-// import ScrollToTop from "./components/ScrolltoTop";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+
+
 const App = () => {
   return (
     <>
@@ -58,8 +61,8 @@ const App = () => {
 
             <Route path="/room/:appointmentId" element={<Room />} />
 
-            {/* <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} /> */}
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
           </Routes>
         </div>
         <Footer />

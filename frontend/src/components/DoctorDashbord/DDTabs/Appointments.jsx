@@ -93,8 +93,8 @@ export default function Appointments({
     } else if (activeTab === "Past") {
       return (
         appointmentDate < todayIST ||
-        (appointmentDate === todayIST && appointmentTime < currentTime)
-      ); // Past appointments (before current time)
+        (appointmentDate === todayIST && appointmentTime < currentTime) 
+      );  // it is considering both time and date for past appointment that's why it is not showing in morning all past appointments...
     }
 
     return true;

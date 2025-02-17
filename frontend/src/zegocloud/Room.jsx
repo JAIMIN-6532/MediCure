@@ -54,9 +54,8 @@ const Room = () => {
   // Function to end the session
   const endSession = () => {
     console.log("Ending the session...");
-    // You can add ZEGOCLOUD's end room functionality here (e.g., leave the room, stop video/audio)
-    // For example, ZegoUIKitPrebuilt.leaveRoom() to leave the room
-    // Assuming you have a ZEGOCLOUD API to end the session or leave the room
+    // adding ZEGOCLOUD's end room functionality here (e.g., leave the room, stop video/audio)
+    // ZegoUIKitPrebuilt.leaveRoom() to leave the room
     if (stream) {
       stream.getTracks().forEach((track) => track.stop()); // Stop media tracks
     }

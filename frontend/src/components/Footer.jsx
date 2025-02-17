@@ -15,7 +15,7 @@ function Footer() {
           </div>
 
           {/* Quick Links */}
-          <div>
+          {/* <div>
             <h3 className="text-xl font-semibold text-black mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li><a href="#" className="hover:text-white transition-colors">Find Doctors</a></li>
@@ -23,7 +23,7 @@ function Footer() {
               <li><a href="#" className="hover:text-white transition-colors">Our Services</a></li>
               <li><a href="#" className="hover:text-white transition-colors">Health Blog</a></li>
             </ul>
-          </div>
+          </div> */}
 
           {/* Contact Info */}
           <div>
@@ -31,15 +31,15 @@ function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center">
                 <Phone className="w-5 h-5 mr-3" />
-                <span>+1 (555) 123-4567</span>
+                <span>+91 1234567890</span>
               </li>
               <li className="flex items-center">
                 <Mail className="w-5 h-5 mr-3" />
-                <span>contact@healthdoc.com</span>
+                <span>contact@medicure.com</span>
               </li>
               <li className="flex items-center">
                 <MapPin className="w-5 h-5 mr-3" />
-                <span>123 Medical Plaza, NY 10001</span>
+                <span>123 Medical Plaza,AHM</span>
               </li>
             </ul>
           </div>
@@ -48,16 +48,16 @@ function Footer() {
           <div>
             <h3 className="text-xl font-semibold text-black mb-4">Follow Us</h3>
             <div className="flex space-x-4">
-              <a href="#" className="hover:text-black transition-colors">
+              <a href="https://www.instagram.com/___medicure_/" className="hover:text-black transition-colors">
                 <Facebook className="w-6 h-6" />
               </a>
-              <a href="#" className="hover:text-black transition-colors">
+              <a href="https://www.instagram.com/___medicure_/" className="hover:text-black transition-colors">
                 <Twitter className="w-6 h-6" />
               </a>
-              <a href="#" className="hover:text-black transition-colors">
+              <a href="https://www.instagram.com/___medicure_/" className="hover:text-black transition-colors">
                 <Instagram className="w-6 h-6" />
               </a>
-              <a href="#" className="hover:text-black transition-colors">
+              <a href="https://www.instagram.com/___medicure_/" className="hover:text-black transition-colors">
                 <Linkedin className="w-6 h-6" />
               </a>
             </div>
@@ -65,7 +65,7 @@ function Footer() {
         </div>
 
         <div className="border-t border-gray-800 mt-12 pt-8 text-center">
-          <p>&copy; 2024 HealthDoc. All rights reserved.</p>
+          <p>&copy; 2025 Medicure. All rights reserved.</p>
         </div>
       </div>
     </footer>
