@@ -6,7 +6,7 @@ function About() {
       <div className="max-w-7xl mx-auto">
         {/* Hero Section */}
         <div className="text-center mb-20">
-          <h1 className="text-6xl font-bold mb-8 bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 bg-clip-text text-transparent">
+          <h1 className="text-5xl font-bold mb-8 bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 bg-clip-text text-transparent">
             Connecting Healthcare
           </h1>
           <p className="text-2xl text-gray-600 max-w-3xl mx-auto">
