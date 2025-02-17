@@ -20,7 +20,7 @@ function Contact() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-blue-50 py-16 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-blue-50 py-16 px-4 sm:px-6 lg:px-8 pt-16">
       <div className="max-w-7xl mx-auto">
         {/* Hero Section */}
         <div className="text-center mb-20">
@@ -28,7 +28,7 @@ function Contact() {
             Let's Connect
           </h1>
           <p className="text-2xl text-gray-600 max-w-3xl mx-auto">
-            Have questions about our platform? We're here to help you 24/7.
+            Have questions about our platform? We're here to help you.
           </p>
         </div>
 
@@ -46,7 +46,7 @@ function Contact() {
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900">Phone Support</h3>
-                    <p className="text-gray-600 mt-2">+1 (555) 123-4567</p>
+                    <p className="text-gray-600 mt-2">+91 1234567890</p>
                     <p className="text-gray-600">Available 24/7 for support</p>
                   </div>
                 </div>
@@ -73,8 +73,7 @@ function Contact() {
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900">Location</h3>
-                    <p className="text-gray-600 mt-2">123 Healthcare Avenue</p>
-                    <p className="text-gray-600">Medical District, City 12345</p>
+                    <p className="text-gray-600 mt-2">123 Medical Plaza,AHM</p>
                   </div>
                 </div>
               </div>
@@ -86,7 +85,7 @@ function Contact() {
               <div className="space-y-6">
                 <div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">How do I connect with a doctor?</h3>
-                  <p className="text-gray-600">Simply sign up, choose a doctor, and schedule a video consultation at your preferred time.</p>
+                  <p className="text-gray-600">Simply sign up, choose a doctor, and schedule a video and In-person consultation.</p>
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">Is my data secure?</h3>

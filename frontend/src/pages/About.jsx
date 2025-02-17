@@ -2,7 +2,7 @@ import React from 'react';
 
 function About() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-blue-50 py-16 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-blue-50 py-16 px-4 sm:px-6 lg:px-8 pt-16">
       <div className="max-w-7xl mx-auto">
         {/* Hero Section */}
         <div className="text-center mb-20">
@@ -30,13 +30,13 @@ function About() {
             <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-shadow">
               <h2 className="text-4xl font-bold text-gray-900 mb-6">Our Mission</h2>
               <p className="text-xl text-gray-600 leading-relaxed">
-                We're revolutionizing healthcare access by creating a seamless connection between patients and qualified healthcare professionals. Our platform enables instant, secure video consultations, making quality healthcare accessible to everyone, anywhere.
+                We're revolutionizing healthcare access by creating a seamless connection between patients and qualified healthcare professionals Through Video and In-person Consultaion. Our platform enables secure video consultations, making quality healthcare accessible to everyone, anywhere.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-6">
               <div className="bg-blue-600 text-white rounded-xl p-6 transform hover:scale-105 transition-all">
                 <div className="text-4xl font-bold mb-2">24/7</div>
-                <div className="text-lg">Access to Care</div>
+                <div className="text-lg">Available for Help</div>
               </div>
               <div className="bg-blue-600 text-white rounded-xl p-6 transform hover:scale-105 transition-all">
                 <div className="text-4xl font-bold mb-2">100%</div>
@@ -63,8 +63,8 @@ function About() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Instant Access</h3>
-            <p className="text-gray-600">Connect with healthcare professionals instantly through our secure video platform.</p>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">Book An Appointemnt</h3>
+            <p className="text-gray-600">Connect with doctors through Book Online or Offline Appointments.</p>
           </div>
           <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-2">
             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6">
@@ -83,9 +83,9 @@ function About() {
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Join thousands of patients who trust our platform for their healthcare needs.
           </p>
-          <button className="bg-white text-blue-600 text-xl font-semibold px-10 py-4 rounded-xl transform hover:scale-105 transition-all duration-300 hover:shadow-xl">
+          {/* <button className="bg-white text-blue-600 text-xl font-semibold px-10 py-4 rounded-xl transform hover:scale-105 transition-all duration-300 hover:shadow-xl">
             Get Started Now
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
