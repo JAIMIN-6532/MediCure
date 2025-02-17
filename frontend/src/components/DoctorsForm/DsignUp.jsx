@@ -17,9 +17,18 @@ const DsignUp = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();  // Initialize the navigate function
   const [error, setError] = useState('');
+  const [nameError, setNameError] = useState('');
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (e.target.name === 'name') {
+      const namePattern = /^Dr [A-Za-z]\. [A-Za-z]\. [A-Za-z]+$/;
+      if (!namePattern.test(e.target.value)) {
+        setNameError('Name should be in the format "Dr A J [lastName]".');
+      } else {
+        setNameError('');
+      }
+    }
   };
 
   const handleSendOtp = async (e) => {
@@ -43,6 +52,10 @@ const DsignUp = () => {
     e.preventDefault();
     setLoading(true);
     setError(''); // Reset the error message
+    if (nameError) {
+      setLoading(false);
+      return;
+    }
   
     try {
       const response = await axios.post(`${import.meta.env.VITE_APP_API_URL}/api/doctor/dsignup`, {
@@ -75,6 +88,11 @@ const DsignUp = () => {
     <AuthLayout title="Doctor Sign Up">
       <form onSubmit={otpSent ? handleSubmit : handleSendOtp} className="space-y-4">
         <div>
+        <p className="text-sm text-gray-500 mb-2">
+            <strong>Full Name:</strong> Please enter your name in the format:
+            <strong> Dr A J Rathod</strong>. For example, if your full name is 
+            "John Doe", you should write it as <strong>Dr J D Doe</strong>.
+          </p>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Full Name
           </label>
@@ -87,6 +105,7 @@ const DsignUp = () => {
             placeholder="Enter your full name"
             required
           />
+           {nameError && <p className="text-red-500 text-sm">{nameError}</p>}
         </div>
 
         <div>
@@ -152,7 +171,7 @@ const DsignUp = () => {
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || nameError}
           className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2"
         >
           {loading ? (
