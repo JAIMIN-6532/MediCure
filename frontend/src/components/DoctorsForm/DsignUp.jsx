@@ -26,7 +26,7 @@ const DsignUp = () => {
       if (!namePattern.test(e.target.value)) {
         setNameError('Name should be in the format "Dr A J [lastName]".');
       } else {
-        setNameError('');
+        setNameError('');  // Clear the error when the format is correct
       }
     }
   };
@@ -90,8 +90,7 @@ const DsignUp = () => {
         <div>
         <p className="text-sm text-gray-500 mb-2">
             <strong>Full Name:</strong> Please enter your name in the format:
-            <strong> Dr A J Rathod</strong>. For example, if your full name is 
-            "John Doe", you should write it as <strong>Dr J D Doe</strong>.
+            <strong> Dr A B [Lastname]</strong>.
           </p>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Full Name

@@ -5,7 +5,7 @@ function About() {
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-blue-50 py-16 px-4 sm:px-6 lg:px-8 pt-16">
       <div className="max-w-7xl mx-auto">
         {/* Hero Section */}
-        <div className="text-center mb-30">
+        <div className="text-center mb-10">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-8 bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 bg-clip-text text-transparent">
             Connecting Healthcare
           </h1>
