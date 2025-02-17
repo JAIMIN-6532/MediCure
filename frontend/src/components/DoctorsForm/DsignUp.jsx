@@ -22,9 +22,9 @@ const DsignUp = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     if (e.target.name === 'name') {
-      const namePattern = /^Dr [A-Za-z]\. [A-Za-z]\. [A-Za-z]+$/;
+      const namePattern = /^Dr [A-Za-z]\ [A-Za-z]\ [A-Za-z]+$/;
       if (!namePattern.test(e.target.value)) {
-        setNameError('Name should be in the format "Dr A J [lastName]".');
+        setNameError('Name should be in the format "Dr A B [lastName]".');
       } else {
         setNameError('');  // Clear the error when the format is correct
       }
@@ -88,10 +88,10 @@ const DsignUp = () => {
     <AuthLayout title="Doctor Sign Up">
       <form onSubmit={otpSent ? handleSubmit : handleSendOtp} className="space-y-4">
         <div>
-        <p className="text-sm text-gray-500 mb-2">
+       {nameError && <p className="text-sm text-gray-500 mb-2">
             <strong>Full Name:</strong> Please enter your name in the format:
             <strong> Dr A B [Lastname]</strong>.
-          </p>
+          </p> } 
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Full Name
           </label>
