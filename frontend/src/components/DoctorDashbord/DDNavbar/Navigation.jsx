@@ -20,7 +20,7 @@ const navItems = [
   // { name: 'My Patients', icon: UserGroupIcon },
   { name: 'Reviews', icon: StarIcon },
   // { name: 'Messages', icon: ChatBubbleLeftIcon },
-  { name: 'Settings', icon: Cog6ToothIcon },
+  // { name: 'Settings', icon: Cog6ToothIcon },
   // { name: 'Logout', icon: ArrowRightOnRectangleIcon },
 ];
 
