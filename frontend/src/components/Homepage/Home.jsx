@@ -121,11 +121,11 @@ const Home = () => {
       </div>
 
       {/* Doctor Cards Section */}
-      {userType !== "doctor" && (
+      {/* {userType !== "doctor" && (
         <div className="bg-light-blue">
           <DoctorCard />
         </div>
-      )}
+      )} */}
       {/* New Section: How It Works */}
       <div className="bg-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
