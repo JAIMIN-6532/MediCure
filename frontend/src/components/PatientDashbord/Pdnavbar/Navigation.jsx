@@ -15,7 +15,7 @@ import {
 
 const navItems = [
   { name: 'My-Appointments', icon: CalendarIcon },
-  { name: 'Settings', icon: Cog6ToothIcon },
+  // { name: 'Settings', icon: Cog6ToothIcon },
 ];
 
 

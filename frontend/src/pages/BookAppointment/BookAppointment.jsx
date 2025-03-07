@@ -84,7 +84,7 @@ const BookAppointment = () => {
 
   const [prevDoctorId, setPrevDoctorId] = useState(null);
   useEffect(() => {
-    socket = io.connect("https://medicure-go5v.onrender.com", {
+    socket = io.connect(`${import.meta.env.VITE_APP_API_URL}`, {
       transports: ["websocket", "polling"],
     });
     // return () => {
@@ -318,7 +318,7 @@ const BookAppointment = () => {
     if (formData.paymentMethod === "Online") {
       try {
         const response = await axios.post(
-          "https://medicure-go5v.onrender.com/api/payment/create-order",
+          `${import.meta.env.VITE_APP_API_URL}/api/payment/create-order`,
           {
             doctor: formData.doctorId,
             amount: selectedDoctor.consultationFee,
@@ -343,7 +343,7 @@ const BookAppointment = () => {
               console.log(response);
               const orderId = response.razorpay_order_id;
               const isPaymentCaptured = await axios.post(
-                "https://medicure-go5v.onrender.com/api/payment/verify",{
+                `${import.meta.env.VITE_APP_API_URL}/api/payment/verify`,{
                   orderId,
                 }
               )

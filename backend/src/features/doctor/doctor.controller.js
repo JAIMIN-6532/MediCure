@@ -360,5 +360,23 @@ export default class DoctorController {
     }
   };
 
+  updateProfile = async (req, res, next) => {
+    try{
+      const doctorId = req.params.did;
+      const updatedDoctor = await this.doctorRepository.updateProfile(doctorId, req.body);
+      if(!updatedDoctor){
+        return res.status(404).json({message: "Doctor not found", success: false});
+      }
+      return res.status(201).json({
+        message: "Profile updated successfully",
+        doctor: updatedDoctor,
+        success: true
+      });
+    }catch (err) {
+      console.log("inside DC addavailability", err);
+      next(err);
+    }
+  }
+
 
 }

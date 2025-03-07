@@ -74,5 +74,9 @@ doctorRouter.post("/generateToken", (req, res, next) => {
   zegoCloud(req, res, next);
 });
 
+doctorRouter.post("/updateprofile/:did", (req, res, next) => {
+  doctorController.updateProfile(req, res, next);
+});
+
 
 export default doctorRouter;

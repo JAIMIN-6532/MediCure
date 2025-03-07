@@ -10,10 +10,13 @@ import DoctorCard from "./DoctorCard";
 import { useState } from "react";
 import SpecialtyCard from "./SpecialityCard";
 import homedoctor from "../../assets/homedoctor.png";
+import how from "../../assets/how.png";
 import { useNavigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import { useEffect } from "react";
 import { gsap } from "gsap";
+import Testimonials from "./Testinomials";
+import AnimatedCounters from "./AnimatedCounters";
 const Home = () => {
   const navigate = useNavigate();
   const [userType, setUserType] = useState("");
@@ -52,11 +55,11 @@ const Home = () => {
       ".appointment-btn .letter", // Targeting each individual letter inside the span
       {
         opacity: 0,
-        y: 20, // Start 20px lower
+        // y: -20, // Start 20px lower
       },
       {
         opacity: 1,
-        y: 0, // Move back to normal position
+        // y: 100, // Move back to normal position
         duration: 1.1, // Shorter duration for faster animation
         ease: "easeOut",
         stagger: 0.05, // A little stagger to make the animation feel more fluid
@@ -79,7 +82,7 @@ const Home = () => {
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
                 <span className="text-primary-blue">Search Doctors,</span>
                 <br />
-                <span className="text-dark-blue appointment-btn">
+                <span className="text-dark-blue appointment-btn h-[50px]">
                   Make an Appointment
                 </span>
               </h1>
@@ -120,6 +123,10 @@ const Home = () => {
         <SpecialtyCard />
       </div>
 
+      <div className="mt-[-60px] mb-[60px]">
+        <AnimatedCounters />
+      </div>
+
       {/* Doctor Cards Section */}
       {/* {userType !== "doctor" && (
         <div className="bg-light-blue">
@@ -127,13 +134,13 @@ const Home = () => {
         </div>
       )} */}
       {/* New Section: How It Works */}
-      <div className="bg-white py-16">
+      <div className="bg-white py-16 mt-[-50px]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             {/* Left Side: Image */}
             <div className="md:w-1/2">
               <img
-                src={homedoctor} // Replace with your image
+                src={how} // Replace with your image
                 alt="Search Doctor"
                 className="w-full max-w-lg mx-auto rounded-lg"
               />
@@ -207,6 +214,9 @@ const Home = () => {
             </div>
           </div>
         </div>
+      </div>
+      <div className="mt-[-50px]">
+        <Testimonials />
       </div>
     </>
   );

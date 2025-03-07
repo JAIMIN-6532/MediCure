@@ -311,5 +311,36 @@ export default class DoctorRepository {
     }
   };
   
+  updateProfile = async (doctorId, data) => {
+    try{
+      const objectId = new mongoose.Types.ObjectId(doctorId);
+      console.log('doctorId:', doctorId);
+      console.log('data:', data);
+      const updatedDoctor = await DoctorModel.findOneAndUpdate(
+        { _id: objectId },
+        {
+          $set: {
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+            clinicaddress: data.clinicaddress,
+            city: data.city,
+            state: data.state,
+            serviceType: data.serviceType,
+            consultationFee: data.consultationFee,
+          },
+        },
+        { new: true }
+      );
+      console.log('updatedDoctor:', updatedDoctor);
+      if(!updatedDoctor){
+        return false;
+      }
+      return updatedDoctor;
+    }catch (error) {
+      console.error('Error deleting appointments:', error);
+      return 'Error deleting appointments: ' + error.message;
+    }
+  }
   
 }

@@ -11,6 +11,7 @@ import Patients from '../../components/DoctorDashbord/DDTabs/Patients';
 import AvailableTimings from '../../components/DoctorDashbord/DDTabs/AvailableTimings';
 import { fetchDoctorById } from '../../reduxToolkit/reducers/DoctorReducer';
 import { useParams } from 'react-router-dom';
+import Settings from '../../components/DoctorDashbord/DDTabs/Settings';
 
 
 const DoctorDashbord= ()=>{
@@ -87,6 +88,8 @@ const DoctorDashbord= ()=>{
         return <AvailableTimings doctor={doctor}/>;
       case 'Reviews':
         return <Patients doctor={doctor}/>;
+      case 'Settings':
+        return <Settings doctor={doctor} />;
       default:
         return (
           <div className="flex items-center justify-center h-full">

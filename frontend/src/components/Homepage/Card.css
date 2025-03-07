@@ -1,0 +1,19 @@
+@keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  
+  .specialty-slider {
+    overflow: hidden;
+  }
+  
+  .specialty-track {
+    display: flex;
+    animation: scroll 20s linear infinite;
+    width: calc(300px * 20); /* 5 items × 4 duplicates = 20 cards */
+  }
+  
+  .specialty-slide {
+    min-width: 300px;
+    padding: 0 0.5rem;
+  }

@@ -191,7 +191,7 @@ export default function Appointments({ patientappointments, patient }) {
     } else if (activeTab === "Upcoming") {
       return appointmentDate > todayIST; // Upcoming appointments (future dates)
     } else if (activeTab === "Past") {
-      return appointmentDate <= todayIST && appointmentTime < currentTime ; // Past appointments (past dates)
+      return ((appointmentDate<todayIST) || (appointmentDate == todayIST && appointmentTime < currentTime)) ; // Past appointments (past dates)
     }
 
     return true;
