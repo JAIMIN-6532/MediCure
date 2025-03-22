@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import DoctorModel from "./doctor.model.js";
 import PatientModel from "../patient/patient.model.js";
 import AppointmentModel from "../appointments/appointments.model.js";
+import moment from "moment-timezone";
 // import PaymentModel from "../payment/payment.model.js";
 export default class DoctorRepository {
   signUp = async ({ name, email, password }) => {
@@ -338,9 +339,56 @@ export default class DoctorRepository {
       }
       return updatedDoctor;
     }catch (error) {
-      console.error('Error deleting appointments:', error);
-      return 'Error deleting appointments: ' + error.message;
+      console.error('Error updating appointments:', error);
+      return 'Error updating appointments: ' + error.message;
     }
   }
   
+
+  getWeeklyStats = async(doctorId)=>{
+    try{
+      const objectId = new mongoose.Types.ObjectId(doctorId);
+      const appointemets = await AppointmentModel.find({doctor:objectId});
+      console.log('appointemets:', appointemets);
+      const weeklyStats = {
+        totalAppointments: [],
+        // totalRevenue: 0,
+      };
+
+      const today = new Date();
+      const istdate = moment(today).tz("Asia/Kolkata").format("YYYY-MM-DD");
+      console.log('istdate:', istdate);
+
+      const startOfWeek  = moment(istdate).startOf('week');
+
+      // Iterate over the next 7 days (for this week)
+    for (let i = 0; i < 7; i++) {
+      const startOfDay = startOfWeek.clone().add(i, 'days').startOf('day'); // Start of the day
+      const endOfDay = startOfDay.clone().endOf('day'); // End of the day
+
+      // Format the date for the output
+      const dayDate = startOfDay.format("YYYY-MM-DD");
+
+      // Filter appointments that fall within the current day's range
+      const dailyAppointments = appointemets.filter(appointment => {
+        const appointmentDate = moment(appointment.date).tz('Asia/Kolkata');
+        return appointmentDate.isBetween(startOfDay, endOfDay, null, '[]');
+      });
+
+      // Push the total appointments for that day
+      weeklyStats.totalAppointments.push({
+        date: dayDate,
+        appointments: dailyAppointments.length,
+      });
+    }
+
+    console.log('weeklyStats:', weeklyStats);
+    return weeklyStats;
+    
+    }catch (error) {
+      console.error('Error deleting appointments:', error);
+      return error.message;
+    }
+  }
+
 }

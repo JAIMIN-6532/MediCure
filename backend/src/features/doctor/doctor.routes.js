@@ -78,5 +78,13 @@ doctorRouter.post("/updateprofile/:did", (req, res, next) => {
   doctorController.updateProfile(req, res, next);
 });
 
+doctorRouter.get("/weekly-stats/:did", (req, res, next) => {
+  doctorController.getWeeklyStats(req, res, next);
+});
+
+doctorRouter.get("/weekly-appointments/:did", (req, res, next) => {doctorController.getWeeklyAppointments(req, res, next)});
+doctorRouter.get("/monthly-revenue/:did",(req, res, next) => { doctorController.getMonthlyRevenue(req, res, next)});
+doctorRouter.get("/appointment-types/:did", (req, res, next) => {doctorController.getAppointmentTypes(req, res, next)});
+
 
 export default doctorRouter;

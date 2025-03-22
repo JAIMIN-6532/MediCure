@@ -56,6 +56,7 @@ app.use("/api/otp",OtpRouter);
 
 
 
+
 app.use("/api/appointment",appointmentRouter);
 app.use("/api/feedback",feedbackRouter);
 app.use("/api/payment",paymentRouter);

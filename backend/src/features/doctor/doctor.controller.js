@@ -5,14 +5,22 @@ import DoctorModel from "./doctor.model.js";
 import cloudinary from "../../config/cloudinaryconfig.js";
 import jwt from "jsonwebtoken";
 import path from "path";
-
+import mongoose from "mongoose";
+import AppointmentModel from "../appointments/appointments.model.js";
 // import { upload, uploadFiles } from "../../middleware/uploadfile.middleware.js";
 import fs from "fs";
+const MONTHS = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+];
 export default class DoctorController {
   constructor() {
+    this.AppointmentModel = AppointmentModel;
     this.doctorRepository = new DoctorRepository();
     this.otpController = new OtpController();
   }
+
+ 
 
   async signIn(req, res, next) {
     try {
@@ -316,8 +324,8 @@ export default class DoctorController {
       const doctorId = req.params.did;
       const appointments =
         await this.doctorRepository.getAppointmentsByDoctorId(doctorId);
-      console.log("appointments", appointments);
-      console.log("avalibility", appointments);
+      // console.log("appointments", appointments);
+      // console.log("avalibility", appointments);
       return res.status(200).json(appointments);
     } catch (err) {
       console.log("inside DC getAppointmentsByDoctorId", err);
@@ -330,8 +338,8 @@ export default class DoctorController {
       const doctorId = req.params.did;
       const appointments =
         await this.doctorRepository.getConfirmedAppointmentsByDoctorId(doctorId);
-      console.log("appointments", appointments);
-      console.log("avalibility", appointments);
+      // console.log("appointments", appointments);
+      // console.log("avalibility", appointments);
       return res.status(200).json(appointments);
     } catch (err) {
       console.log("inside DC getConfirmedAppointmentsByDoctorId", err);
@@ -378,5 +386,146 @@ export default class DoctorController {
     }
   }
 
+  getWeeklyStats = async (req,res,next)=>{
+    try{
+    const doctorId = req.params.did;
+    const stats = await this.doctorRepository.getWeeklyStats(doctorId);
+    return res.status(200).json(stats);
+    }catch(err){
+      console.log("inside DC getWeeklyStats", err);
+      next(err);
+    }
+  }
+
+
+
+
+ getWeeklyAppointments = async (req, res) => {
+  try {
+    const doctorId = req.params.did;
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - 6); // Last 7 days
+    
+    const data = await AppointmentModel.aggregate([
+      {
+        $match: {
+          doctor: new mongoose.Types.ObjectId(doctorId),
+          date: { $gte: startDate },
+          status: 'Confirmed'
+        }
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { "_id": 1 } }
+    ]);
+
+    // Fill missing dates with zero values
+    const results = [];
+    for(let i = 6; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const dateString = date.toISOString().split('T')[0];
+      
+      const found = data.find(d => d._id === dateString);
+      results.push({
+        date: dateString,
+        count: found ? found.count : 0
+      });
+    }
+    console.log("results", results);
+    res.status(200).json(results);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+getMonthlyRevenue = async (req, res) => {
+  try {
+    const doctorId = req.params.did;
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth() + 1; // 1-12
+    const endDate = new Date(currentYear, currentMonth, 0); // Last day of current month
+
+    // Get aggregated data
+    const data = await AppointmentModel.aggregate([
+      {
+        $match: {
+          doctor: new mongoose.Types.ObjectId(doctorId),
+          status: 'Confirmed',
+          date: {
+            $gte: new Date(`${currentYear}-01-01`),
+            $lte: endDate
+          }
+        }
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$date" },
+            month: { $month: "$date" }
+          },
+          revenue: { $sum: "$appointmentFees" }
+        }
+      },
+      {
+        $project: {
+          year: "$_id.year",
+          month: "$_id.month",
+          revenue: 1,
+          _id: 0
+        }
+      }
+    ]);
+
+    // Create array for months up to current month
+    const monthCount = currentMonth;
+    const fullYearData = Array.from({ length: monthCount }, (_, i) => ({
+      month: i + 1,
+      year: currentYear,
+      revenue: 0
+    }));
+
+    // Merge actual data
+    data.forEach(item => {
+      const index = item.month - 1;
+      if (index >= 0 && index < monthCount) {
+        fullYearData[index] = item;
+      }
+    });
+
+    res.status(200).json(fullYearData);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+ getAppointmentTypes = async (req, res) => {
+  try {
+    const doctorId = req.params.did;
+    
+    const data = await AppointmentModel.aggregate([
+      {
+        $match: {
+          doctor: new mongoose.Types.ObjectId(doctorId),
+          status: { $in: ['Canceled', 'Confirmed'] }
+        }
+      },
+      {
+        $group: {
+          _id: "$type",
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 }

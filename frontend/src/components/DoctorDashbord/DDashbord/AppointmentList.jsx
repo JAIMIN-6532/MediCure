@@ -31,6 +31,7 @@ import profileimg from "../../../assets/patient.png";
 import { useEffect, useState } from "react";
 import moment from "moment-timezone";
 import gsap from "gsap";
+import AppointmentChart from "./AppointmentChart";
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -156,6 +157,8 @@ export default function AppointmentList({ appointments }) {
           </div>
         ))}
       </div>
+      
+  
     </div>
   );
 }

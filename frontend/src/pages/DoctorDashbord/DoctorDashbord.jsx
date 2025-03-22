@@ -12,6 +12,7 @@ import AvailableTimings from '../../components/DoctorDashbord/DDTabs/AvailableTi
 import { fetchDoctorById } from '../../reduxToolkit/reducers/DoctorReducer';
 import { useParams } from 'react-router-dom';
 import Settings from '../../components/DoctorDashbord/DDTabs/Settings';
+import IndividualStatChart from '../../components/DoctorDashbord/DDashbord/StatsIndividualCharts';
 
 
 const DoctorDashbord= ()=>{
@@ -78,7 +79,11 @@ const DoctorDashbord= ()=>{
       case 'Dashboard':
         return (
           <>
+          <div className="p-6">
             <Stats filteredAppointments={filteredAppointments} doctor={doctor} appointments={appointments}/>
+            
+      <IndividualStatChart doctorId={doctor._id} />
+    </div>
             <AppointmentList filteredAppointments={filteredAppointments}  appointments={appointments} />
           </>
         );
