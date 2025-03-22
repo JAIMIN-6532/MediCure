@@ -31,12 +31,12 @@ export default function AnimatedTransition({
         gsap.from(ref.current, { x: -50, ...animProps });
         break;
       default: // fade
-        gsap.from(ref.current, { opacity: 0, ...animProps });
+        gsap.from(ref.current, { opacity: 1, ...animProps });
     }
   }, [type, delay]);
 
   return (
-    <div ref={ref} className={className} style={{ opacity: 0 }}>
+    <div ref={ref} className={className} style={{ opacity: 1 }}>
       {children}
     </div>
   );
