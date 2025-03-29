@@ -91,7 +91,7 @@ export default class PatientController {
           // return res.status(200).cookie("token", token).send({ user, token });
           // console.log("User: ", req.cookies["token"]);
           
-          return res.status(200).send({ user: user, token }); // You could alternatively return user info here
+          return res.status(200).send({ user: user, token }); 
         } else {
           return res.status(400).send("Incorrect Credentials");
         }
@@ -114,10 +114,9 @@ export default class PatientController {
 
   async getUserById(req, res, next) {
     try {
-      const userId = req.userID; // Get the user ID from the request object
-      const userType = req.userType; // Get the user type from the request object
+      const userId = req.userID; 
+      const userType = req.userType; 
       console.log("user type is : ", userType);
-      // const userId = req.params.userId;    // in routes :userId that's why req.params.userId
       console.log("user id is : ", userId);
       const user = await this.patientRepository.getUserById(userId);
       console.log(user);

@@ -7,7 +7,6 @@ import jwt from "jsonwebtoken";
 import path from "path";
 import mongoose from "mongoose";
 import AppointmentModel from "../appointments/appointments.model.js";
-// import { upload, uploadFiles } from "../../middleware/uploadfile.middleware.js";
 import fs from "fs";
 const MONTHS = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -65,10 +64,7 @@ export default class DoctorController {
 
           console.log("Decoded Payload: ", decodedPayload);
 
-          // await sendToken(user, token, res, 200);
-          // return res.status(200).cookie("token", token).send({ user, token });
-          // console.log("User: ", req.cookies["token"]);
-          return res.status(200).send({ user: user, token }); // You could alternatively return user info here
+          return res.status(200).send({ user: user, token }); 
         } else {
           return res.status(400).send("Incorrect Credentials");
         }
@@ -104,46 +100,6 @@ export default class DoctorController {
     }
   };
 
-  // uploadDocument = async (req, res, next) => {
-  //   try {
-  //     if (
-  //       !req.files ||
-  //       !req.files["images"] ||
-  //       !req.files["id"] ||
-  //       !req.files["degree"]
-  //     ) {
-  //       return res.status(400).json({ message: "All files are required" });
-  //     }
-
-  //     // URLs of uploaded files
-  //     const imageUrl = `/uploads/images/${req.files["images"][0].filename}`;
-  //     const idPdfUrl = `/uploads/id/${req.files["id"][0].filename}`;
-  //     const degreePdfUrl = `/uploads/degree/${req.files["degree"][0].filename}`;
-
-  //     // Assuming `doctorId` is passed in the URL parameter
-  //     const doctorId = req.params.doctorId;
-  //     console.log("doctorId constroller", doctorId);
-  //     console.log(req.params.doctorId);
-  //     // Update the doctor document with the file URLs
-  //     const updatedDoctor = await this.doctorRepository.uploadDocument({
-  //       doctorId,
-  //       imageUrl,
-  //       idPdfUrl,
-  //       degreePdfUrl,
-  //     });
-
-  //     console.log(updatedDoctor);
-  //     return res.status(201).json({
-  //       message: "Documents uploaded successfully",
-  //       doctor: updatedDoctor,
-  //     });
-  //   } catch (err) {
-  //     console.error("errrrrrrrrrrrrrrrr", err.message);
-  //     next(err);
-  //   }
-  // };
-
-  // Function to upload files to Cloudinary
   uploadToCloudinary = (filePath) => {
     return new Promise((resolve, reject) => {
       cloudinary.v2.uploader.upload(filePath, (error, result) => {
@@ -193,7 +149,7 @@ export default class DoctorController {
           degreeDocumentUrl: degreePdfUrl,
           steps: 2,
         },
-        { new: true } // To return the updated document
+        { new: true } 
       );
 
       console.log(updatedDoctor);
@@ -202,7 +158,6 @@ export default class DoctorController {
         return res.status(404).json({ message: "Doctor not found" });
       }
 
-      // Send success response
       return res.status(201).json({
         message: "Documents uploaded successfully",
         doctor: updatedDoctor,
@@ -423,7 +378,6 @@ export default class DoctorController {
       { $sort: { "_id": 1 } }
     ]);
 
-    // Fill missing dates with zero values
     const results = [];
     for(let i = 6; i >= 0; i--) {
       const date = new Date();

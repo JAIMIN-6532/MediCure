@@ -1,4 +1,3 @@
-// Step2.js
 import React from "react";
 import GenderSelection from "./GenderSelection";
 
@@ -102,7 +101,6 @@ const Step2 = ({ formData, handleChange }) => {
         </select>
       </div>
 
-      {/* Experience Field */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Experience (in years)

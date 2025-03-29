@@ -1,4 +1,3 @@
-// GenderSelection.js
 import React from 'react';
 
 const GenderSelection = ({ formData, handleChange }) => {

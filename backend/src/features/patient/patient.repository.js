@@ -8,8 +8,8 @@ export default class PatientRepository {
       const existingPatient = await patientModel.findOne({ email });
       if (existingPatient) {
         const error = new Error("Email already exists");
-        error.status = 400; // Set specific status for "bad request"
-        throw error; // Throw the error to be handled later
+        error.status = 400; 
+        throw error; 
       }
       const newPatient = await patientModel.create({
         name,
@@ -77,31 +77,30 @@ export default class PatientRepository {
       const patient = await patientModel
         .findById(patientId)
         .populate({
-          path: "appointments", // Populate appointments
+          path: "appointments", // populate appointments
           populate: {
-            path: "doctor", // Nested population for doctor inside each appointment
-            select: "name email profileImageUrl", // Select fields to populate for the doctor
+            path: "doctor", // nested population for doctor inside each appointment
+            select: "name email profileImageUrl", // select fields to populate for the doctor
           },
         })
         .exec();
         patient.appointments.sort((a, b) => {
-          // First, compare by the date (ISO format)
+          // first--compare by the date (ISO format)
           const dateA = new Date(a.date);
           const dateB = new Date(b.date);
         
-          // If dates are different, return the comparison of the dates
+          // if dates are different, return the comparison of the dates
           if (dateA !== dateB) {
             return dateA - dateB;
           }
         
-          // If the dates are the same, compare by time
+          // if the dates are the same, compare by time
           const timeA = convertTo24HourFormat(a.timeSlot);
           const timeB = convertTo24HourFormat(b.timeSlot);
         
           return timeA - timeB;
         });
         
-        // Helper function to convert 12-hour AM/PM time format to 24-hour format for sorting
         function convertTo24HourFormat(timeSlot) {
           const [time, modifier] = timeSlot.split(" ");
           let [hours, minutes] = time.split(":").map(Number);
@@ -112,7 +111,7 @@ export default class PatientRepository {
             hours = 0;
           }
         
-          return hours * 60 + minutes;  // Return time in minutes for easy comparison
+          return hours * 60 + minutes;  
         }
         
       patient.appointments = patient.appointments.filter(

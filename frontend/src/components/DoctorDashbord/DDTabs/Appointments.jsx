@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 
 import Room from "../../../zegocloud/Room";
-// Helper function to get status colors
 const getStatusColor = (status) => {
   const colors = {
     Upcoming: "bg-blue-50 text-blue-600",
@@ -19,13 +18,12 @@ const getStatusColor = (status) => {
   return colors[status] || "bg-gray-50 text-gray-600";
 };
 
-// Appointments Component
 export default function Appointments({
   appointments,
   doctor,
   dispatchCancelAppointement,
 }) {
-  const [activeTab, setActiveTab] = useState("Today"); // State to handle active tab (Today, Upcoming, Past)
+  const [activeTab, setActiveTab] = useState("Today");
   const [startRoom, setStartRoom] = useState(false);
   const [appointmentId, setAppointmentId] = useState("");
   console.log(appointments);
@@ -43,7 +41,6 @@ export default function Appointments({
     );
   }, []);
 
-  // Handle tab change (Today, Upcoming, Past)
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
@@ -52,72 +49,60 @@ export default function Appointments({
     const [time, period] = timeSlot.split(" ");
     let [hours, minutes] = time.split(":").map(Number);
 
-    if (period === "PM" && hours !== 12) hours += 12; // Convert PM hours to 24-hour format
-    if (period === "AM" && hours === 12) hours = 0; // Convert 12 AM to 00:00
+    if (period === "PM" && hours !== 12) hours += 12;
+    if (period === "AM" && hours === 12) hours = 0;
 
-    return hours * 100 + minutes; // Convert to HHMM format for easier comparison
+    return hours * 100 + minutes;
   };
 
-  // Filter appointments based on the selected tab
   const filteredAppointments = appointments?.filter((appointment) => {
-    // Extract the date part (YYYY-MM-DD) from appointment.date
-    const appointmentDate = appointment.date.split("T")[0]; // Get the date part only (YYYY-MM-DD)
-
-    // Get today's date in UTC (no time zone adjustment yet)
-    // Get current IST date and time
+    const appointmentDate = appointment.date.split("T")[0];
     const istDate = moment().tz("Asia/Kolkata");
-    const todayIST = istDate.format("YYYY-MM-DD"); // Get today's date in IST (YYYY-MM-DD)
-    const currentTime = istDate.hours() * 100 + istDate.minutes(); // Convert current time to 24-hour format
-
+    const todayIST = istDate.format("YYYY-MM-DD");
+    const currentTime = istDate.hours() * 100 + istDate.minutes();
     console.log("Today IST: ", todayIST);
     console.log("Current Time in IST: ", currentTime);
-    // Convert appointment time slot to 24-hour format
     const appointmentTime = convertTo24HourFormat(appointment.timeSlot);
 
-    // Create a new appointment object to avoid mutating the original object
     const appointmentCopy = { ...appointment };
 
-    // Automatically mark appointments as "Past" if the time has passed
     if (
       appointmentDate < todayIST ||
       (appointmentDate === todayIST && appointmentTime < currentTime)
     ) {
-      appointmentCopy.status = "Past"; // Modify the copy, not the original
+      appointmentCopy.status = "Past";
     }
-    console.log("Today IST: ", todayIST); // Debugging the IST date
-    // Handle the different tabs
+    console.log("Today IST: ", todayIST);
     if (activeTab === "Today") {
-      return appointmentDate === todayIST && appointmentTime >= currentTime; // Compare only the date part (date in IST)
+      return appointmentDate === todayIST && appointmentTime >= currentTime;
     } else if (activeTab === "Upcoming") {
-      return appointmentDate > todayIST; // Upcoming appointments (future dates)
+      return appointmentDate > todayIST;
     } else if (activeTab === "Past") {
       return (
         appointmentDate < todayIST ||
-        (appointmentDate === todayIST && appointmentTime < currentTime) 
-      );  // it is considering both time and date for past appointment that's why it is not showing in morning all past appointments...
+        (appointmentDate === todayIST && appointmentTime < currentTime)
+      );
     }
 
     return true;
   });
 
-  // Sort today's appointments by date and time slot
   const sortedAppointments = filteredAppointments.sort((a, b) => {
     const dateA = a.date.split("T")[0];
     const dateB = b.date.split("T")[0];
 
     if (dateA !== dateB) {
-      return dateA.localeCompare(dateB); // Sort by date
+      return dateA.localeCompare(dateB);
     }
 
-    const timeA = convertTo24HourFormat(a.timeSlot); // Convert time slot to 24-hour format
-    const timeB = convertTo24HourFormat(b.timeSlot); // Convert time slot to 24-hour format
+    const timeA = convertTo24HourFormat(a.timeSlot);
+    const timeB = convertTo24HourFormat(b.timeSlot);
 
-    return timeA - timeB; // Sort by time (ascending)
+    return timeA - timeB;
   });
 
   console.log(sortedAppointments);
 
-  // Function to get the class for the active tab button
   const getButtonClass = (tab) => {
     return activeTab === tab
       ? "px-4 py-2 bg-primary text-white rounded-lg"
@@ -127,19 +112,18 @@ export default function Appointments({
   const handleStartSession = async (appointmentId, patient) => {
     console.log("Start Session for appointment ID: ", appointmentId);
     const sendmail = await axios.post(
-      `https://medicure-go5v.onrender.com/api/appointment/sendmail/${appointmentId}`,{
+      `https://medicure-go5v.onrender.com/api/appointment/sendmail/${appointmentId}`,
+      {
         patient,
       }
     );
-    if (sendmail.data.success){
+    if (sendmail.data.success) {
       console.log("Mail sent");
-      // <Room appointmentId={appointmentId} />
       setStartRoom(true);
       console.log("Appointment ID: ", appointmentId);
       setAppointmentId(appointmentId);
       navigate(`/room/${appointmentId}`);
-      }
-    else console.log("Mail not sent");
+    } else console.log("Mail not sent");
   };
 
   const handleCancelAppointement = async (appointmentId) => {
@@ -208,7 +192,6 @@ export default function Appointments({
                     className="w-11 h-11 rounded-full object-cover cursor-pointer"
                   />
                 ) : (
-                  // Fallback to initials if no profile image
                   <span className="w-8 h-8 flex items-center justify-center rounded-full bg-purple-300 text-white font-bold cursor-pointer">
                     {appointment.patient?.name.slice(0, 2).toUpperCase() ||
                       "User"}
@@ -277,6 +260,5 @@ export default function Appointments({
         </div>
       </div>
     </div>
-    
   );
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, Star } from 'lucide-react';
 
-// Sample data for testimonials
+// Sample data
 const testimonials = [
   {
     id: 1,
@@ -29,7 +29,7 @@ const testimonials = [
   }
 ];
 
-// Card component for individual testimonial
+// Card component for single testimonial
 const TestimonialCard = ({ testimonial, index, isVisible }) => {
   return (
     <div 

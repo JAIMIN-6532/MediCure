@@ -30,7 +30,7 @@ export default function PersonalInfo({
     paymentMethod: "Offline",
     acceptTerms: false,
     type: "",
-    serviceType: doctor?.serviceType === "Both" ? null : doctor?.serviceType, // Initialize serviceType based on doctor's serviceType
+    serviceType: doctor?.serviceType === "Both" ? null : doctor?.serviceType,
   });
 
   const handleChange = (e) => {
@@ -41,7 +41,6 @@ export default function PersonalInfo({
     }));
   };
 
-  // Handle the service type selection change
   const handleServiceTypeChange = (type) => {
     setFormData((prevData) => ({
       ...prevData,
@@ -133,7 +132,6 @@ export default function PersonalInfo({
               />
             </div>
 
-            {/* Service Type Selection if Doctor Offers Both */}
             {doctor?.serviceType === "Both" && (
               <div className="mb-6">
                 <h3 className="text-lg font-semibold text-gray-700 mb-3">
@@ -166,7 +164,6 @@ export default function PersonalInfo({
               </div>
             )}
 
-            {/* If the doctor offers only one type, automatically select it */}
           </div>
           {doctor?.serviceType === "Online" && (
             <div className="text-center text-red-900 text-2xl">

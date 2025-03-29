@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Eye, EyeOff, Loader } from 'lucide-react';
 import AuthLayout from '../../components/AuthLayout';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';  // Import useNavigate
+import { useNavigate } from 'react-router-dom'; 
 
 const PatientSignUp = () => {
   const [formData, setFormData] = useState({
@@ -16,7 +16,7 @@ const PatientSignUp = () => {
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const navigate = useNavigate();  // Initialize the navigate function
+  const navigate = useNavigate(); 
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,7 +25,7 @@ const PatientSignUp = () => {
   const handleSendOtp = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');  // Reset error message on OTP request
+    setError('');  
 
     try {
       const response = await axios.post(`${import.meta.env.VITE_APP_API_URL}/api/otp/send`, { email: formData.email });
@@ -42,7 +42,7 @@ const PatientSignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(''); // Reset the error message
+    setError(''); 
   
     try {
       const response = await axios.post(`${import.meta.env.VITE_APP_API_URL}/api/patient/signup`, {
@@ -54,11 +54,10 @@ const PatientSignUp = () => {
   
       console.log('User Created:', response.data);
       localStorage.setItem('pid', JSON.stringify(response.data._id));
-      navigate('/signin'); // Redirect on success
+      navigate('/signin'); 
     } catch (err) {
       console.error('Signup failed:', err);
   
-      // Check for specific error messages from the backend
       if (err.response?.data?.error === "Email already exists") {
         setError('An account with this email already exists. Please try for signin.');
       } else if (err.response?.data?.error === 'Invalid OTP') {

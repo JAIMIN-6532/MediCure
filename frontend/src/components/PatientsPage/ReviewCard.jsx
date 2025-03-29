@@ -2,7 +2,7 @@ import React from "react";
 import { FaStar } from "react-icons/fa";
 
 const ReviewCard = ({ patient, createdAt, rating, comment }) => {
-  // Format the createdAt to display only the date (MM/DD/YYYY)
+  // display only the date (MM/DD/YYYY)
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString(); // Default format (MM/DD/YYYY)
@@ -15,7 +15,7 @@ const ReviewCard = ({ patient, createdAt, rating, comment }) => {
           <div className="w-14 h-14 rounded-full overflow-hidden shadow-md flex items-center justify-center bg-purple-400">
             {patient.image ? (
               <img
-                src={patient.image} // Assuming patient.image contains the image URL
+                src={patient.image}
                 alt={patient.name}
                 className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
               />

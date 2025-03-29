@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 const doctorSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  email: { type: String, required: true}, //unique : true karvanu
+  email: { type: String, required: true}, //unique : true lter..
   password: { type: String, required: true },
   phone: { type: String },   //second
   steps: { type: Number, default: 1 }, // To track the registration steps
@@ -19,13 +19,13 @@ const doctorSchema = new mongoose.Schema({
   consultationFee: { type: Number }, 
   availability: [
     {
-      day: { type: String }, // e.g., Monday
-      slots : [{type:String}] // e.g., ["10:00 AM", "11:00 AM", "12:00 PM"]
+      day: { type: String }, 
+      slots : [{type:String}] 
     }, 
   ],
   serviceType: {
     type: String,
-    enum: ["Online", "Offline", "Both"], // Options for the type of service  
+    enum: ["Online", "Offline", "Both"],   
   },
   idproofUrl: { type: String },
   profileImageUrl: { type: String }, // URL for the uploaded profile image}

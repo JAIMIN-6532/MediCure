@@ -4,6 +4,8 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDoctorAvgRatingByDoctorId } from "../../../reduxToolkit/reducers/DoctorReducer.js";
 import patient from "../../../assets/patient.png";
+
+//sample data 
 const patients = [
   {
     id: 1,

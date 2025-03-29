@@ -5,9 +5,7 @@ dotenv.config();
 const jwtAuth = (req, res, next) => {
   // 1. Read the token.
   const token = req.headers.authorization?.split(" ")[1] ;  // Ensure the token is prefixed with "Bearer "
-  // console.log(req.headers);
-  // console.log(req.cookies);
-  // const token = req.headers.authorization;
+ 
 
   console.log(token);
   // 2. if no token, return the error.

@@ -6,9 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 export default function Profile() {
   const dispatch = useDispatch();
-  const { doctorId } = useParams(); // Get doctorId from URL params
+  const { doctorId } = useParams(); 
 
-  // Get data from the Redux store
   const doctor = useSelector((state) => state.doctors.selectedDoctor);
   const avgRating = useSelector((state) => state.doctors.avgRating);
   const fetchAvgRatingStatus = useSelector((state) => state.doctors.fetchDoctorAvgRatingStatus);
@@ -16,13 +15,11 @@ export default function Profile() {
 
   useEffect(() => {
     if (doctorId) {
-      // Fetch doctor details and average rating
       dispatch(fetchDoctorById(doctorId)); 
       dispatch(fetchDoctorAvgRatingByDoctorId(doctorId)); 
     }
   }, [doctorId, dispatch]);
 
-  // Function to display average rating
   const displayAvgRating = () => {
     if (fetchAvgRatingStatus === "loading") {
       return (

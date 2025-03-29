@@ -10,7 +10,7 @@ import {
   fetchDoctorById,
   resetDoctorState,
 } from "../../reduxToolkit/reducers/DoctorReducer";
-import { ClipLoader } from "react-spinners"; // Import the loader
+import { ClipLoader } from "react-spinners";
 
 export default function DoctorProfilePage() {
   const { doctorId } = useParams();
@@ -26,7 +26,6 @@ export default function DoctorProfilePage() {
   const [prevDoctorId, setPrevDoctorId] = useState(null);
 
   useEffect(() => {
-    // Scroll to the top whenever the doctorId changes
     window.scrollTo(0, 0);
     if (doctorId !== prevDoctorId) {
       dispatch(resetDoctorState());

@@ -1,5 +1,3 @@
-
-
 import { FaTooth, FaBrain, FaHeartbeat, FaBone, FaStethoscope } from 'react-icons/fa';
 import cardiology from "../../assets/cardio.jpeg";
 import neurology from "../../assets/neuro.jpeg";
@@ -48,7 +46,7 @@ const SpecialityCard = () => {
 
         <div className="specialty-slider">
           <div className="specialty-track">
-            {/* Quadruple the array for infinite effect */}
+            {/* 4 times  the array for infinite effect */}
             {[...specialties, ...specialties, ...specialties, ...specialties].map((specialty, index) => (
               <div key={`${specialty.name}-${index}`} className="specialty-slide">
                 <div className="relative h-[300px] rounded-xl overflow-hidden hover:shadow-lg transform transition-all duration-300 hover:scale-105 cursor-pointer group">
@@ -59,7 +57,7 @@ const SpecialityCard = () => {
                       backgroundImage: `url(${specialty.bgImage})`,
                     }}
                   />
-                  {/* Overlay */}
+                  {/* Overlay forr wraping text into it */}
                   <div className="absolute inset-0 bg-black bg-opacity-50 group-hover:bg-opacity-30 transition-all" />
                   
                   {/* Content */}
@@ -75,9 +73,6 @@ const SpecialityCard = () => {
           </div>
         </div>
 
-        <div className="text-center mt-12">
-          {/* Optional button remains commented out */}
-        </div>
       </div>
     </div>
   );

@@ -1,24 +1,28 @@
 import React from "react";
 
 function Filter({ filters, onFilterChange, onResetFilters }) {
-  const specialties = ["Cardiology", "Neurology", "Pediatrics", "Dermatology", "Orthopedics"];
+  const specialties = [
+    "Cardiology",
+    "Neurology",
+    "Pediatrics",
+    "Dermatology",
+    "Orthopedics",
+  ];
   const consultationTypes = ["Online", "Offline"];
 
   return (
     <div className="w-1/4 bg-white p-6 rounded-lg shadow-sm h-fit">
       <h2 className="text-xl font-semibold mb-6">Filters</h2>
 
-      {/* Location Filter */}
       <div className="mb-6">
         <h3 className="font-medium mb-3">Location</h3>
         <input
-  type="text"
-  placeholder="Search by City"
-  className="w-full p-2 border rounded-md"
-  value={filters.location || ""} // Ensure location is always a string
-  onChange={(e) => onFilterChange("location", e.target.value)} // Handle location change
-/>
-        
+          type="text"
+          placeholder="Search by City"
+          className="w-full p-2 border rounded-md"
+          value={filters.location || ""}
+          onChange={(e) => onFilterChange("location", e.target.value)}
+        />
       </div>
 
       {/* Gender Filter */}
@@ -98,10 +102,23 @@ function Filter({ filters, onFilterChange, onResetFilters }) {
             <button
               key={rating}
               onClick={() => onFilterChange("minRating", rating)}
-              className={`p-2 ${filters.minRating >= rating ? "text-yellow-400" : "text-gray-300"}`}
+              className={`p-2 ${
+                filters.minRating >= rating
+                  ? "text-yellow-400"
+                  : "text-gray-300"
+              }`}
             >
-              <svg className="w-6 h-6 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 17.75l-5.24 3.28 1.49-6.43-4.9-4.24 6.42-.53L12 2l2.23 7.81 6.42.53-4.9 4.24 1.49 6.43z"/>
+              <svg
+                className="w-6 h-6 fill-current"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 17.75l-5.24 3.28 1.49-6.43-4.9-4.24 6.42-.53L12 2l2.23 7.81 6.42.53-4.9 4.24 1.49 6.43z" />
               </svg>
             </button>
           ))}

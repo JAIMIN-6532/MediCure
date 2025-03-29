@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import axios from 'axios';
-import toast, { Toaster } from 'react-hot-toast';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { fetchDoctorById } from '../../../reduxToolkit/reducers/DoctorReducer';
-const Settings = ({doctor}) => {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+import { useState } from "react";
+import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { fetchDoctorById } from "../../../reduxToolkit/reducers/DoctorReducer";
+const Settings = ({ doctor }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: doctor.name,
     phone: doctor.phone,
@@ -15,7 +15,7 @@ const Settings = ({doctor}) => {
     city: doctor.city,
     state: doctor.state,
     consultationFee: doctor.consultationFee,
-    serviceType: doctor.serviceType
+    serviceType: doctor.serviceType,
   });
 
   const handleInputChange = (e) => {
@@ -26,46 +26,42 @@ const Settings = ({doctor}) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-  
-      // Debug the form data before appending it to FormData
       console.log("Form data before appending:", formData);
-  
-  
+
       const response = await axios.post(
-        `${import.meta.env.VITE_APP_API_URL}/api/doctor/updateprofile/${doctor._id}`,
+        `${import.meta.env.VITE_APP_API_URL}/api/doctor/updateprofile/${
+          doctor._id
+        }`,
         formData
       );
-  
+
       if (response.data.success) {
         toast.success("Profile updated successfully!");
         dispatch(fetchDoctorById(doctor._id));
-
       }
     } catch (error) {
       toast.error("Failed to update profile. Please try again.");
       console.error("Error updating profile:", error);
     }
   };
-  
 
   return (
     <div className="min-h-screen mt-[-30px]">
       <Toaster position="top-right" />
       <div className="container mx-auto px-4">
-        
         <div className="flex gap-8">
-          
           <div className="w-full">
             <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl p-8 border border-white/20">
               <h2 className="text-2xl font-semibold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 pb-4 border-b border-gray-200">
                 Profile Update
               </h2>
               <form onSubmit={handleSubmit} className="space-y-8">
-                
                 <div className="grid grid-cols-2 gap-8">
                   {/* Name */}
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">Full Name</label>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Full Name
+                    </label>
                     <div className="relative">
                       <input
                         type="text"
@@ -85,7 +81,9 @@ const Settings = ({doctor}) => {
 
                   {/* Mobile Number */}
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">Mobile Number</label>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Mobile Number
+                    </label>
                     <div className="relative">
                       <input
                         type="tel"
@@ -102,7 +100,9 @@ const Settings = ({doctor}) => {
 
                   {/* Email */}
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">Email Address</label>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Email Address
+                    </label>
                     <div className="relative">
                       <input
                         type="email"
@@ -117,11 +117,11 @@ const Settings = ({doctor}) => {
                     </div>
                   </div>
 
-                 
-
                   {/* Consultation Fee */}
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">Consultation Fee (INR)</label>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Consultation Fee (INR)
+                    </label>
                     <div className="relative">
                       <input
                         type="number"
@@ -138,7 +138,9 @@ const Settings = ({doctor}) => {
 
                   {/* Service Type */}
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">Service Type</label>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Service Type
+                    </label>
                     <select
                       name="serviceType"
                       value={formData.serviceType}
@@ -155,7 +157,9 @@ const Settings = ({doctor}) => {
 
                   {/* City */}
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">City</label>
+                    <label className="block text-sm font-medium text-gray-700">
+                      City
+                    </label>
                     <div className="relative">
                       <input
                         type="text"
@@ -172,7 +176,9 @@ const Settings = ({doctor}) => {
 
                   {/* State */}
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">State</label>
+                    <label className="block text-sm font-medium text-gray-700">
+                      State
+                    </label>
                     <div className="relative">
                       <input
                         type="text"
@@ -190,7 +196,9 @@ const Settings = ({doctor}) => {
 
                 {/* Clinic Address */}
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">Clinic Address</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Clinic Address
+                  </label>
                   <textarea
                     name="clinicaddress"
                     value={formData.clinicaddress}

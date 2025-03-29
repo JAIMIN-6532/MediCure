@@ -12,8 +12,6 @@ const DsignIn = () => {
     password: '',
   });
   const [showPassword, setShowPassword] = useState(false);
-  // const [loading, setLoading] = useState(false);
-  // const location = useLocation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -27,7 +25,6 @@ const DsignIn = () => {
     dispatch(doctorSignIn(formData));
   }
 
-  // Redirect if token is already in localStorage
     useEffect(() => {
       const savedToken = token;
       const doctorId = user?._id;
@@ -37,14 +34,13 @@ const DsignIn = () => {
       }
     }, [navigate]);
   
-    // Redirect and save token to localStorage if user successfully signs in
     useEffect(() => {
 
       if (user && token) {
         const doctorId = user._id;
-        localStorage.setItem('token', token); // Save token to local storage
+        localStorage.setItem('token', token);
         console.log(doctorId);
-        navigate(`/d-dashbord/${doctorId}`); // Redirect to the home page after successful sign-in
+        navigate(`/d-dashbord/${doctorId}`);
       }
     }, [user, token, navigate]);
 
@@ -128,7 +124,6 @@ const DsignIn = () => {
           </Link>
         </p>
 
-        {/* Link to switch between Doctor and Patient Sign In */}
         <div className="mt-4 text-sm text-gray-600">
           <span>Not a doctor? </span>
           <Link

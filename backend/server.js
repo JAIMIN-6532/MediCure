@@ -8,7 +8,6 @@ import AppointmentController from "./src/features/appointments/appointments.cont
 import cors from "cors";
 dotenv.config();
 
-// const appointmentRepository = new AppointmentRepository();
 const appointmentController = new AppointmentController();
 
 const httpServer = createServer(server);
@@ -22,8 +21,6 @@ const io = new Server(httpServer, {
 });
 
 // Socket.IO events
-
-// Example event for booking an appointment
 io.on("connection", (socket) => {
   console.log("A user connected");
 
@@ -47,7 +44,6 @@ io.on("connection", (socket) => {
   // Listen for lockSlot events
   socket.on("lockSlot", async (slotData) => {
     try {
-      // Handle locking logic
       console.log("Slot data:", slotData);
       const lockedSlot = await appointmentController.lockAppointment(slotData);
 

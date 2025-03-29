@@ -329,7 +329,7 @@ const IndividualStatChart = ({ doctorId }) => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {/* Weekly Appointments with Y-axis adjustment */}
+      {/* weekly appointments with y-axis */}
       <AnimatedTransition className="col-span-1 md:col-span-2">
         <div className="bg-background border border-border rounded-lg shadow-sm p-4">
           <h3 className="font-medium mb-4">Weekly Appointments</h3>

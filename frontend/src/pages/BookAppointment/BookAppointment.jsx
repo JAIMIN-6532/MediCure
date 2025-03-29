@@ -16,10 +16,9 @@ import io from "socket.io-client";
 import { ClipLoader } from "react-spinners";
 import { updateAvailableSlots } from "../../reduxToolkit/reducers/BookingReducer.js";
 import axios from "axios";
-// import ScrollToTop from "../../components/ScrolltoTop.jsx";
 
 let socket;
-
+//semple
 const mockInvoice = {
   orderId: "00124",
   issueDate: "20/07/2023",
@@ -76,8 +75,6 @@ const BookAppointment = () => {
     (state) => state.appointments
   );
 
-  // const [uappointments, setuAppointments] = useState(null);
-
   const [step, setStep] = useState(1);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedSlot, setSelectedSlot] = useState(null);
@@ -87,10 +84,6 @@ const BookAppointment = () => {
     socket = io.connect(`${import.meta.env.VITE_APP_API_URL}`, {
       transports: ["websocket", "polling"],
     });
-    // return () => {
-
-    //   socket.disconnect();
-    // };
   }, []);
 
   useEffect(() => {
@@ -106,20 +99,10 @@ const BookAppointment = () => {
   }, [doctorId, dispatch, prevDoctorId]);
 
   useEffect(() => {
-    // Scroll to top whenever the step changes
     window.scrollTo(0, 0);
-  }, [step]); // This will trigger whenever `step` changes
-
+  }, [step]);
   const handleNext = async (e) => {
     e.preventDefault();
-    // dispatch(
-    //     lockSlot({
-    //       doctorId: doctorId,
-    //       date: selectedDate,
-    //       timeSlot: selectedSlot,
-    //       patientId: user._id,
-    //     })
-    //   );
     socket.emit("lockSlot", {
       doctorId: doctorId,
       date: selectedDate,
@@ -130,7 +113,6 @@ const BookAppointment = () => {
     setStep(step + 1);
   };
 
-  // Initialize socket and listen for updates
   useEffect(() => {
     socket = io(`${import.meta.env.VITE_APP_API_URL}`, {
       transports: ["websocket", "polling"],
@@ -140,30 +122,12 @@ const BookAppointment = () => {
       console.log("Socket connected:", socket.id);
     });
 
-    // Listen for 'slotLocked' event to update slots
     socket.on("slotLocked", (lockedSlot) => {
       console.log("Slot locked successfully: ", lockedSlot);
-      // localStorage.setItem("lockedslotid", lockedSlot._id);
-      // Update available slots after slot is locked
-      // Dispatch an action to update available slots
-      //  dispatch(updateAvailableSlots(lockedSlot));
-      // if (Array.isArray(appointments)) {
-      //   const updatedSlots = appointments.filter((slot) => slot !== lockedSlot.timeSlot);
-      //   dispatch(setAvailableSlots(updatedSlots));
-      // }
-
-      // console.log("lockedSlot", lockedSlot);
       console.log("appointments after locking SLots", appointments);
-      // Sample lockedSlot with ISO 8601 date format
-
-      // Sample appointments array with one object
-
-      // // Convert the lockedSlot's date to just the date part (YYYY-MM-DD)
       const lockedDate = new Date(lockedSlot.date).toISOString().split("T")[0];
 
-      // Check if appointments is an object with availableSlots array
       if (appointments && Array.isArray(appointments.availableSlots)) {
-        // Remove lockedSlot from appointments
         const updatedAppointments = {
           ...appointments,
           availableSlots: appointments.availableSlots.map((slotGroup) => {
@@ -171,7 +135,6 @@ const BookAppointment = () => {
               .toISOString()
               .split("T")[0];
 
-            // If the date matches, remove the locked timeSlot
             if (slotGroupDate === lockedDate) {
               const updatedSlots = slotGroup.availableSlots.filter(
                 (slot) => slot !== lockedSlot.timeSlot
@@ -197,68 +160,11 @@ const BookAppointment = () => {
           appointments
         );
       }
-      // dispatch(fetchAppointmentSlots(doctorId)); // Fetch updated slots after slot is locked
-      // appointments.availableSlots = appointments.availableSlots.filter(
-      //   (slot) => slot !== lockedSlot.timeSlot
-      // );
-      // dispatch(updateAvailableSlots(lockedSlot));
     });
 
-    // socket.on("slotUnlocked", (unlockedSlot) => {
-    //   console.log("Slot unlocked successfully: ", unlockedSlot);
-    //   // Convert unlockedSlot date to YYYY-MM-DD format
-    //   const unlockedDate = new Date(unlockedSlot.date)
-    //     .toISOString()
-    //     .split("T")[0];
-
-    //   if (appointments && Array.isArray(appointments.availableSlots)) {
-    //     // Update the appointments object directly to add the unlocked time slot
-    //     const updatedAppointments = {
-    //       ...appointments,
-    //       availableSlots: appointments.availableSlots.map((slotGroup) => {
-    //         const slotGroupDate = new Date(slotGroup.date)
-    //           .toISOString()
-    //           .split("T")[0];
-
-    //         // If the date matches, add the unlocked timeSlot back to the available slots
-    //         if (slotGroupDate === unlockedDate) {
-    //           return {
-    //             ...slotGroup,
-    //             availableSlots: [
-    //               ...slotGroup.availableSlots,
-    //               unlockedSlot.timeSlot,
-    //             ], // Add unlocked time slot
-    //           };
-    //         }
-    //         return slotGroup;
-    //       }),
-    //     };
-    //     console.log("Updated Appointments after unlocking slot:", updatedAppointments);
-    //     // Directly update the appointments object in Redux
-    //     dispatch(updateAvailableSlots(updatedAppointments));
-
-    //     console.log(
-    //       "Updated Appointments after unlocking slot after setAvalable:",
-    //       updatedAppointments
-    //     );
-    //   } else {
-    //     console.error(
-    //       "appointments is not structured as expected:",
-    //       appointments
-    //     );
-    //   }
-    //   // if(step >= 2)
-    //   setStep(1); // Reset to slot selection step
-    //   // dispatch(fetchAppointmentSlots(doctorId)); // Fetch updated slots after slot is unlocked
-    // });
     socket.on("slotUnlocked", (unlockedSlot) => {
       console.log("Slot unlocked successfully: ", unlockedSlot);
-      // if(localStorage.getItem("lockedslotid")){
-      //   localStorage.removeItem("lockedslotid");
-      // }
-      // if(unlockedSlot === "No locked appointment found"){
-      //   return;
-      // }
+
       const unlockedDate = new Date(unlockedSlot.date)
         ?.toISOString()
         ?.split("T")[0];
@@ -271,9 +177,7 @@ const BookAppointment = () => {
               ?.toISOString()
               ?.split("T")[0];
 
-            // If the date matches, add the unlocked timeSlot back to the available slots
             if (slotGroupDate === unlockedDate) {
-              // Check if the timeSlot is already in availableSlots to avoid duplicates
               const updatedSlots = slotGroup.availableSlots.includes(
                 unlockedSlot.timeSlot
               )
@@ -296,14 +200,12 @@ const BookAppointment = () => {
           appointments
         );
       }
-      // if(user._id === unlockedSlot.patient )
-      setStep(1); // Reset to slot selection step
+      setStep(1);
     });
 
-    // Listen for 'appointmentBooked' event to confirm booking
     socket.on("appointmentBooked", (appointment) => {
       console.log("Appointment booked successfully: ", appointment);
-      setStep(3); // Proceed to booking confirmation step
+      setStep(3);
     });
 
     return () => {
@@ -343,28 +245,29 @@ const BookAppointment = () => {
               console.log(response);
               const orderId = response.razorpay_order_id;
               const isPaymentCaptured = await axios.post(
-                `${import.meta.env.VITE_APP_API_URL}/api/payment/verify`,{
+                `${import.meta.env.VITE_APP_API_URL}/api/payment/verify`,
+                {
                   orderId,
                 }
-              )
-              console.log(isPaymentCaptured);
-              if(isPaymentCaptured.data.success){
-              dispatch(
-                bookAppointment({
-                  doctorId: formData.doctorId,
-                  patientId: formData.patientId,
-                  paymentId: orderId,
-                  paymentType : "Online",
-                  appointmentFees: selectedDoctor.consultationFee,
-                  date: formData.selectedDate,
-                  timeSlot: formData.selectedSlot,
-                  type: formData.serviceType,
-                })
               );
-            }else{
-              console.log("Payment not captured");
-              setStep(1);
-            }
+              console.log(isPaymentCaptured);
+              if (isPaymentCaptured.data.success) {
+                dispatch(
+                  bookAppointment({
+                    doctorId: formData.doctorId,
+                    patientId: formData.patientId,
+                    paymentId: orderId,
+                    paymentType: "Online",
+                    appointmentFees: selectedDoctor.consultationFee,
+                    date: formData.selectedDate,
+                    timeSlot: formData.selectedSlot,
+                    type: formData.serviceType,
+                  })
+                );
+              } else {
+                console.log("Payment not captured");
+                setStep(1);
+              }
             },
             prefill: {
               name: formData.firstName,
@@ -394,20 +297,11 @@ const BookAppointment = () => {
         })
       );
     }
-
-    // socket.emit("bookAppointment", {
-    //   doctorId: formData.doctorId,
-    //   patientId: formData.patientId,
-    //   date: formData.selectedDate,
-    //   timeSlot: formData.selectedSlot,
-    //   type: formData.serviceType,
-    // });
   };
 
-  // Handle successful booking confirmation
   useEffect(() => {
     if (bookappointmentStatus === "succeeded" && doctorId === prevDoctorId) {
-      setStep(3); // Move to the confirmation step
+      setStep(3);
     }
   }, [bookappointmentStatus, doctorId, dispatch]);
 
@@ -415,11 +309,6 @@ const BookAppointment = () => {
     setStep(4);
   };
 
-  // if (fetchDoctorByIdStatus === "loading" || status === "loading") {
-  //   return <div>Loading...</div>;
-  // }
-
-  // Conditional render for loading spinner
   const isLoading = fetchDoctorByIdStatus === "loading" || status === "loading";
 
   if (isLoading) {
@@ -437,7 +326,7 @@ const BookAppointment = () => {
   return (
     <div className="min-h-screen bg-gray-50 md:p-8">
       <div className="max-w-6xl mx-auto pt-16">
-       <DoctorInfo doctor={selectedDoctor} />
+        <DoctorInfo doctor={selectedDoctor} />
 
         {step === 1 && (
           <SlotSelection
@@ -469,7 +358,6 @@ const BookAppointment = () => {
               time: selectedSlot,
               city: selectedDoctor.city || selectedDoctor.clinicaddress,
             }}
-            
             patient={user}
             onViewInvoice={handleViewInvoice}
           />
@@ -480,7 +368,7 @@ const BookAppointment = () => {
             invoice={mockInvoice}
             doctor={selectedDoctor}
             patient={user}
-            form = {form}
+            form={form}
           />
         )}
       </div>

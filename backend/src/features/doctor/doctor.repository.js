@@ -3,16 +3,14 @@ import DoctorModel from "./doctor.model.js";
 import PatientModel from "../patient/patient.model.js";
 import AppointmentModel from "../appointments/appointments.model.js";
 import moment from "moment-timezone";
-// import PaymentModel from "../payment/payment.model.js";
 export default class DoctorRepository {
   signUp = async ({ name, email, password }) => {
     try {
-      // const {name,email,password} = req.body;
       const existingDoctor = await DoctorModel.findOne({ email });
       if (existingDoctor) {
         const error = new Error("DoctorEmail already exists");
-        error.status = 400; // Set specific status for "bad request"
-        throw error; // Throw the error to be handled later
+        error.status = 400; 
+        throw error; 
       }
 
       const newDoctor = await DoctorModel.create({
@@ -32,8 +30,6 @@ export default class DoctorRepository {
     try {
       const doctor = await DoctorModel.findOne({ email });
       return doctor;
-      // const deletedDoctor = await DoctorModel.findOne({ email }).deleteOne();
-      // return null;
     } catch (err) {
       console.log(err);
       throw err;
@@ -45,7 +41,7 @@ export default class DoctorRepository {
       console.log("doctorId", doctorId);
       const objectId = new mongoose.Types.ObjectId(doctorId);
       const updatedDoctor = await DoctorModel.findOneAndUpdate(
-        { _id: objectId }, // Condition to find the doctor by doctorId
+        { _id: objectId }, 
         {
           $set: {
             profileImageUrl: imageUrl,
@@ -53,19 +49,9 @@ export default class DoctorRepository {
             degreeDocumentUrl: degreePdfUrl,
           },
         },
-        { new: true } // This option ensures the updated document is returned
+        { new: true } // this option ensures the updated document is returned
       );
-      //   const updatedDoctor = await DoctorModel.findByIdAndUpdate(
-      //     {_id : doctorId}, // doctorId is passed in the function
-      //     {
-      //         $set: {
-      //             profileImageUrl: imageUrl,
-      //             idproofUrl: idPdfUrl,
-      //             degreeDocumentUrl: degreePdfUrl,
-      //         },
-      //     },
-      //     { new: true } // This option returns the updated document
-      // );
+      
       console.log(updatedDoctor);
       return updatedDoctor;
     } catch (err) {
@@ -122,7 +108,6 @@ export default class DoctorRepository {
             consultationFee: consultationFee,
             availability: availability,
             steps: 4,
-            // availability : slots,
           },
         },
         { new: true }
@@ -153,10 +138,10 @@ export default class DoctorRepository {
     try {
       const doctor = await DoctorModel.findById(doctorId)
         .populate({
-          path: "feedbacks", // Populate feedbacks field in DoctorModel
+          path: "feedbacks",
           populate: {
-            path: "patient", // Populate the patient reference within feedback
-            select: "name", // Select only the patient's name (you can add more fields if needed)
+            path: "patient", 
+            select: "name",
           },
         })
         .exec();
@@ -185,12 +170,10 @@ export default class DoctorRepository {
     try {
       const doctor = await DoctorModel.findById(doctorId)
         .populate({
-          path: "appointments", // First populate appointments
-          // match: { status: "confirmed" }, // Filter only confirmed appointments
+          path: "appointments", 
           populate: {
-            path: "patient", // Then populate patient inside each appointment
-            select: "name email", // Optionally select the fields you need from the patient (adjust as necessary)
-
+            path: "patient", 
+            select: "name email", 
           },
         })
         .exec();
@@ -212,11 +195,11 @@ export default class DoctorRepository {
     try {
       const doctor = await DoctorModel.findById(doctorId)
         .populate({
-          path: "appointments", // First populate appointments
-          match: { status: "Confirmed" }, // Filter only confirmed appointments
+          path: "appointments", 
+          match: { status: "Confirmed" }, 
           populate: {
-            path: "patient", // Then populate patient inside each appointment
-            select: "name email", // Optionally select the fields you need from the patient (adjust as necessary)
+            path: "patient",
+            select: "name email", 
           },
         })
         .exec();
@@ -352,7 +335,6 @@ export default class DoctorRepository {
       console.log('appointemets:', appointemets);
       const weeklyStats = {
         totalAppointments: [],
-        // totalRevenue: 0,
       };
 
       const today = new Date();

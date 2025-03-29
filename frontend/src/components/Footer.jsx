@@ -14,17 +14,6 @@ function Footer() {
             </p>
           </div>
 
-          {/* Quick Links */}
-          {/* <div>
-            <h3 className="text-xl font-semibold text-black mb-4">Quick Links</h3>
-            <ul className="space-y-2">
-              <li><a href="#" className="hover:text-white transition-colors">Find Doctors</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Book Appointment</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Our Services</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Health Blog</a></li>
-            </ul>
-          </div> */}
-
           {/* Contact Info */}
           <div>
             <h3 className="text-xl font-semibold text-black mb-4">Contact Us</h3>

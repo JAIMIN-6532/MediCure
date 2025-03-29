@@ -4,7 +4,7 @@ import {
   FaUserMd,
   FaCalendarAlt,
   FaRegCommentDots,
-} from "react-icons/fa"; // Import React Icons
+} from "react-icons/fa";
 import { Link } from "react-router-dom";
 import DoctorCard from "./DoctorCard";
 import { useState } from "react";
@@ -23,58 +23,53 @@ const Home = () => {
   const token = localStorage.getItem("token");
   const decodeToken = (token) => {
     try {
-      const base64Url = token.split(".")[1]; // Get the payload part of the token
-      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/"); // Replace URL-safe characters
-      const decodedPayload = JSON.parse(atob(base64)); // Decode and parse the payload
-      return decodedPayload.userType; // Return userType from the decoded payload
+      const base64Url = token.split(".")[1]; // get the payload part of the token
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/"); // replace URLsafe characters
+      const decodedPayload = JSON.parse(atob(base64)); //decode and parse the payload
+      return decodedPayload.userType; // it will return usertyype from the decoded payload
     } catch (error) {
       console.error("Token decode error", error);
       return null;
     }
   };
 
-  // Set userType when token changes
   useEffect(() => {
     if (token) {
       const type = decodeToken(token);
-      setUserType(type); // Set userType based on token
+      setUserType(type);
     }
-  }, [token]); // Run effect when token changes
+  }, [token]); // rerun effect when token change
 
-  // Animation for individual letters of the "Make an Appointment" text
   useEffect(() => {
     const textWrapper = document.querySelector(".appointment-btn");
     const letters = textWrapper?.textContent.split("") || [];
 
     textWrapper.innerHTML = letters
       .map((letter) => `<span class="letter">${letter}</span>`)
-      .join(""); // Wrap each letter with <span>
+      .join(""); // give  each letter to span
 
-    // GSAP animation to animate each letter
+   
     gsap.fromTo(
-      ".appointment-btn .letter", // Targeting each individual letter inside the span
+      ".appointment-btn .letter",//go to letter inside span
       {
         opacity: 0,
-        // y: -20, // Start 20px lower
       },
       {
         opacity: 1,
-        // y: 100, // Move back to normal position
-        duration: 1.1, // Shorter duration for faster animation
+        
+        duration: 1.1, // shorter duration --->>> faster animation
         ease: "easeOut",
-        stagger: 0.05, // A little stagger to make the animation feel more fluid
-        repeat: -1, // Repeat infinitely
-        yoyo: true, // Reverse the animation after it completes
+        stagger: 0.05, // a little stagger to make the animation more fluid
+        repeat: -1, // repeat infinitely
+        yoyo: true, // reverse the animation after it completes
       }
     );
   }, []);
 
-  // const handleFindDoctorsClick = () => {
-  //   navigate("/doctors");
-  // };
+ 
   return (
     <>
-      {/* Hero Section */}
+
       <div className="bg-light-blue pt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between min-h-[70%] overflow-hidden">
@@ -90,22 +85,21 @@ const Home = () => {
                 Discover the best doctors, clinics, and hospitals in your area.
                 Book appointments instantly and get the care you deserve.
               </p>
-              {/* <Link to="/doctors" className="text-primary-blue text-lg font-semibold hover:underline"> */}
-              {userType !== "doctor" && (
+            
+             {userType !== "doctor" && (
                 <NavLink
                   to="/doctors"
                   className="text-primary-blue text-lg font-semibold hover:underline"
                 >
                   <button
                     className="bg-primary-blue text-white px-8 py-3 rounded-full hover:bg-dark-blue transition-colors text-lg"
-                    // onClick={handleFindDoctorsClick}
+                   
                   >
                     Find Doctors
                   </button>
                 </NavLink>
               )}
 
-              {/* </Link> */}
             </div>
             <div className="md:w-1/2">
               <img
@@ -123,24 +117,18 @@ const Home = () => {
         <SpecialtyCard />
       </div>
 
+      {/* Counters */}
       <div className="mt-[-60px] mb-[60px]">
         <AnimatedCounters />
       </div>
 
-      {/* Doctor Cards Section */}
-      {/* {userType !== "doctor" && (
-        <div className="bg-light-blue">
-          <DoctorCard />
-        </div>
-      )} */}
-      {/* New Section: How It Works */}
       <div className="bg-white py-16 mt-[-50px]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             {/* Left Side: Image */}
             <div className="md:w-1/2">
               <img
-                src={how} // Replace with your image
+                src={how} 
                 alt="Search Doctor"
                 className="w-full max-w-lg mx-auto rounded-lg"
               />

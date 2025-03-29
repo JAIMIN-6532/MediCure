@@ -53,42 +53,35 @@ export default function AppointmentList({ appointments }) {
     const [time, period] = timeSlot.split(" ");
     let [hours, minutes] = time.split(":").map(Number);
 
-    if (period === "PM" && hours !== 12) hours += 12; // Convert PM hours to 24-hour format
-    if (period === "AM" && hours === 12) hours = 0; // Convert 12 AM to 00:00
+    if (period === "PM" && hours !== 12) hours += 12;
+    if (period === "AM" && hours === 12) hours = 0;
 
-    return hours * 100 + minutes; // Convert to HHMM format for easier comparison
+    return hours * 100 + minutes;
   };
 
-  // Get current IST date and time
   const istDate = moment().tz("Asia/Kolkata");
-  const todayIST = istDate.format("YYYY-MM-DD"); // Get today's date in IST (YYYY-MM-DD)
-  const currentTime = istDate.hours() * 100 + istDate.minutes(); // Convert current time to 24-hour format
+  const todayIST = istDate.format("YYYY-MM-DD");
+  const currentTime = istDate.hours() * 100 + istDate.minutes();
 
   console.log("Today IST: ", todayIST);
   console.log("Current Time in IST: ", currentTime);
-  // Filter appointments based on today's date
   const filteredAppointments = appointments?.filter((appointment) => {
-    const appointmentTime = convertTo24HourFormat(appointment.timeSlot); // Convert time slot to 24-hour format
+    const appointmentTime = convertTo24HourFormat(appointment.timeSlot);
 
     console.log("currentTime", currentTime);
     console.log("appointmentTime", appointmentTime);
-    // Extract the date part (YYYY-MM-DD) from appointment.date
-    const appointmentDate = appointment.date.split("T")[0]; // Get the date part only (YYYY-MM-DD)
-    return appointmentDate === todayIST && appointmentTime > currentTime; // Only include appointments for today
+    const appointmentDate = appointment.date.split("T")[0];
+    return appointmentDate === todayIST && appointmentTime > currentTime;
   });
 
-  // Sort today's appointments by time slot
-  // onFilteredAppointments(filteredAppointments);
   const sortedAppointments = filteredAppointments.sort((a, b) => {
-    const timeA = convertTo24HourFormat(a.timeSlot); // Convert time slot to 24-hour format
-    const timeB = convertTo24HourFormat(b.timeSlot); // Convert time slot to 24-hour format
+    const timeA = convertTo24HourFormat(a.timeSlot);
+    const timeB = convertTo24HourFormat(b.timeSlot);
 
-    return timeA - timeB; // Sort by time (ascending)
+    return timeA - timeB;
   });
 
   useEffect(() => {
-    // Animate each appointment item when they appear
-
     sortedAppointments.forEach((appointment, index) => {
       gsap.fromTo(
         `.appointment-${appointment._id}`,
@@ -157,8 +150,6 @@ export default function AppointmentList({ appointments }) {
           </div>
         ))}
       </div>
-      
-  
     </div>
   );
 }

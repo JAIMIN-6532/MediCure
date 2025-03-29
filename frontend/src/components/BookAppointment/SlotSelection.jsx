@@ -12,25 +12,22 @@ export default function SlotSelection({
 }) {
   console.log("appointmentSlots: ", appointmentSlots);
 
-  // Ensure appointmentSlots is not undefined or null before accessing it
   if (!appointmentSlots) {
     console.error("appointmentSlots is undefined or null");
     return <div>Error: No available appointment slots.</div>;
   }
 
-  // Function to categorize slots into morning, afternoon, and evening
   const categorizeSlots = (availableSlots) => {
     const morning = [];
     const afternoon = [];
     const evening = [];
 
-    // Get the current time in IST (Indian Standard Time)
     const today = new Date();
     const options = {
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,
-      timeZone: "Asia/Kolkata", // Set the time zone to IST
+      timeZone: "Asia/Kolkata",
     };
     const formatter = new Intl.DateTimeFormat("en-US", options);
     const formattedCurrentTime = formatter.format(today);
@@ -41,81 +38,35 @@ export default function SlotSelection({
       currentHour24 += 12;
     }
     if (period === "AM" && currentHour === "12") {
-      currentHour24 = 0; // Midnight edge case
+      currentHour24 = 0;
     }
-    const currentTimeInMinutes = currentHour24 * 60 + parseInt(currentMinute); // Convert current time to minutes
-
-    // Sort slots into respective periods based on time
-    // availableSlots.forEach((slot) => {
-    //   // const hour = parseInt(slot.split(":")[0]);
-    //   const [hour, minute] = slot.split(":");
-    //   const period = slot.split(" ")[1]; // AM or PM
-
-    //   // Convert to 24-hour format for comparison
-    //   let hour24 = parseInt(hour);
-    //   if (period === "PM" && hour !== 12) {
-    //     hour24 += 12;
-    //   }
-    //   if (period === "AM" && hour === 12) {
-    //     hour24 = 0; // Midnight edge case
-    //   }
-    //   // Get current date and time in IST using `Intl.DateTimeFormat`
-    //   const today = new Date();
-
-    //   // Format the time in IST (Indian Standard Time)
-    //   const options = {
-    //     hour: "2-digit",
-    //     minute: "2-digit",
-    //     hour12: true,
-    //     timeZone: "Asia/Kolkata", // Set the time zone to IST
-    //   };
-
-    //   const formatter = new Intl.DateTimeFormat("en-US", options);
-    //   console.log(formatter.format(today)); // Output: 12:00 AM
-
-    //   const formattedTime = formatTime(hour24, minute, period);
-
-    //   if (hour24 >= 9 && hour24 < 12)
-    //     morning.push(formattedTime); // Morning: 9:00 AM - 11:59 AM
-    //   else if (hour24 >= 12 && hour24 < 17)
-    //     afternoon.push(formattedTime); // Afternoon: 12:00 PM - 4:59 PM
-    //   else if (hour24 >= 17 && hour24 < 20) evening.push(formattedTime); // Evening: 5:00 PM - 7:59 PM
-    // });
-    // Sort slots into respective periods based on time
+    const currentTimeInMinutes = currentHour24 * 60 + parseInt(currentMinute);
     availableSlots.forEach((slot) => {
-      // Extract hour and minute from the slot time (e.g. "09:30 AM")
       const [time, period] = slot.split(" ");
       const [hour, minute] = time.split(":");
 
-      // Convert the slot time to 24-hour format
       let hour24 = parseInt(hour);
       if (period === "PM" && hour !== "12") {
         hour24 += 12;
       }
       if (period === "AM" && hour === "12") {
-        hour24 = 0; // Midnight edge case
+        hour24 = 0;
       }
-      const slotTimeInMinutes = hour24 * 60 + parseInt(minute); // Convert slot time to minutes
-
-      // Check if the selected date is today or a future date
+      const slotTimeInMinutes = hour24 * 60 + parseInt(minute);
       const isToday =
         format(selectedDate, "yyyy-MM-dd") === format(today, "yyyy-MM-dd");
 
-      // If it's today, we need to exclude past slots
       if (isToday && slotTimeInMinutes <= currentTimeInMinutes) {
-        return; // Skip this slot as it's in the past
+        return;
       }
 
       const formattedTime = formatTime(hour24, minute, period);
 
-      if (hour24 >= 9 && hour24 < 12)
-        morning.push(formattedTime); // Morning: 9:00 AM - 11:59 AM
-      else if (hour24 >= 12 && hour24 < 17)
-        afternoon.push(formattedTime); // Afternoon: 12:00 PM - 4:59 PM
-      else if (hour24 >= 17 && hour24 < 20) evening.push(formattedTime); // Evening: 5:00 PM - 7:59 PM
+      if (hour24 >= 9 && hour24 < 12) morning.push(formattedTime);
+      else if (hour24 >= 12 && hour24 < 17) afternoon.push(formattedTime);
+      else if (hour24 >= 17 && hour24 < 20) evening.push(formattedTime);
     });
 
-    // Sort the slots in each period
     return {
       morning: morning.sort((a, b) => a.localeCompare(b)),
       afternoon: afternoon.sort((a, b) => a.localeCompare(b)),
@@ -123,52 +74,39 @@ export default function SlotSelection({
     };
   };
 
-  // Helper function to format time in the 12-hour AM/PM format with leading zeros
   const formatTime = (hour24, minute, period) => {
-    // Convert back to 12-hour format
     let hour = hour24;
     let ampm = period;
 
     if (hour24 === 0) {
-      hour = 12; // Midnight hour
+      hour = 12;
       ampm = "AM";
     } else if (hour24 > 12) {
       hour = hour24 - 12;
       ampm = "PM";
     } else if (hour24 === 12) {
-      ampm = "PM"; // Noon hour
+      ampm = "PM";
     } else {
       ampm = "AM";
     }
 
-    // Pad the hour and minute to ensure it's in `hh:mm AM/PM` format
     const formattedHour = hour < 10 ? `0${hour}` : `${hour}`;
     const formattedMinute = minute.length === 1 ? `0${minute}` : minute;
 
     return `${formattedHour}:${formattedMinute} ${period}`;
   };
 
-  // Find available slots for the selected date from appointmentSlots
   const availableSlotsForSelectedDate = appointmentSlots.find(
     (slot) =>
       format(new Date(slot.date), "yyyy-MM-dd") ===
       format(selectedDate, "yyyy-MM-dd")
   );
 
-  // If there are no slots available for the selected date, default to empty arrays
   const categorizedSlots = availableSlotsForSelectedDate
     ? categorizeSlots(availableSlotsForSelectedDate.availableSlots)
     : { morning: [], afternoon: [], evening: [] };
 
-  // Check if slots are available for the selected date
   const noSlotsAvailableForDate = !availableSlotsForSelectedDate;
-
-  // const today = new Date();
-  // const istDate = new Date(today.getTime() + (5 * 60 + 30) * 60 * 1000); // Convert to IST
-  // istDate.setHours(0, 0, 0, 0); // Set time to 00:00:00
-  // console.log("IST Date: ", istDate);
-  // const todayTime = istDate.getTime();
-  // console.log("Today Time: ", todayTime);
 
   const handlePrevDay = () => {
     setSelectedDate((prev) => subDays(prev, 1));
@@ -267,7 +205,7 @@ export default function SlotSelection({
               {categorizedSlots.morning.length === 0 ? (
                 <p className="text-center text-gray-500">No slots available</p>
               ) : (
-                categorizedSlots.morning.map((time,index) => (
+                categorizedSlots.morning.map((time, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedSlot(time)}
@@ -297,7 +235,7 @@ export default function SlotSelection({
               {categorizedSlots.afternoon.length === 0 ? (
                 <p className="text-center text-gray-500">No slots available</p>
               ) : (
-                categorizedSlots.afternoon.map((time,index) => (
+                categorizedSlots.afternoon.map((time, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedSlot(time)}
@@ -327,7 +265,7 @@ export default function SlotSelection({
               {categorizedSlots.evening.length === 0 ? (
                 <p className="text-center text-gray-500">No slots available</p>
               ) : (
-                categorizedSlots.evening.map((time,index) => (
+                categorizedSlots.evening.map((time, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedSlot(time)}

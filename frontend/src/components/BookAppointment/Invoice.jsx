@@ -3,7 +3,7 @@ import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 
 export default function Invoice({ invoice, doctor, patient, form }) {
-  // Function to generate PDF
+  // function to generate pdf
   const formatDateInIST = (dateString) => {
     const date = new Date(dateString);
     const options = {
@@ -44,11 +44,7 @@ export default function Invoice({ invoice, doctor, patient, form }) {
       55
     );
     doc.text(`TimeSlot: ${form.selectedSlot || "N/A"}`, 150, 60);
-    // doc.text(`Card Number: ${invoice.payment.cardNumber || 'N/A'}`, 150, 55);
-    // doc.text(`Bank: ${invoice.payment.bank || 'N/A'}`, 150, 60);
 
-    // Add Table with items
-    // Prepare Table Data
     const tableData = [
       [form.serviceType, `${"1"}`, `${"0"}`, `${doctor?.consultationFee}`],
     ];
@@ -57,19 +53,15 @@ export default function Invoice({ invoice, doctor, patient, form }) {
     doc.autoTable({
       head: [["Description", "Quantity", "VAT", "Total"]],
       body: tableData,
-      startY: 70, // This is where the table will start
+      startY: 70, // this is where the table will start
       theme: "striped",
     });
 
-    // Get the Y position after the table has been rendered
     const tableEndY = doc.lastAutoTable.finalY;
 
-    // Add Subtotal, Discount, and Total
     doc.text(`Subtotal:  ${doctor.consultationFee}`, 150, tableEndY + 10);
-    // doc.text(`Discount: - 0`, 150, tableEndY + 15); // Replace with actual discount if any
     doc.text(`Total Amount:  ${doctor.consultationFee}`, 150, tableEndY + 25);
 
-    // Save the generated PDF
     doc.save("invoice.pdf");
   };
 
@@ -116,19 +108,6 @@ export default function Invoice({ invoice, doctor, patient, form }) {
             </div>
           </div>
         </div>
-        {/* <div className="flex-1">
-          <div className="bg-gray-50 p-6 rounded-lg">
-            <p className="font-semibold mb-3 text-primary flex items-center gap-2">
-              <FaCreditCard />
-              Payment Method
-            </p>
-            <div className="space-y-1 text-gray-600">
-              <p className="font-medium">{invoice.payment.method || 'N/A'}</p>
-              <p>{invoice.payment.cardNumber || 'N/A'}</p>
-              <p>{invoice.payment.bank || 'N/A'}</p>
-            </div>
-          </div>
-        </div> */}
       </div>
 
       <div className="bg-gray-50 rounded-lg overflow-hidden mb-8">
@@ -160,10 +139,7 @@ export default function Invoice({ invoice, doctor, patient, form }) {
             <span>Subtotal:</span>
             <span className="font-semibold">₹{doctor?.consultationFee}</span>
           </div>
-          <div className="flex justify-between text-gray-600">
-            {/* <span>Discount:</span> */}
-            {/* <span className="font-semibold text-green-500">-{invoice.discount}%</span> */}
-          </div>
+          <div className="flex justify-between text-gray-600"></div>
           <div className="flex justify-between pt-3 border-t border-gray-200">
             <span className="text-lg font-semibold">Total Amount:</span>
             <span className="text-2xl font-bold text-primary">

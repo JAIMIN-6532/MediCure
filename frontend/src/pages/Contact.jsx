@@ -30,7 +30,6 @@ function Contact() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-blue-50 py-16 px-4 sm:px-6 lg:px-8 pt-16">
       <div className="max-w-7xl mx-auto">
-        {/* Hero Section */}
         <div className="text-center mb-20">
           <h1 className="text-6xl font-bold mb-8 bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 bg-clip-text text-transparent">
             Let's Connect
@@ -41,7 +40,6 @@ function Contact() {
         </div>
 
         <div className="flex flex-col lg:flex-row gap-12">
-          {/* Contact Information */}
           <div className="flex-1 space-y-8">
             <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all">
               <h2 className="text-3xl font-bold text-gray-900 mb-8">Contact Information</h2>
@@ -87,7 +85,7 @@ function Contact() {
               </div>
             </div>
 
-            {/* FAQ Section */}
+            {/* FAQ */}
             <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all">
               <h2 className="text-3xl font-bold text-gray-900 mb-8">Frequently Asked Questions</h2>
               <div className="space-y-6">
@@ -103,7 +101,7 @@ function Contact() {
             </div>
           </div>
 
-          {/* Contact Form */}
+          {/* Form */}
           <div className="flex-1">
             <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all">
               <h2 className="text-3xl font-bold text-gray-900 mb-8">Send us a Message</h2>

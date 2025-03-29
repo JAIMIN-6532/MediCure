@@ -1,32 +1,32 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';  // Import useNavigate
-import { Eye, EyeOff, Loader } from 'lucide-react';
-import AuthLayout from '../../components/AuthLayout';
-import axios from 'axios';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Eye, EyeOff, Loader } from "lucide-react";
+import AuthLayout from "../../components/AuthLayout";
+import axios from "axios";
 
 const DsignUp = () => {
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    name: '',
-    otp: '',
+    email: "",
+    password: "",
+    name: "",
+    otp: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();  // Initialize the navigate function
-  const [error, setError] = useState('');
-  const [nameError, setNameError] = useState('');
+  const navigate = useNavigate();
+  const [error, setError] = useState("");
+  const [nameError, setNameError] = useState("");
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    if (e.target.name === 'name') {
+    if (e.target.name === "name") {
       const namePattern = /^Dr [A-Za-z]\ [A-Za-z]\ [A-Za-z]+$/;
       if (!namePattern.test(e.target.value)) {
         setNameError('Name should be in the format "Dr A B [lastName]".');
       } else {
-        setNameError('');  // Clear the error when the format is correct
+        setNameError("");
       }
     }
   };
@@ -34,15 +34,18 @@ const DsignUp = () => {
   const handleSendOtp = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');  // Reset error message on OTP request
+    setError("");
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_APP_API_URL}/api/otp/send`, { email: formData.email });
-      console.log('OTP Sent:', response.data);
+      const response = await axios.post(
+        `${import.meta.env.VITE_APP_API_URL}/api/otp/send`,
+        { email: formData.email }
+      );
+      console.log("OTP Sent:", response.data);
       setOtpSent(true);
     } catch (err) {
       console.log(err);
-      setError(err.response ? err.response.data : 'Failed to send OTP.');
+      setError(err.response ? err.response.data : "Failed to send OTP.");
     } finally {
       setLoading(false);
     }
@@ -51,47 +54,56 @@ const DsignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(''); // Reset the error message
+    setError("");
     if (nameError) {
       setLoading(false);
       return;
     }
-  
+
     try {
-      const response = await axios.post(`${import.meta.env.VITE_APP_API_URL}/api/doctor/dsignup`, {
-        email: formData.email,
-        password: formData.password,
-        name: formData.name,
-        otp: formData.otp,
-      });
-  
-      console.log('User Created:', response.data);
-      localStorage.setItem('did', JSON.stringify(response.data._id));
-      navigate('/doctor-signup'); // Redirect on success
+      const response = await axios.post(
+        `${import.meta.env.VITE_APP_API_URL}/api/doctor/dsignup`,
+        {
+          email: formData.email,
+          password: formData.password,
+          name: formData.name,
+          otp: formData.otp,
+        }
+      );
+
+      console.log("User Created:", response.data);
+      localStorage.setItem("did", JSON.stringify(response.data._id));
+      navigate("/doctor-signup");
     } catch (err) {
-      console.error('Signup failed:', err);
-  
-      // Check for specific error messages from the backend
+      console.error("Signup failed:", err);
+
       if (err.response?.data?.error === "DoctorEmail already exists") {
-        setError('An account with this email already exists. Please try for signin.');
-      } else if (err.response?.data?.error === 'Invalid OTP') {
-        setError('The OTP you entered is incorrect. Please try again.');
+        setError(
+          "An account with this email already exists. Please try for signin."
+        );
+      } else if (err.response?.data?.error === "Invalid OTP") {
+        setError("The OTP you entered is incorrect. Please try again.");
       } else {
-        setError(err.response?.data?.error || 'An error occurred.');
+        setError(err.response?.data?.error || "An error occurred.");
       }
     } finally {
       setLoading(false);
     }
   };
-  
+
   return (
     <AuthLayout title="Doctor Sign Up">
-      <form onSubmit={otpSent ? handleSubmit : handleSendOtp} className="space-y-4">
+      <form
+        onSubmit={otpSent ? handleSubmit : handleSendOtp}
+        className="space-y-4"
+      >
         <div>
-       {nameError && <p className="text-sm text-gray-500 mb-2">
-            <strong>Full Name:</strong> Please enter your name in the format:
-            <strong> Dr A B [Lastname]</strong>.
-          </p> } 
+          {nameError && (
+            <p className="text-sm text-gray-500 mb-2">
+              <strong>Full Name:</strong> Please enter your name in the format:
+              <strong> Dr A B [Lastname]</strong>.
+            </p>
+          )}
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Full Name
           </label>
@@ -104,7 +116,7 @@ const DsignUp = () => {
             placeholder="Enter your full name"
             required
           />
-           {nameError && <p className="text-red-500 text-sm">{nameError}</p>}
+          {nameError && <p className="text-red-500 text-sm">{nameError}</p>}
         </div>
 
         <div>
@@ -128,7 +140,7 @@ const DsignUp = () => {
           </label>
           <div className="relative">
             <input
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               name="password"
               value={formData.password}
               onChange={handleChange}
@@ -164,9 +176,7 @@ const DsignUp = () => {
           </div>
         )}
 
-        {error && (
-          <div className="text-red-500 text-sm">{error }</div>  
-        )}
+        {error && <div className="text-red-500 text-sm">{error}</div>}
 
         <button
           type="submit"
@@ -176,21 +186,27 @@ const DsignUp = () => {
           {loading ? (
             <Loader className="animate-spin" size={20} />
           ) : (
-            <span>{otpSent ? 'Create Account' : 'Send OTP'}</span>
+            <span>{otpSent ? "Create Account" : "Send OTP"}</span>
           )}
         </button>
       </form>
 
       <div className="mt-6 text-center">
         <p className="text-sm text-gray-600">
-          Already have an account?{' '}
-          <Link to="/DsignIn" className="text-blue-600 hover:text-blue-700 font-medium">
+          Already have an account?{" "}
+          <Link
+            to="/DsignIn"
+            className="text-blue-600 hover:text-blue-700 font-medium"
+          >
             Sign In
           </Link>
         </p>
         <p className="text-sm text-gray-600 mt-2">
-          Are you a Patient?{' '}
-          <Link to="/signup" className="text-blue-600 hover:text-blue-700 font-medium">
+          Are you a Patient?{" "}
+          <Link
+            to="/signup"
+            className="text-blue-600 hover:text-blue-700 font-medium"
+          >
             Sign up here
           </Link>
         </p>

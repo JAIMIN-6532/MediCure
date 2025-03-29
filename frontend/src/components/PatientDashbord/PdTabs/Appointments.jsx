@@ -1,3 +1,5 @@
+//sample date for checking how it willl looks like.....
+
 // const appointmentshard = [
 //   {
 //     id: 1,
@@ -58,7 +60,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { X } from "lucide-react";
 import moment from "moment-timezone";
-// Helper function to get status colors
+
 const getStatusColor = (status) => {
   const colors = {
     Upcoming: "bg-blue-50 text-blue-600",
@@ -71,16 +73,14 @@ const getStatusColor = (status) => {
   return colors[status] || "bg-gray-50 text-gray-600";
 };
 
-// Appointments Component
 export default function Appointments({ patientappointments, patient }) {
-  const [activeTab, setActiveTab] = useState("Today"); // State to handle active tab (Today, Upcoming, Past)
-  const [rating, setRating] = useState(0); // State for star rating
-  const [comment, setComment] = useState(""); // State for comment
-  const [selectedAppointment, setSelectedAppointment] = useState(null); // Track the selected appointment for review
-  const [showModal, setShowModal] = useState(false); // State to handle modal visibility
-  //   const [toastMessage, setToastMessage] = useState(""); // State for toast message
+  const [activeTab, setActiveTab] = useState("Today");
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   console.log(patientappointments);
-  //   appointments = appointmentshard;
+
   useEffect(() => {
     gsap.fromTo(
       ".appointments-title",
@@ -94,20 +94,19 @@ export default function Appointments({ patientappointments, patient }) {
     );
   }, []);
 
-  // Handle tab change (Today, Upcoming, Past)
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
 
   const handleReviewClick = (appointment) => {
-    console.log("Appointment selected:", appointment); // Log to ensure appointment is passed correctly
+    console.log("Appointment selected:", appointment);
     setSelectedAppointment(appointment);
     setShowModal(true);
   };
 
   const onClose = () => {
-    console.log("Closing modal"); // Log to confirm closing the modal
-    setShowModal(false); // This should close the modal
+    console.log("Closing modal");
+    setShowModal(false);
   };
 
   const handleRatingChange = (newRating) => {
@@ -119,7 +118,6 @@ export default function Appointments({ patientappointments, patient }) {
   };
 
   const handleSubmitReview = async () => {
-    // Here you can make the API call to post the review
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_APP_API_URL}/api/feedback/addfeedback`,
@@ -132,15 +130,11 @@ export default function Appointments({ patientappointments, patient }) {
       );
 
       console.log("Review submitted:", response.data);
-      // Show success toast message
       toast.success("Review added successfully!");
-      // Close the modal after successful review submission
       setShowModal(false);
 
-      // Clear rating and comment after submission
       setRating(0);
       setComment("");
-      //   setTimeout(() => setToastMessage(""), 3000);
     } catch (error) {
       console.error("Error submitting review:", error);
       toast.error("Error submitting review.");
@@ -150,69 +144,59 @@ export default function Appointments({ patientappointments, patient }) {
   const isPastAppointment = (appointmentDate) => {
     const today = new Date();
     const appointmentDateObj = new Date(appointmentDate);
-    return appointmentDateObj < today; // Returns true if the appointment is in the past
+    return appointmentDateObj < today; // returns true if the appointment is in the past
   };
 
   const convertTo24HourFormat = (timeSlot) => {
     const [time, period] = timeSlot.split(" ");
     let [hours, minutes] = time.split(":").map(Number);
 
-    if (period === "PM" && hours !== 12) hours += 12; // Convert PM hours to 24-hour format
-    if (period === "AM" && hours === 12) hours = 0; // Convert 12 AM to 00:00
+    if (period === "PM" && hours !== 12) hours += 12; // convert PM hours to 24-hour format..
+    if (period === "AM" && hours === 12) hours = 0; // convert 12 AM to 00:00...
 
-    return hours * 100 + minutes; // Convert to HHMM format for easier comparison
+    return hours * 100 + minutes; // Convert HHMM format for easier comparison
   };
 
-  // Filter appointments based on the selected tab
   const filteredAppointments = patientappointments?.filter((appointment) => {
-    // Extract the date part (YYYY-MM-DD) from appointment.date
-    const appointmentDate = appointment.date.split("T")[0]; // Get the date part only (YYYY-MM-DD)
+    const appointmentDate = appointment.date.split("T")[0]; // get date part only (YYYY-MM-DD)
 
-    // Get today's date in UTC (no time zone adjustment yet)
-    const today = new Date();
+    const today = new Date(); //utc date
 
-      const appointmentTime = convertTo24HourFormat(appointment.timeSlot); // Convert time slot to 24-hour format
-      // Get current IST date and time
-      const istDate = moment().tz("Asia/Kolkata");
-      const todayIST = istDate.format("YYYY-MM-DD"); // Get today's date in IST (YYYY-MM-DD)
-      const currentTime = istDate.hours() * 100 + istDate.minutes(); // Convert current time to 24-hour format
-    
-    // // Format the IST date as YYYY-MM-DD
-    // const year = istDate.getUTCFullYear();
-    // const month = String(istDate.getUTCMonth() + 1).padStart(2, "0"); // Months are 0-indexed
-    // const day = String(istDate.getUTCDate()).padStart(2, "0");
+    const appointmentTime = convertTo24HourFormat(appointment.timeSlot);
+    const istDate = moment().tz("Asia/Kolkata");
+    const todayIST = istDate.format("YYYY-MM-DD");
+    const currentTime = istDate.hours() * 100 + istDate.minutes(); // convert current time to 24-hour format
 
-    // const todayIST = `${year}-${month}-${day}`;
-
-    console.log("Today IST: ", todayIST); // Debugging the IST date
-    // Handle the different tabs
+    console.log("Today IST: ", todayIST);
     if (activeTab === "Today") {
-      return appointmentDate === todayIST && appointmentTime >= currentTime ; // Compare only the date part (date in IST)
+      return appointmentDate === todayIST && appointmentTime >= currentTime; // Compare only the date part (date in IST)
     } else if (activeTab === "Upcoming") {
-      return appointmentDate > todayIST; // Upcoming appointments (future dates)
+      return appointmentDate > todayIST;
     } else if (activeTab === "Past") {
-      return ((appointmentDate<todayIST) || (appointmentDate == todayIST && appointmentTime < currentTime)) ; // Past appointments (past dates)
+      return (
+        appointmentDate < todayIST ||
+        (appointmentDate == todayIST && appointmentTime < currentTime)
+      ); // Past appointments (past dates)
     }
 
     return true;
   });
 
-  // Sort today's appointments by date and time slot
+  // sort today's appointments by date and time slot
   const sortedAppointments = filteredAppointments.sort((a, b) => {
     const dateA = a.date.split("T")[0];
     const dateB = b.date.split("T")[0];
 
     if (dateA !== dateB) {
-      return dateA.localeCompare(dateB); // Sort by date
+      return dateA.localeCompare(dateB); // sort by date
     }
 
-    const timeA = convertTo24HourFormat(a.timeSlot); // Convert time slot to 24-hour format
-    const timeB = convertTo24HourFormat(b.timeSlot); // Convert time slot to 24-hour format
+    const timeA = convertTo24HourFormat(a.timeSlot);
+    const timeB = convertTo24HourFormat(b.timeSlot);
 
-    return timeA - timeB; // Sort by time (ascending)
+    return timeA - timeB; // sort by time (ascending)
   });
 
-  // Function to get the class for the active tab button
   const getButtonClass = (tab) => {
     return activeTab === tab
       ? "px-4 py-2 bg-primary text-white rounded-lg"
@@ -270,7 +254,6 @@ export default function Appointments({ patientappointments, patient }) {
                     className="w-11 h-11 rounded-full object-cover cursor-pointer"
                   />
                 ) : (
-                  // Fallback to initials if no profile image
                   <span className="w-8 h-8 flex items-center justify-center rounded-full bg-purple-300 text-white font-bold cursor-pointer">
                     {appointment?.doctor.slice(0, 2).toUpperCase() || "User"}
                   </span>
@@ -284,10 +267,10 @@ export default function Appointments({ patientappointments, patient }) {
                     <span>
                       {appointment?.date &&
                         appointment.date
-                        .split("T")[0] 
-                        .split("-") 
-                        .reverse()
-                        .join("-")}{" "}
+                          .split("T")[0]
+                          .split("-")
+                          .reverse()
+                          .join("-")}{" "}
                     </span>
                     <span>{appointment?.timeSlot}</span>
                     <span>•</span>
@@ -318,7 +301,7 @@ export default function Appointments({ patientappointments, patient }) {
           ))}
         </div>
       </div>
-      {/* Modal for Review */}
+      {/* modal forr review */}
       {showModal && (
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div
@@ -416,7 +399,6 @@ export default function Appointments({ patientappointments, patient }) {
         </div>
       )}
 
-      {/* Toast Container */}
       <ToastContainer />
     </div>
   );

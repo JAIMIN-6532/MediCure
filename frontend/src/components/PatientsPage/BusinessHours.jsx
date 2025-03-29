@@ -7,7 +7,7 @@ const BusinessHours = ({ businessHours }) => {
     
     let slotsCount = 0;
     while (start < end) {
-      slotsCount += 2;  // Two half-hour slots per hour
+      slotsCount += 2;  // two half-hour slots per hour
       start += 1;
     }
     return slotsCount;
@@ -18,7 +18,7 @@ const BusinessHours = ({ businessHours }) => {
       <h2 className="text-2xl font-bold text-gray-800 mb-6">Business Hours</h2>
       <div className="space-y-4">
         {businessHours?.map(({ day }) => {
-          // Assuming business hours from 9 AM to 5 PM
+          // assuming business hours from 9 AM to 5 PM
           const slotsCount = calculateSlots("09:00", "17:00");
 
           return (

@@ -20,7 +20,7 @@ const appointmentSchema = new mongoose.Schema({
     enum: ['Online', 'Offline']
   },
   date: { type: Date, required: true },
-  timeSlot: { type: String, required: true }, // e.g., "10:00 AM - 10:30 AM"
+  timeSlot: { type: String, required: true }, // "10:00 AM - 10:30 AM"
   type: { 
     type: String, 
     enum: ['Online', 'Offline'], 

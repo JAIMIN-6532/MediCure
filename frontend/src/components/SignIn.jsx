@@ -1,23 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Loader } from 'lucide-react';
-import AuthLayout from './AuthLayout';
-import { useDispatch, useSelector } from 'react-redux';
-import { patientSignIn } from '../reduxToolkit/reducers/AuthReducer.js'; // Importing patientSignIn action
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Eye, EyeOff, Loader } from "lucide-react";
+import AuthLayout from "./AuthLayout";
+import { useDispatch, useSelector } from "react-redux";
+import { patientSignIn } from "../reduxToolkit/reducers/AuthReducer.js";
 
 const SignIn = () => {
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Get loading, error, and user info from Redux state
-  const { loading, error, user, token} = useSelector((state) => state.auth);
-
-  
+  const { loading, error, user, token } = useSelector((state) => state.auth);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,29 +22,27 @@ const SignIn = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(patientSignIn(formData)); // Dispatch patient sign-in action
+    dispatch(patientSignIn(formData));
   };
 
-  // Redirect if token is already in localStorage
   useEffect(() => {
-    const savedToken = localStorage.getItem('token');
+    const savedToken = localStorage.getItem("token");
     if (savedToken) {
-      navigate('/');
+      navigate("/");
     }
   }, [navigate]);
 
-  // Redirect and save token to localStorage if user successfully signs in
   useEffect(() => {
     if (user && token) {
-      if(localStorage.getItem('redirect')){
-        localStorage.setItem('token', token);
-        const redirect = localStorage.getItem('redirect');
+      if (localStorage.getItem("redirect")) {
+        localStorage.setItem("token", token);
+        const redirect = localStorage.getItem("redirect");
         navigate(redirect);
-        localStorage.removeItem('redirect');
-      }else{
-      localStorage.setItem('token', token); // Save token to local storage
-      // navigate('/'); // Redirect to the home page after successful sign-in
-      navigate('/'); // Redirect to the dashboard page after successful sign
+        localStorage.removeItem("redirect");
+      } else {
+        localStorage.setItem("token", token); // save token to local storage
+
+        navigate("/");
       }
     }
   }, [user, token, navigate]);
@@ -75,7 +70,7 @@ const SignIn = () => {
           </label>
           <div className="relative">
             <input
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               name="password"
               value={formData.password}
               onChange={handleChange}
@@ -92,7 +87,6 @@ const SignIn = () => {
           </div>
         </div>
 
-        {/* Sign In button */}
         <button
           type="submit"
           disabled={loading}
@@ -108,7 +102,7 @@ const SignIn = () => {
 
       <div className="mt-6 text-center">
         <p className="text-sm text-gray-600">
-          Don't have an account?{' '}
+          Don't have an account?{" "}
           <Link
             to="/signup"
             className="text-blue-600 hover:text-blue-700 font-medium"
@@ -116,8 +110,7 @@ const SignIn = () => {
             Sign Up
           </Link>
         </p>
-        
-        {/* Link to switch between Doctor and Patient Sign In */}
+
         <div className="mt-4 text-sm text-gray-600">
           <span>Not a Patient? </span>
           <Link

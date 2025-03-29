@@ -18,17 +18,3 @@ const AuthLayout = ({ children, title }) => {
 };
 
 export default AuthLayout;
-
-// AuthLayout.js
-// import React from 'react';
-
-// const AuthLayout = ({ title, children }) => {
-//   return (
-//     <div className="max-w-4xl mx-auto p-8">
-//       <h1 className="text-2xl font-semibold text-center mb-8">{title}</h1>
-//       {children}
-//     </div>
-//   );
-// };
-
-// export default AuthLayout;

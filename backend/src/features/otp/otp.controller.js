@@ -47,26 +47,4 @@ export default class OtpController {
         }
     }
 
-    // async resetPassword(req, res, next) {
-    //     try {
-    //         const {  otp, newPassword } = req.body;
-    //         const userId = req.userID;
-    //         // First, verify the OTP
-    //         const isValidOtp = await this.OtpRepository.verifyOtp(userId, otp);
-    //         if (!isValidOtp) {
-    //             return res.status(400).json({ message: 'Invalid or expired OTP!' });
-    //         }
-
-    //         // Hash the new password
-    //         const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-    //         // Update the user's password
-    //         await this.OtpRepository.resetPassword(userId, hashedPassword);
-
-    //         res.status(200).json({ message: 'Password reset successfully!' });
-    //     } catch (err) {
-    //         next(err);
-    //     }
-    
-    // }
 }

@@ -4,7 +4,6 @@ function About() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-blue-50 py-16 px-4 sm:px-6 lg:px-8 pt-16">
       <div className="max-w-7xl mx-auto">
-        {/* Hero Section */}
         <div className="text-center mb-10">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-8 bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 bg-clip-text text-transparent">
             Connecting Healthcare
@@ -15,7 +14,6 @@ function About() {
           </p>
         </div>
 
-        {/* Mission Section */}
         <div className="flex flex-col md:flex-row gap-12 mb-24 items-center">
           <div className="flex-1 relative group">
             <div className="absolute -inset-2 bg-gradient-to-r from-blue-600 to-blue-400 rounded-xl opacity-75 group-hover:opacity-100 blur transition duration-1000 group-hover:duration-200 animate-tilt"></div>
@@ -53,7 +51,6 @@ function About() {
           </div>
         </div>
 
-        {/* Features Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
           <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-2">
             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6">
@@ -128,7 +125,6 @@ function About() {
           </div>
         </div>
 
-        {/* CTA Section */}
         <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-3xl p-12 text-center text-white">
           <h2 className="text-4xl font-bold mb-6">
             Ready to Connect with a Doctor?
@@ -137,9 +133,6 @@ function About() {
             Join thousands of patients who trust our platform for their
             healthcare needs.
           </p>
-          {/* <button className="bg-white text-blue-600 text-xl font-semibold px-10 py-4 rounded-xl transform hover:scale-105 transition-all duration-300 hover:shadow-xl">
-            Get Started Now
-          </button> */}
         </div>
       </div>
     </div>

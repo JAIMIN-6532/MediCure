@@ -2,7 +2,6 @@ import React from "react";
 import { FaStar, FaMapMarkerAlt } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-// import { Video, MapPin } from "lucide-react";
 import {
   Video,
   MapPin,

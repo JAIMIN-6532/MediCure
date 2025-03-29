@@ -1,4 +1,3 @@
-// Step1.js
 import React from 'react';
 import { Upload } from 'lucide-react';
 
@@ -8,7 +7,7 @@ const Step1 = ({ formData, handleFileChange,did }) => {
     if (!file) return null;
     
     const fileUrl = URL.createObjectURL(file);
-    const fileType = file.type.split('/')[0]; // Get the file type (image, application, etc.)
+    const fileType = file.type.split('/')[0]; // get the file type (image, application, etc....)
     
     if (fileType === 'image') {
       return <img src={fileUrl} alt="Uploaded" className="mt-2 w-24 h-24 rounded-full object-cover mx-auto" />;

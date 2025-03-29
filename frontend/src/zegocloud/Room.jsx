@@ -5,9 +5,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Room = () => {
-  //   const { id } = useParams();
   const { appointmentId } = useParams();
-  const user = JSON.parse(localStorage?.getItem("user")); // Parse the string back to an object
+  const user = JSON.parse(localStorage?.getItem("user")); 
   const userId = user?._id || "123456789" ;
   
   console.log("appointmentId In ROOM:", appointmentId);
@@ -15,11 +14,11 @@ const Room = () => {
   const roomContainerRef = useRef(null);
   const [hasJoined, setHasJoined] = useState(false);
   const [stream, setStream] = useState(null);
-  const [userCount, setUserCount] = useState(0); // Track number of users in the room
-  const [timer, setTimer] = useState(null); // Timer state to track session time
-  const sessionDuration = 30 * 60 * 1000; // Session duration in milliseconds (e.g., 30 minutes)
+  const [userCount, setUserCount] = useState(0); // track number of users in the room
+  const [timer, setTimer] = useState(null); // timer state to track session time
+  const sessionDuration = 30 * 60 * 1000; // session duration in milliseconds (30 minutes)
 
-  // Function to get media stream and handle permissions
+  // function to get media stream and handle permissions
   const getUserMedia = async () => {
     try {
       if (stream) {
@@ -41,28 +40,26 @@ const Room = () => {
     }
   };
 
-  // Function to start the timer and end the session after the specified time
+  // function to start the timer and end the session after the specified time
   const startTimer = () => {
     const timeout = setTimeout(() => {
       alert("Session time has ended");
       endSession();
     }, sessionDuration);
 
-    setTimer(timeout); // Save the timer ID to clear it later if needed
+    setTimer(timeout); // save the timer ID to clear it later if needed
   };
 
-  // Function to end the session
+  // function to end the session
   const endSession = () => {
     console.log("Ending the session...");
-    // adding ZEGOCLOUD's end room functionality here (e.g., leave the room, stop video/audio)
-    // ZegoUIKitPrebuilt.leaveRoom() to leave the room
     if (stream) {
-      stream.getTracks().forEach((track) => track.stop()); // Stop media tracks
+      stream.getTracks().forEach((track) => track.stop()); // stop media tracks
     }
-    navigate("/"); // Navigate back to appointments or wherever
+    navigate("/"); 
   };
 
-  // Initialize and join the room
+  // initialize and join the room
   const myMeeting = async (element) => {
     const userStream = await getUserMedia();
     if (!userStream) return;
@@ -91,17 +88,9 @@ const Room = () => {
       "Name"
     );
 
-    // const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
-    //   appID,
-    //   serverSecret.toString(),
-    //   appointmentId.toString(),
-    //   Date.now().toString(),
-    //   "test"
-    // );
-
     const zc = ZegoUIKitPrebuilt.create(kitToken);
 
-    // Join the room with the media stream
+    // join the room with the media stream
     zc.joinRoom({
       container: element,
       sharedLinks: [
@@ -117,13 +106,11 @@ const Room = () => {
       maxUsers: 2,
       onLeaveRoom: () => {
         console.log("User left the room");
-        // setUserCount(userCount - 1);
         endSession();
-        // navigate("/");
       },
     });
 
-    // After joining, update user count
+    // after joining, update user count
     setUserCount(userCount + 1);
     setHasJoined(true);
     startTimer();
@@ -139,12 +126,11 @@ const Room = () => {
     };
   }, [stream]);
 
-  // Join room once the component has mounted
   useEffect(() => {
     if (roomContainerRef.current && !hasJoined) {
       myMeeting(roomContainerRef.current);
     }
-  }, [appointmentId, hasJoined, userCount]); // Only run effect when room ID changes or user hasn't joined
+  }, [appointmentId, hasJoined, userCount]); // only run effect when room ID changes or user hasn't joined
 
   return (
     <div

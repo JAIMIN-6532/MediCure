@@ -1,4 +1,3 @@
-// Animate a counter element from 0 to a target value with easing and formatting
 export const animateCounterElement = (element, endValue, duration = 2000) => {
     if (!element) return;
     
@@ -22,7 +21,7 @@ export const animateCounterElement = (element, endValue, duration = 2000) => {
     const animateCount = (timestamp) => {
       const runtime = timestamp - startTime;
       const progress = Math.min(runtime / duration, 1);
-      // Using an easing function for smoother animation
+
       const easedProgress = 1 - Math.pow(1 - progress, 4);
       
       const currentValue = startValue + (easedProgress * (countTo - startValue));
@@ -38,8 +37,6 @@ export const animateCounterElement = (element, endValue, duration = 2000) => {
     requestAnimationFrame(animateCount);
   };
   
-  // Minimal scroll-trigger initialization for elements with the "scroll-trigger" class.
-  // It applies an animation class when the element is in view.
   export const initScrollTriggerAnimations = () => {
     const animateOnScroll = (entries, observer) => {
       entries.forEach((entry) => {

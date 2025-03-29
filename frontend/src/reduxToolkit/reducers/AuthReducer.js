@@ -1,4 +1,3 @@
-// src/redux/authSlice.js
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
@@ -11,7 +10,6 @@ const initialState = {
   error: null,
 };
 
-// Thunks for asynchronous actions
 // 1. Doctor Sign-in
 export const doctorSignIn = createAsyncThunk(
   'auth/doctorSignIn',
@@ -21,9 +19,9 @@ export const doctorSignIn = createAsyncThunk(
         `${import.meta.env.VITE_APP_API_URL}/api/doctor/dsignin`,
         credentials
       );
-      return response.data; // The data from the API response
+      return response.data; 
     } catch (error) {
-      return rejectWithValue(error.response.data); // Error response from API
+      return rejectWithValue(error.response.data); 
     }
   }
 );
@@ -37,9 +35,9 @@ export const doctorSignUp = createAsyncThunk(
         `${import.meta.env.VITE_APP_API_URL}/api/doctor/dsignup`,
         credentials
       );
-      return response.data; // The data from the API response
+      return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data); // Error response from API
+      return rejectWithValue(error.response.data); 
     }
   }
 );
@@ -53,9 +51,9 @@ export const patientSignIn = createAsyncThunk(
         `${import.meta.env.VITE_APP_API_URL}/api/patient/signin`,
         credentials
       );
-      return response.data; // The data from the API response
+      return response.data; 
     } catch (error) {
-      return rejectWithValue(error.response.data); // Error response from API
+      return rejectWithValue(error.response.data);
     }
   }
 );
@@ -70,14 +68,14 @@ export const patientSignUp = createAsyncThunk(
         credentials
       );
 
-      return response.data; // The data from the API response
+      return response.data; 
     } catch (error) {
-      return rejectWithValue(error.response.data); // Error response from API
+      return rejectWithValue(error.response.data); 
     }
   }
 );
 
-// Auth slice
+// auth slice
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -87,12 +85,11 @@ const authSlice = createSlice({
       state.token = null;
       state.loading = false;
       state.error = null;
-      localStorage.removeItem('token'); // Remove token from localStorage on logout
-      localStorage.removeItem('user'); // Remove user from localStorage on logout
+      localStorage.removeItem('token'); 
+      localStorage.removeItem('user'); 
     },
   },
   extraReducers: (builder) => {
-    // Handling Doctor Sign-in
     builder.addCase(doctorSignIn.pending, (state) => {
       state.loading = true;
     });
@@ -101,15 +98,14 @@ const authSlice = createSlice({
       state.user = action.payload.user;
       state.token = action.payload.token;
       state.error = null;
-      localStorage.setItem('user', JSON.stringify(action.payload.user)); // Save user to localStorage
-      localStorage.setItem('token', action.payload.token); // Save token to localStorage
+      localStorage.setItem('user', JSON.stringify(action.payload.user)); 
+      localStorage.setItem('token', action.payload.token); 
     });
     builder.addCase(doctorSignIn.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload || action.error.message;
     });
 
-    // Handling Doctor Sign-up
     builder.addCase(doctorSignUp.pending, (state) => {
       state.loading = true;
     });
@@ -124,7 +120,6 @@ const authSlice = createSlice({
       state.error = action.payload || action.error.message;
     });
 
-    // Handling Patient Sign-in
     builder.addCase(patientSignIn.pending, (state) => {
       state.loading = true;
     });
@@ -132,8 +127,8 @@ const authSlice = createSlice({
       state.loading = false;
       state.user = action.payload.user;
       state.token = action.payload.token;
-      localStorage.setItem('user', JSON.stringify(action.payload.user)); // Save user to localStorage
-      localStorage.setItem('token', action.payload.token); // Save token to localStorage
+      localStorage.setItem('user', JSON.stringify(action.payload.user)); 
+      localStorage.setItem('token', action.payload.token); 
       state.error = null;
     });
     builder.addCase(patientSignIn.rejected, (state, action) => {
@@ -141,7 +136,6 @@ const authSlice = createSlice({
       state.error = action.payload || action.error.message;
     });
 
-    // Handling Patient Sign-up
     builder.addCase(patientSignUp.pending, (state) => {
       state.loading = true;
     });
@@ -158,8 +152,6 @@ const authSlice = createSlice({
   },
 });
 
-// Export actions
 export const { logout } = authSlice.actions;
 
-// Export the reducer to be used in the store
 export default authSlice.reducer;

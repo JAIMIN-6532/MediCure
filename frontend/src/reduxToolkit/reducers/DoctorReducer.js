@@ -1,22 +1,18 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// Async thunk to fetch doctors from API
 export const fetchDoctors = createAsyncThunk(
   "doctors/fetchDoctors",
   async () => {
-    // console.log("fetchDoctors", process.env.REACT_APP_API_URL);
     const response = await axios.get(
       `${import.meta.env.VITE_APP_API_URL}/api/doctor/getAllDoctors`
     );
     console.log("response", response.data);
-    // console.log(process.env.REACT_APP_API_URL);
     const data = await response.data;
     return data;
   }
 );
 
-// Async thunk to fetch a doctor by ID from API
 export const fetchDoctorById = createAsyncThunk(
   "doctors/fetchDoctorById",
   async (doctorId) => {
@@ -25,7 +21,7 @@ export const fetchDoctorById = createAsyncThunk(
       `${import.meta.env.VITE_APP_API_URL}/api/doctor/doctorinfo/${doctorId}`
     );
     console.log("Doctor fetched by ID:", response.data);
-    return response.data; // returns the doctor's data
+    return response.data;
   }
 );
 
@@ -40,7 +36,7 @@ export const fetchDoctorAvgRatingByDoctorId = createAsyncThunk(
     );
     console.log("Doctor fetched by ID:", response.data);
 
-    return response.data; // returns the doctor's data
+    return response.data;
   }
 );
 
@@ -55,40 +51,39 @@ export const fetchAppointmentsByDoctorId = createAsyncThunk(
       { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
     );
     console.log("Doctor fetched by ID:", response.data);
-    return response.data; // returns the doctor's data
+    return response.data;
   }
 );
 
 // Initial state
 const initialState = {
   doctors: [],
-  selectedDoctor: {}, 
-  appointments: [], 
+  selectedDoctor: {},
+  appointments: [],
   avgRating: null,
   fetchDoctorsStatus: "idle",
-  fetchDoctorByIdStatus: "idle", 
-  fetchDoctorAvgRatingStatus: "idle", 
+  fetchDoctorByIdStatus: "idle",
+  fetchDoctorAvgRatingStatus: "idle",
   fetchAppointmentsStatus: "idle",
   error: null,
 };
 
-// Slice to handle doctor data
 const doctorSlice = createSlice({
   name: "doctors",
   initialState,
   reducers: {
     resetDoctorState: (state) => {
-      state.selectedDoctor = {}; // Reset the selectedDoctor data
-      state.fetchDoctorByIdStatus = "idle"; // Reset the fetching status to idle
-      state.avgRating = null; // Reset avgRating
-      state.fetchDoctorAvgRatingStatus = "idle"; // Reset fetch status
-      state.appointments = []; // Reset appointments
-      state.fetchAppointmentsStatus = "idle"; // Reset fetch status
+      state.selectedDoctor = {};
+      state.fetchDoctorByIdStatus = "idle";
+      state.avgRating = null;
+      state.fetchDoctorAvgRatingStatus = "idle";
+      state.appointments = [];
+      state.fetchAppointmentsStatus = "idle";
     },
   },
   extraReducers: (builder) => {
     builder
-      // Fetching all doctors
+
       .addCase(fetchDoctors.pending, (state) => {
         state.fetchDoctorsStatus = "loading";
       })
@@ -101,27 +96,24 @@ const doctorSlice = createSlice({
         state.error = action.error.message;
       })
 
-      // Fetching a single doctor by ID
       .addCase(fetchDoctorById.pending, (state) => {
         state.fetchDoctorByIdStatus = "loading";
       })
       .addCase(fetchDoctorById.fulfilled, (state, action) => {
         state.fetchDoctorByIdStatus = "succeeded";
-        state.selectedDoctor = action.payload; // store the selected doctor data
+        state.selectedDoctor = action.payload;
       })
       .addCase(fetchDoctorById.rejected, (state, action) => {
         state.fetchDoctorByIdStatus = "failed";
         state.error = action.error.message;
       })
 
-      // Fetching average rating
       .addCase(fetchDoctorAvgRatingByDoctorId.pending, (state) => {
         state.fetchDoctorAvgRatingStatus = "loading";
       })
       .addCase(fetchDoctorAvgRatingByDoctorId.fulfilled, (state, action) => {
         state.fetchDoctorAvgRatingStatus = "succeeded";
 
-        // Check if avgRating is an array and has at least one item
         if (
           Array.isArray(action.payload?.avgRating) &&
           action.payload.avgRating.length > 0
@@ -130,9 +122,9 @@ const doctorSlice = createSlice({
             "action.payload",
             action.payload?.avgRating[0]?.avgRating
           );
-          state.avgRating = action.payload.avgRating[0]?.avgRating; // Use the first rating if available
-        } else {    
-          state.avgRating = 0; // No ratings available, set avgRating to 0
+          state.avgRating = action.payload.avgRating[0]?.avgRating;
+        } else {
+          state.avgRating = 0;
         }
       })
       .addCase(fetchDoctorAvgRatingByDoctorId.rejected, (state, action) => {
@@ -153,7 +145,6 @@ const doctorSlice = createSlice({
   },
 });
 
-// Export selectors to get doctors and selected doctor
 export const selectAllDoctors = (state) => state.doctors.doctors;
 export const selectSelectedDoctor = (state) => state.doctors.selectedDoctor;
 export const selectFetchDoctorsStatus = (state) =>
@@ -163,5 +154,4 @@ export const selectFetchDoctorByIdStatus = (state) =>
 export const selectAvgRating = (state) => state.doctors.avgRating;
 export const { resetDoctorState } = doctorSlice.actions;
 
-// Export the reducer to be used in the store
 export default doctorSlice.reducer;
