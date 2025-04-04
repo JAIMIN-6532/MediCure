@@ -10,6 +10,7 @@ import {
   Stethoscope,
   Building,
 } from "lucide-react";
+
 function ServiceTypeBadge({ type }) {
   return (
     <div className="flex gap-2">
@@ -47,16 +48,16 @@ const DoctorProfile = ({ doctor, avgRating }) => {
       <div className="flex flex-col md:flex-row gap-8">
         {/* Left Column - Image and Basic Info */}
         <div className="md:w-1/3">
-        <div className="relative w-full max-w-md aspect-[4/3] rounded-lg overflow-hidden shadow-lg group">
-        <div className="w-full h-full">
-          <img
-            src={doctor.profileImageUrl}
-            alt={doctor.name}
-            className="w-full h-full object-cover  transition-all duration-300 ease-in-out transform group-hover:scale-105"
-          />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      </div>
+          <div className="relative w-full max-w-md aspect-[4/3] rounded-lg overflow-hidden shadow-lg group">
+            <div className="w-full h-full">
+              <img
+                src={doctor.profileImageUrl}
+                alt={doctor.name}
+                className="w-full h-full object-cover  transition-all duration-300 ease-in-out transform group-hover:scale-105"
+              />
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          </div>
 
           <div className="space-y-2 font-semibold mt-4 ml-2">
             <div className="flex items-center text-gray-700">

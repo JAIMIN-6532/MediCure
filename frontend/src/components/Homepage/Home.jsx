@@ -5,8 +5,6 @@ import {
   FaCalendarAlt,
   FaRegCommentDots,
 } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import DoctorCard from "./DoctorCard";
 import { useState } from "react";
 import SpecialtyCard from "./SpecialityCard";
 import homedoctor from "../../assets/homedoctor.png";

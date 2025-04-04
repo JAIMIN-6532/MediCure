@@ -5,9 +5,9 @@ export const fetchDoctors = createAsyncThunk(
   "doctors/fetchDoctors",
   async () => {
     const response = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}/api/doctor/getAllDoctors`
+      `${import.meta.env.VITE_APP_API_URL}/api/doctor`
     );
-    console.log("response", response.data);
+    // console.log("response", response.data);
     const data = await response.data;
     return data;
   }
@@ -16,11 +16,10 @@ export const fetchDoctors = createAsyncThunk(
 export const fetchDoctorById = createAsyncThunk(
   "doctors/fetchDoctorById",
   async (doctorId) => {
-    console.log("Doctor ID in fetchDoctorById:", doctorId);
     const response = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}/api/doctor/doctorinfo/${doctorId}`
+      `${import.meta.env.VITE_APP_API_URL}/api/doctor/${doctorId}`
     );
-    console.log("Doctor fetched by ID:", response.data);
+    // console.log("Doctor fetched by ID:", response.data);
     return response.data;
   }
 );
@@ -28,13 +27,12 @@ export const fetchDoctorById = createAsyncThunk(
 export const fetchDoctorAvgRatingByDoctorId = createAsyncThunk(
   "doctors/fetchDoctorAvgRatingByDoctorId",
   async (doctorId) => {
-    console.log("Doctor ID in fetchDoctorAvgRatingByDoctorId:", doctorId);
     const response = await axios.get(
       `${
         import.meta.env.VITE_APP_API_URL
       }/api/feedback/getavgrating/${doctorId}`
     );
-    console.log("Doctor fetched by ID:", response.data);
+    // console.log("Doctor fetched by ID:", response.data);
 
     return response.data;
   }
@@ -43,14 +41,13 @@ export const fetchDoctorAvgRatingByDoctorId = createAsyncThunk(
 export const fetchAppointmentsByDoctorId = createAsyncThunk(
   "doctors/fetchAppointmentsByDoctorId",
   async (doctorId) => {
-    console.log("Doctor ID in fetchAppointmentsByDoctorId:", doctorId);
     const response = await axios.get(
       `${
         import.meta.env.VITE_APP_API_URL
       }/api/doctor/getappointment/${doctorId}`,
       { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
     );
-    console.log("Doctor fetched by ID:", response.data);
+    // console.log("Doctor fetched by ID:", response.data);
     return response.data;
   }
 );
@@ -118,10 +115,10 @@ const doctorSlice = createSlice({
           Array.isArray(action.payload?.avgRating) &&
           action.payload.avgRating.length > 0
         ) {
-          console.log(
-            "action.payload",
-            action.payload?.avgRating[0]?.avgRating
-          );
+          // console.log(
+          //   "action.payload",
+          //   action.payload?.avgRating[0]?.avgRating
+          // );
           state.avgRating = action.payload.avgRating[0]?.avgRating;
         } else {
           state.avgRating = 0;

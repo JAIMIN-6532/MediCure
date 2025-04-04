@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Loader } from "lucide-react";
-import AuthLayout from "../../components/AuthLayout";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+
+import { doctorSignUp } from "../../reduxToolkit/reducers/AuthReducer";
+import AuthLayout from "../../components/AuthLayout";
 
 const DsignUp = () => {
   const [formData, setFormData] = useState({
@@ -11,13 +14,13 @@ const DsignUp = () => {
     name: "",
     otp: "",
   });
-
   const [showPassword, setShowPassword] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const [nameError, setNameError] = useState("");
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -41,10 +44,10 @@ const DsignUp = () => {
         `${import.meta.env.VITE_APP_API_URL}/api/otp/send`,
         { email: formData.email }
       );
-      console.log("OTP Sent:", response.data);
+      // console.log("OTP Sent:", response.data);
       setOtpSent(true);
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       setError(err.response ? err.response.data : "Failed to send OTP.");
     } finally {
       setLoading(false);
@@ -61,31 +64,25 @@ const DsignUp = () => {
     }
 
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_APP_API_URL}/api/doctor/dsignup`,
-        {
-          email: formData.email,
-          password: formData.password,
-          name: formData.name,
-          otp: formData.otp,
-        }
-      );
-
-      console.log("User Created:", response.data);
-      localStorage.setItem("did", JSON.stringify(response.data._id));
-      navigate("/doctor-signup");
-    } catch (err) {
-      console.error("Signup failed:", err);
-
-      if (err.response?.data?.error === "DoctorEmail already exists") {
-        setError(
-          "An account with this email already exists. Please try for signin."
-        );
-      } else if (err.response?.data?.error === "Invalid OTP") {
-        setError("The OTP you entered is incorrect. Please try again.");
+      const resultAction = await dispatch(doctorSignUp(formData));
+      if (doctorSignUp.fulfilled.match(resultAction)) {
+        // console.log("User Created:", resultAction.payload);
+        localStorage.setItem("did", JSON.stringify(resultAction.payload._id));
+        navigate("/doctor-signup");
       } else {
-        setError(err.response?.data?.error || "An error occurred.");
+        if (resultAction.payload?.error === "DoctorEmail already exists") {
+          setError(
+            "An account with this email already exists. Please try for signin."
+          );
+        } else if (resultAction.payload?.error === "Invalid OTP") {
+          setError("The OTP you entered is incorrect. Please try again.");
+        } else {
+          setError(resultAction.payload?.error || "An error occurred.");
+        }
       }
+    } catch (err) {
+      // console.error("Signup failed:", err);
+      setError("An error occurred.");
     } finally {
       setLoading(false);
     }

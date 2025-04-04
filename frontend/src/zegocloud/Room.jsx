@@ -9,7 +9,7 @@ const Room = () => {
   const user = JSON.parse(localStorage?.getItem("user")); 
   const userId = user?._id || "123456789" ;
   
-  console.log("appointmentId In ROOM:", appointmentId);
+  // console.log("appointmentId In ROOM:", appointmentId);
   const navigate = useNavigate();
   const roomContainerRef = useRef(null);
   const [hasJoined, setHasJoined] = useState(false);
@@ -22,7 +22,7 @@ const Room = () => {
   const getUserMedia = async () => {
     try {
       if (stream) {
-        console.log("Using existing stream");
+        // console.log("Using existing stream");
         return stream;
       }
 
@@ -34,7 +34,7 @@ const Room = () => {
       setStream(mediaStream);
       return mediaStream;
     } catch (error) {
-      console.error("Error accessing media devices:", error);
+      // console.error("Error accessing media devices:", error);
       alert("Please allow camera and microphone access");
       return null;
     }
@@ -52,7 +52,7 @@ const Room = () => {
 
   // function to end the session
   const endSession = () => {
-    console.log("Ending the session...");
+    // console.log("Ending the session...");
     if (stream) {
       stream.getTracks().forEach((track) => track.stop()); // stop media tracks
     }
@@ -66,8 +66,8 @@ const Room = () => {
 
     const appID = Number(`${import.meta.env.VITE_APP_ID}`);
     const serverSecret = `${import.meta.env.VITE_APP_SERVERSECRET}`;
-    console.log("userId in Room function:", userId);
-    console.log("appointmentId in Room function:", appointmentId);
+    // console.log("userId in Room function:", userId);
+    // console.log("appointmentId in Room function:", appointmentId);
     const res = await axios.post(
       `${import.meta.env.VITE_APP_API_URL}/api/doctor/generateToken`,
       {
@@ -75,10 +75,10 @@ const Room = () => {
         userId: userId.toString(),
       }
     );
-    console.log("zego res:", res);
-    console.log("appoinmentId in ROom function:", appointmentId);
+    // console.log("zego res:", res);
+    // console.log("appoinmentId in ROom function:", appointmentId);
     const { token } = res.data;
-    console.log("token in Room function:", token);
+    // console.log("token in Room function:", token);
     const tkn = token.toString();
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForProduction(
       appID,
@@ -105,8 +105,9 @@ const Room = () => {
       userStream: userStream,
       maxUsers: 2,
       onLeaveRoom: () => {
-        console.log("User left the room");
+        // console.log("User left the room");
         endSession();
+
       },
     });
 

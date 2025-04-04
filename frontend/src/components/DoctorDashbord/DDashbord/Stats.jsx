@@ -1,17 +1,18 @@
 import { useEffect } from "react";
 import gsap from "gsap";
-import IndividualStatChart from "./StatsIndividualCharts";
-// import { filteredAppointments } from './AppointmentList';
 
 const stats = [
   {
+    id: 1,
     title: "Total Appointments",
     value: "978",
     change: "+15% from last week",
     icon: "👥",
     color: "bg-blue-50 text-blue-600",
   },
+
   {
+    id: 2,
     title: "Appointments Today",
     value: "ta",
     change: "+20% from yesterday",
@@ -19,6 +20,7 @@ const stats = [
     color: "bg-green-50 text-green-600",
   },
   {
+    id: 3,
     title: "Total Revenue",
     value: "tr",
     change: "+25% from last month",
@@ -32,8 +34,6 @@ const sanitizeTitle = (title) => {
 };
 
 export default function Stats({ filteredAppointments, doctor, appointments }) {
-  console.log(doctor);
-  console.log(appointments);
   useEffect(() => {
     stats.forEach((stat, index) => {
       const sanitizedClass = sanitizeTitle(stat.title);
@@ -57,30 +57,28 @@ export default function Stats({ filteredAppointments, doctor, appointments }) {
         const sanitizedClass = sanitizeTitle(stat.title);
 
         return (
-          <>
-            <div
-              key={stat.title}
-              className={`${sanitizedClass} stats-card flex-1 min-w-[250px]`}
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="text-lg font-medium text-gray-600">
-                    {stat.title}
-                  </h3>
-                  <p className="text-3xl font-bold text-gray-900 mt-2">
-                    {stat.value === "ta"
-                      ? filteredAppointments?.length
-                      : stat.value === "tr"
-                      ? "₹ " + doctor?.totalRevenue
-                      : appointments?.length}
-                  </p>
-                </div>
-                <span className={`text-2xl p-3 rounded-xl ${stat.color}`}>
-                  {stat.icon}
-                </span>
+          <div
+            key={stat.id}
+            className={`${sanitizedClass} stats-card flex-1 min-w-[250px]`}
+          >
+            <div className="flex items-start justify-between">
+              <div>
+                <h3 className="text-lg font-medium text-gray-600">
+                  {stat.title}
+                </h3>
+                <p className="text-3xl font-bold text-gray-900 mt-2">
+                  {stat.value === "ta"
+                    ? filteredAppointments?.length
+                    : stat.value === "tr"
+                    ? "₹ " + doctor?.totalRevenue
+                    : appointments?.length}
+                </p>
               </div>
+              <span className={`text-2xl p-3 rounded-xl ${stat.color}`}>
+                {stat.icon}
+              </span>
             </div>
-          </>
+          </div>
         );
       })}
     </div>

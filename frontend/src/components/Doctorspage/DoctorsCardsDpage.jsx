@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { MapPin, Calendar, Video, Star } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchDoctors } from "../../reduxToolkit/reducers/DoctorReducer";
 import { Link, useNavigate } from "react-router-dom";
-import Filter from "./Filter";
 import { ClipLoader } from "react-spinners";
+
+
+import Filter from "./Filter";
+import { fetchDoctors } from "../../reduxToolkit/reducers/DoctorReducer";
 
 function DoctorsCardsDpage() {
   const dispatch = useDispatch();
@@ -14,8 +16,6 @@ function DoctorsCardsDpage() {
   );
 
   const { token } = useSelector((state) => state.auth);
-
-  const [doctorId, setDoctorId] = useState(null);
 
   const [filters, setFilters] = useState({
     location: "",

@@ -8,7 +8,6 @@ export default async function zegoCloud(req, res, next) {
   try {
     const { appointmentId,userId } = req.body;
     // let aid;
-    console.log("appointmentId", appointmentId);
     // if(appointmentId){
     //     aid = appointmentId.toString();
     // }
@@ -27,7 +26,7 @@ export default async function zegoCloud(req, res, next) {
           2: 1    // publishStream: 1 pass , 0 not pass
       },
       stream_id_list: null
-  }; // 
+  }; 
   const payload = JSON.stringify(payloadObject);
     const token = generateToken04(
       appId,
@@ -38,7 +37,7 @@ export default async function zegoCloud(req, res, next) {
     );
     return res.status(200).json({ token, appId });
   } catch (error) {
-    console.error("Error generating token:", error);
+    // console.error("Error generating token:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 }

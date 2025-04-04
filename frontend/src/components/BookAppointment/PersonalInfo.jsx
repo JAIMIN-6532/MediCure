@@ -16,7 +16,6 @@ export default function PersonalInfo({
   selectedDate,
   doctor,
 }) {
-  console.log("patient from Personal Info", patient);
   const { doctorId } = useParams();
   const [formData, setFormData] = useState({
     doctorId: doctorId,

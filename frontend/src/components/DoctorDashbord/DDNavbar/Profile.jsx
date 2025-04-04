@@ -1,8 +1,10 @@
 import { useEffect } from "react";
 import gsap from "gsap";
-import { fetchDoctorAvgRatingByDoctorId, fetchDoctorById } from "../../../reduxToolkit/reducers/DoctorReducer";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+
+import { fetchDoctorAvgRatingByDoctorId, fetchDoctorById } from "../../../reduxToolkit/reducers/DoctorReducer";
+
 
 export default function Profile() {
   const dispatch = useDispatch();

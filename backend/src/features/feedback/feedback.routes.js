@@ -5,7 +5,7 @@ import jwtAuth from '../../middleware/jwt.middleware.js';
 const feedbackRouter = express.Router();
 const feedbackController = new FeedbackController();
 
-feedbackRouter.post('/addfeedback' ,(req,res,next)=>{ 
+feedbackRouter.post('/addfeedback' ,jwtAuth,(req,res,next)=>{ 
     feedbackController.addFeedback(req,res,next);
 });
 

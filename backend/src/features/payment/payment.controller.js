@@ -12,7 +12,7 @@ export default class PaymentController {
             const order = await this.paymentRepository.createOrder(req,res,next);
             res.status(200).json({...order, key: process.env.RAZORPAY_KEY_ID});
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             next(error);
         }
     }
@@ -25,7 +25,7 @@ export default class PaymentController {
              return  res.status(200).json({message: "Webhook validated successfully"});
             // }
         }catch(error){
-            console.log(error);
+            // console.log(error);
             next(error);
         }
     }
@@ -33,13 +33,12 @@ export default class PaymentController {
     verifyPayment = async (req, res, next) => {
         try{
             const response = await this.paymentRepository.verifyPayment(req,res,next);
-            console.log("response", response);
             if(response){
                return res.status(200).json({success:true});
             }
             return res.status(400).json({success:false});
         }catch(error){
-            console.log(error);
+            // console.log(error);
             next(error);
         }
     }

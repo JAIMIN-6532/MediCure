@@ -1,9 +1,12 @@
+import patient from "../../../assets/patient.png";
 import React, { useEffect,useState } from "react";
 import { gsap } from "gsap";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+
+
 import { fetchDoctorAvgRatingByDoctorId } from "../../../reduxToolkit/reducers/DoctorReducer.js";
-import patient from "../../../assets/patient.png";
+
 
 //sample data 
 const patients = [
@@ -81,7 +84,7 @@ export default function Patients({doctor}) {
         <div className="patients-list space-y-4 ">
           {doctor?.feedbacks.map((fb, index) => (
             <div
-              key={doctor.id}
+              key={fb._id}
               className="flex items-center justify-between p-4 hover:bg-gray-50 rounded-lg transition-colors border border-gray-100 relative"
             >
               <div className="flex items-center gap-4">

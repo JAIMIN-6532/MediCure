@@ -1,3 +1,5 @@
+//Not used anywhere .... 
+
 import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
 import axios from 'axios';
@@ -33,7 +35,7 @@ const AppointmentChart = ({ doctor }) => {
         const response = await axios.get(`${import.meta.env.VITE_APP_API_URL}/api/doctor/weekly-stats/${did}`);
         setChartData(response.data);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        // console.error('Error fetching data:', error);
         setChartData({
           appointments: [65, 59, 80, 81, 56, 55, 40]
         });

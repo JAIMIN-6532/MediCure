@@ -10,7 +10,7 @@ const Navbar = () => {
   const dispatch = useDispatch();
 
   const { user, token } = useSelector((state) => state.auth);
-  const isdid = localStorage.getItem("did");
+  // const isdid = localStorage.getItem("did");
   const [userType, setUserType] = useState(null);
 
   const isLoggedIn = !!token;
@@ -22,7 +22,7 @@ const Navbar = () => {
       const decodedPayload = JSON.parse(atob(base64)); // Decode and parse the payload
       return decodedPayload.userType; // Return userType from the decoded payload
     } catch (error) {
-      console.error("Token decode error", error);
+      // console.error("Token decode error", error);
       return null;
     }
   };
@@ -42,8 +42,13 @@ const Navbar = () => {
     if (localStorage.getItem("did")) {
       localStorage.removeItem("did");
     }
+    if (localStorage.getItem("pid")) {
+      localStorage.removeItem("pid");
+    }
     localStorage.removeItem("user");
     dispatch(logout());
+    
+    setIsOpen(false)
     window.location.href = "/";
   };
 
@@ -95,11 +100,11 @@ const Navbar = () => {
           )}
 
           <div className="hidden md:flex items-center space-x-4">
-            {isLoggedIn && (user || doctor) ? (
+            {isLoggedIn && (user) ? (
               <div className="flex items-center space-x-2">
                 {user.profileImageUrl ? (
                   <img
-                    src={user.profileImageUrl || doctor.profileImageUrl}
+                    src={user.profileImageUrl}
                     alt="Profile"
                     className="w-11 h-11 rounded-full object-cover cursor-pointer"
                     onClick={handleProfileClick}
@@ -179,6 +184,25 @@ const Navbar = () => {
             </NavLink>
 
             <div className="text-center">
+            {isLoggedIn && (user) ? (
+              <div className="flex items-center space-x-2">
+                {user.profileImageUrl ? (
+                  <img
+                    src={user.profileImageUrl}
+                    alt="Profile"
+                    className="w-11 h-11 rounded-full object-cover cursor-pointer"
+                    onClick={handleProfileClick}
+                  />
+                ) : (
+                  <span
+                    onClick={handleProfileClick}
+                    className="w-8 h-8 flex items-center justify-center rounded-full bg-primary-blue text-white font-bold cursor-pointer"
+                  >
+                    {user.name.slice(0, 2).toUpperCase() || "User"}
+                  </span>
+                )}
+              </div>
+            ) : null}
               {isLoggedIn ? (
                 <button
                   onClick={handleLogout}
@@ -190,6 +214,7 @@ const Navbar = () => {
                 <NavLink
                   to="/signin"
                   className="hover:text-primary-blue transition-colors"
+                  onClick={() => setIsOpen(false)}
                 >
                   <button className="bg-primary-blue text-white px-6 py-2 rounded-full hover:bg-dark-blue transition-colors">
                     Login/Register

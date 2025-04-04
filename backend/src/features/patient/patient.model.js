@@ -2,9 +2,9 @@ import mongoose from "mongoose";
 
 const patientSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  /**unique :  true  write in email later.. */
   email: {
     type: String,
+    unique: true,
     required: true,
     match: [/\S+@\S+\.\S+/, "Please enter a valid email address"],
   },
@@ -14,14 +14,6 @@ const patientSchema = new mongoose.Schema({
     minlength: [8, "password should be at least 8 characters long"],
   },
   phone: { type: String },
-  gender: { type: String, enum: ["Male", "Female", "Other"] },
-  dob: { type: Date },
-  address: {
-    street: { type: String },
-    city: { type: String },
-    state: { type: String },
-    zip: { type: String },
-  },
   appointments: [
     {
       type: mongoose.Schema.Types.ObjectId,

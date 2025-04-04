@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { gsap } from "gsap";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchDoctorById } from "../../../reduxToolkit/reducers/DoctorReducer.js";
 import axios from "axios";
+
+import { fetchDoctorById } from "../../../reduxToolkit/reducers/DoctorReducer.js";
+
 
 const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -34,8 +36,6 @@ export default function AvailableTimings() {
   const dispatch = useDispatch();
   const doctor = useSelector((state) => state.doctors.selectedDoctor);
 
-  console.log("Doctor ID:", doctorId);
-  console.log("Doctor data:", doctor);
 
   useEffect(() => {
     if (doctorId) {
@@ -72,7 +72,7 @@ export default function AvailableTimings() {
           consultationFee: appointmentFee || doctor.consultationFee,
         }
       );
-      console.log("Successfully added availability:", response.data);
+      // console.log("Successfully added availability:", response.data);
 
       setSaveStatus("success");
 
@@ -80,7 +80,7 @@ export default function AvailableTimings() {
 
       setSelectedSlots([]);
     } catch (error) {
-      console.error("Error adding availability:", error);
+      // console.error("Error adding availability:", error);
 
       setSaveStatus("error");
     }

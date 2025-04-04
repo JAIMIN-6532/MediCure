@@ -10,7 +10,6 @@ export default class OtpRepository {
     }
 
     async verifyOtp(email, otp) {
-        // console.log(otp)
         const otpRecord = await OtpModel.findOne( {email,otp} );
         if (otpRecord) {
             await OtpModel.deleteOne({ email, otp }); // remove OTP after verification

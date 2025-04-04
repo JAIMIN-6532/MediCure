@@ -16,9 +16,9 @@ export default class PaymentRepository {
           appointmenttype: "Online",
         },
       });
-      console.log(order);
-      // console.log(req);
-      console.log(req.userID);
+      // console.log(order);
+      // // console.log(req);
+      // console.log(req.userID);
       // console.log("user.userID",req.user.userID);
       const payment = new PaymentModel({
         patient: req.userID,
@@ -34,7 +34,7 @@ export default class PaymentRepository {
       const savedPayment = await payment.save();
       return savedPayment.toJSON();
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       throw error;
     }
   };
@@ -61,7 +61,7 @@ export default class PaymentRepository {
       // }
       return savedpayment;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       throw error;
     }
   };

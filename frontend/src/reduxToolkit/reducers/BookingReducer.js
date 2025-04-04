@@ -17,7 +17,6 @@ const initialState = {
 export const lockSlot = createAsyncThunk(
   "appointments/lockSlot",
   async (appointmentData) => {
-    console.log("appointmentData", appointmentData);
     const localDate = new Date(appointmentData.date);
     const formattedDate =
       localDate.getFullYear() +
@@ -49,7 +48,7 @@ export const lockSlot = createAsyncThunk(
         },
       }
     );
-    console.log("response inside reducer", response.data);
+    // console.log("response inside reducer", response.data);
     return response.data;
   }
 );
@@ -57,7 +56,6 @@ export const lockSlot = createAsyncThunk(
 export const releaseSlot = createAsyncThunk(
   "appointments/releaseSlot",
   async (appointmentData) => {
-    console.log("appointmentData", appointmentData);
     const response = await axios.post(
       `${
         import.meta.env.VITE_APP_API_URL
@@ -70,7 +68,7 @@ export const releaseSlot = createAsyncThunk(
         },
       }
     );
-    console.log("response inside reducer", response.data);
+    // console.log("response inside reducer", response.data);
     return response.data;
   }
 );
@@ -78,7 +76,6 @@ export const releaseSlot = createAsyncThunk(
 export const fetchAppointmentSlots = createAsyncThunk(
   "appointments/fetchAppointments",
   async (doctorId) => {
-    console.log("doctorId", doctorId);
     const response = await axios.get(
       `${
         import.meta.env.VITE_APP_API_URL
@@ -90,7 +87,7 @@ export const fetchAppointmentSlots = createAsyncThunk(
         },
       }
     );
-    console.log("response", response);
+    // console.log("response", response);
     return response.data;
   }
 );
@@ -98,7 +95,6 @@ export const fetchAppointmentSlots = createAsyncThunk(
 export const bookAppointment = createAsyncThunk(
   "appointments/bookAppointment",
   async (appointmentData) => {
-    console.log("appointmentData", appointmentData);
 
     const localDate = new Date(appointmentData.date);
     const formattedDate =
@@ -117,7 +113,7 @@ export const bookAppointment = createAsyncThunk(
       localDate.getMilliseconds().toString().padStart(3, "0") +
       "Z";
 
-    console.log("Formatted local date:", formattedDate);
+    // console.log("Formatted local date:", formattedDate);
     const response = await axios.post(
       `${import.meta.env.VITE_APP_API_URL}/api/appointment/bookappointment`,
       {
@@ -132,7 +128,7 @@ export const bookAppointment = createAsyncThunk(
       }
     );
 
-    console.log("response inside reducer", response.data);
+    // console.log("response inside reducer", response.data);
     return response.data;
   }
 );

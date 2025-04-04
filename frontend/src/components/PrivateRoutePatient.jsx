@@ -27,7 +27,7 @@ const PrivateRoutePatient = ({ element, ...rest }) => {
         }
       }
     } catch (error) {
-      console.error('Error decoding token:', error);
+      // console.error('Error decoding token:', error);
     }
   }
 

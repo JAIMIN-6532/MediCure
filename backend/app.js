@@ -1,10 +1,11 @@
 import express from "express";
-import mongoose from "mongoose";
 import dotenv from "dotenv";
-// import userRouter from "./src/features/users/user.routes.js";
-import jwtAuth from "./src/middleware/jwt.middleware.js";
+import path from "path";
+import url from "url"; // import url module
+dotenv.config();
 import cookieParser from 'cookie-parser';
-// import serviceRouter from "./src/features/service/service.routes.js";
+
+
 import OtpRouter from "./src/features/otp/otp.routes.js";
 import patientRouter from "./src/features/patient/patient.routes.js";
 import doctorRouter from "./src/features/doctor/doctor.routes.js";
@@ -12,10 +13,7 @@ import appointmentRouter from "./src/features/appointments/appointment.routes.js
 import feedbackRouter from "./src/features/feedback/feedback.routes.js";
 import errorHandler from "./src/errorhandler/errorHandler.js";
 import paymentRouter from "./src/features/payment/payment.routes.js";
-// import { ApplicationError } from "./src/error-handler/Applicationerror.js";
-import path from "path";
-import url from "url"; // import url module
-dotenv.config();
+
 const app = express();
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,7 +32,7 @@ app.use(cookieParser());
 app.use((req, res, next) => {
     res.header(
       'Access-Control-Allow-Origin',
-      'https://medi-cure-tau.vercel.app',
+      'https://medi-cure-tau.vercel.app',     //https://medi-cure-tau.vercel.app
     );
     res.header('Access-Control-Allow-Headers', '*');
     res.header('Access-Control-Allow-Methods', '*');
@@ -48,20 +46,26 @@ app.use((req, res, next) => {
 
   
 app.use(express.json());
+
 app.use(express.urlencoded({ extended: true }));
+
 app.use(express.static('uploads'));
+
 app.use("/api/patient",patientRouter);
+
 app.use("/api/doctor" , doctorRouter)
+
 app.use("/api/otp",OtpRouter);
 
-
-
-
 app.use("/api/appointment",appointmentRouter);
+
 app.use("/api/feedback",feedbackRouter);
+
 app.use("/api/payment",paymentRouter);
 
+
 app.use(errorHandler);
+
 
 app.use((req, res) => {
     res

@@ -1,7 +1,10 @@
+import mongoose from "mongoose";
+
 import patientModel from "./patient.model.js";
 import { ApplicationError } from "../../errorhandler/applicationError.js";
-import AppointmentModel from "../appointments/appointments.model.js";
-import mongoose from "mongoose";
+
+
+
 export default class PatientRepository {
   signUp = async (name, email, password) => {
     try {
@@ -16,10 +19,10 @@ export default class PatientRepository {
         email,
         password,
       });
-      console.log(newPatient);
+      // console.log(newPatient);
       return newPatient;
     } catch (error) {
-      console.error("patient signup repo", error);
+      // console.error("patient signup repo", error);
       throw error;
     }
   };
@@ -27,7 +30,7 @@ export default class PatientRepository {
     try {
       return await patientModel.findOne({ email, password });
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       throw err;
     }
   }
@@ -36,7 +39,7 @@ export default class PatientRepository {
     try {
       return await patientModel.findOne({ email });
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       throw new ApplicationError("Something went wrong with database", 500);
     }
   }
@@ -45,7 +48,7 @@ export default class PatientRepository {
     try {
       return await patientModel.findById(userId).populate("appointments");
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       throw new ApplicationError("Something went wrong with database", 500);
     }
   }
@@ -57,7 +60,7 @@ export default class PatientRepository {
         .populate("feedbacks")
         .exec();
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       throw new ApplicationError("Something went wrong with database", 500);
     }
   }
@@ -67,7 +70,7 @@ export default class PatientRepository {
     try {
       return await patientModel.findOne({ _id: ObjectId });
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       throw new ApplicationError("Something went wrong with database", 500);
     }
   }
@@ -120,7 +123,7 @@ export default class PatientRepository {
       // console.log("Patient APpointment",patient.appointments);
       return patient.appointments;
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       throw new ApplicationError("Something went wrong with database", 500);
     }
   }

@@ -10,7 +10,7 @@ const PrivateRoute = ({ element, ...rest }) => {
 
   const { selectedDoctor, fetchDoctorByIdStatus } = useSelector((state) => state.doctors);
   const [isLoading, setIsLoading] = useState(true);
-  console.log(selectedDoctor);
+  // console.log(selectedDoctor);
   useEffect(() => {
     if (user && user._id && fetchDoctorByIdStatus === "idle") {
       dispatch(fetchDoctorById(user._id));  

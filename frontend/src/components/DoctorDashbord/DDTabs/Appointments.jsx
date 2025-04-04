@@ -6,10 +6,13 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 
 import Room from "../../../zegocloud/Room";
+import { convertTo24HourFormat } from "../../../Helpers/convertTo24HourFormat";
+
+
 const getStatusColor = (status) => {
   const colors = {
     Upcoming: "bg-blue-50 text-blue-600",
-    "In Progress": "bg-yellow-50 text-yellow-600",
+    InProgress: "bg-yellow-50 text-yellow-600",
     Completed: "bg-green-50 text-green-600",
     Cancelled: "bg-red-50 text-red-600",
     Pending: "bg-purple-50 text-purple-600",
@@ -26,7 +29,6 @@ export default function Appointments({
   const [activeTab, setActiveTab] = useState("Today");
   const [startRoom, setStartRoom] = useState(false);
   const [appointmentId, setAppointmentId] = useState("");
-  console.log(appointments);
   const navigate = useNavigate();
   useEffect(() => {
     gsap.fromTo(
@@ -45,23 +47,14 @@ export default function Appointments({
     setActiveTab(tab);
   };
 
-  const convertTo24HourFormat = (timeSlot) => {
-    const [time, period] = timeSlot.split(" ");
-    let [hours, minutes] = time.split(":").map(Number);
-
-    if (period === "PM" && hours !== 12) hours += 12;
-    if (period === "AM" && hours === 12) hours = 0;
-
-    return hours * 100 + minutes;
-  };
 
   const filteredAppointments = appointments?.filter((appointment) => {
     const appointmentDate = appointment.date.split("T")[0];
     const istDate = moment().tz("Asia/Kolkata");
     const todayIST = istDate.format("YYYY-MM-DD");
     const currentTime = istDate.hours() * 100 + istDate.minutes();
-    console.log("Today IST: ", todayIST);
-    console.log("Current Time in IST: ", currentTime);
+    // console.log("Today IST: ", todayIST);
+    // console.log("Current Time in IST: ", currentTime);
     const appointmentTime = convertTo24HourFormat(appointment.timeSlot);
 
     const appointmentCopy = { ...appointment };
@@ -72,7 +65,7 @@ export default function Appointments({
     ) {
       appointmentCopy.status = "Past";
     }
-    console.log("Today IST: ", todayIST);
+    // console.log("Today IST: ", todayIST);
     if (activeTab === "Today") {
       return appointmentDate === todayIST && appointmentTime >= currentTime;
     } else if (activeTab === "Upcoming") {
@@ -101,7 +94,7 @@ export default function Appointments({
     return timeA - timeB;
   });
 
-  console.log(sortedAppointments);
+  // console.log(sortedAppointments);
 
   const getButtonClass = (tab) => {
     return activeTab === tab
@@ -110,26 +103,24 @@ export default function Appointments({
   };
 
   const handleStartSession = async (appointmentId, patient) => {
-    console.log("Start Session for appointment ID: ", appointmentId);
     const sendmail = await axios.post(
-      `https://medicure-go5v.onrender.com/api/appointment/sendmail/${appointmentId}`,
+      `${import.meta.env.VITE_APP_API_URL}/api/appointment/sendmail/${appointmentId}`,
       {
         patient,
       }
     );
     if (sendmail.data.success) {
-      console.log("Mail sent");
+      // console.log("Mail sent");
       setStartRoom(true);
-      console.log("Appointment ID: ", appointmentId);
       setAppointmentId(appointmentId);
       navigate(`/room/${appointmentId}`);
-    } else console.log("Mail not sent");
+    } else
+       console.log("Mail not sent");
   };
 
   const handleCancelAppointement = async (appointmentId) => {
-    console.log("Cancel Appointment for appointment ID: ", appointmentId);
     const res = await axios.post(
-      `https://medicure-go5v.onrender.com/api/appointment/cancel/${appointmentId}`,
+      `${import.meta.env.VITE_APP_API_URL}/api/appointment/cancel/${appointmentId}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -139,7 +130,7 @@ export default function Appointments({
     );
     dispatchCancelAppointement();
 
-    console.log("Cancel Appointment Response: ", res.data);
+    // console.log("Cancel Appointment Response: ", res.data);
   };
 
   return (

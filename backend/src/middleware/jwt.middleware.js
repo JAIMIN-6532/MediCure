@@ -3,11 +3,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const jwtAuth = (req, res, next) => {
-  // 1. Read the token.
-  const token = req.headers.authorization?.split(" ")[1] ;  // Ensure the token is prefixed with "Bearer "
+  // 1. read the token.
+  const token = req.headers.authorization?.split(" ")[1] ;  // ensure the token is prefixed with "Bearer "
  
 
-  console.log(token);
+  // console.log(token);
   // 2. if no token, return the error.
   if (!token) {
     return res.status(401).send('Unauthorized');
@@ -23,7 +23,7 @@ const jwtAuth = (req, res, next) => {
     req.userType = payload.userType; // include the user type in the request
   } catch (err) {
     // 4. return error.
-    console.log(err);
+    // console.log(err);
     return res.status(401).send('Unauthorized');
   }
   // 5. call next middleware

@@ -1,9 +1,3 @@
-import AppointmentRepository from "./appointment.repository.js";
-import PatientRepository from "../patient/patient.repository.js";
-import DoctorRepository from "../doctor/doctor.repository.js";
-import DoctorModel from "../doctor/doctor.model.js";
-import AppointmentModel from "./appointments.model.js";
-import PatientModel from "../patient/patient.model.js";
 import {
   format,
   addDays,
@@ -12,6 +6,11 @@ import {
   isSameDay,
   parseISO,
 } from "date-fns";
+
+import AppointmentRepository from "./appointment.repository.js";
+import PatientRepository from "../patient/patient.repository.js";
+import DoctorRepository from "../doctor/doctor.repository.js";
+
 export default class AppointmentController {
   constructor() {
     this.appointmentRepository = new AppointmentRepository();
@@ -26,8 +25,8 @@ export default class AppointmentController {
       throw new Error("Invalid slot format. Could not extract date and time.");
     }
 
-    const dateString = parts.slice(0, 3).join("-"); 
-    const time = parts.slice(3).join(" "); 
+    const dateString = parts.slice(0, 3).join("-");
+    const time = parts.slice(3).join(" ");
     const dateObj = new Date(dateString);
 
     if (isNaN(dateObj)) {
@@ -39,12 +38,10 @@ export default class AppointmentController {
     return { date, time };
   }
 
-
   getAvailableSlots = async (req, res) => {
     const { doctorId } = req.params;
 
     try {
-      
       const doctor = await this.doctorRepository.getDoctorById(doctorId);
 
       if (!doctor) {
@@ -68,7 +65,7 @@ export default class AppointmentController {
             (appointment) =>
               appointment.status === "Confirmed" ||
               appointment.status === "Locked"
-          ) // only confirmed appointments
+          )
           .map((appointment) => {
             const appointmentDate = appointment.date;
             const timeSlot = appointment.timeSlot;
@@ -80,10 +77,10 @@ export default class AppointmentController {
           })
       );
 
-      console.log("Booked slots:", bookedSlots); 
+      // console.log("Booked slots:", bookedSlots);
       const availableSlots = availability
         .map((day) => {
-          const today = startOfToday(); 
+          const today = startOfToday();
 
           // find the index for the doctor's available day in the week (e.g., Mon, Tue, etc.)
           const dayOfWeekIndex = [
@@ -96,31 +93,31 @@ export default class AppointmentController {
             "Sat",
           ].indexOf(day.day);
           if (dayOfWeekIndex === -1) {
-            return null; 
+            return null;
           }
 
           const currentDayIndex = new Date().getDay();
           let daysToAdd = dayOfWeekIndex - currentDayIndex;
 
           if (daysToAdd <= 0) {
-            daysToAdd += 7; 
+            daysToAdd += 7;
           }
 
           const nextAvailableDate = addDays(today, daysToAdd);
-          const formattedDate = format(nextAvailableDate, "yyyy-MM-dd"); 
-          console.log("Next Available Date:", formattedDate); 
+          const formattedDate = format(nextAvailableDate, "yyyy-MM-dd");
+          // console.log("Next Available Date:", formattedDate);
           const availableDaySlots = day.slots.filter((slot) => {
-            const slotIdentifier = `${formattedDate}-${slot}`; 
-            return !bookedSlots.has(slotIdentifier); 
+            const slotIdentifier = `${formattedDate}-${slot}`;
+            return !bookedSlots.has(slotIdentifier);
           });
 
           const isToday = currentDayIndex === dayOfWeekIndex;
-          const formattedToday = format(today, "yyyy-MM-dd"); 
+          const formattedToday = format(today, "yyyy-MM-dd");
 
           if (isToday) {
             const availableTodaySlots = day.slots.filter((slot) => {
               const slotIdentifier = `${formattedToday}-${slot}`;
-              return !bookedSlots.has(slotIdentifier); 
+              return !bookedSlots.has(slotIdentifier);
             });
 
             if (availableTodaySlots.length > 0) {
@@ -137,15 +134,15 @@ export default class AppointmentController {
               availableSlots: availableDaySlots,
             };
           } else {
-            return null; 
+            return null;
           }
         })
-        .filter((day) => day !== null); 
+        .filter((day) => day !== null);
 
-      console.log("Available slots after filtering:", availableSlots); 
+      // console.log("Available slots after filtering:", availableSlots);
       return res.json({ availableSlots });
     } catch (error) {
-      console.error("Error fetching available slots:", error);
+      // console.error("Error fetching available slots:", error);
       return res.status(500).json({
         message: "Error fetching available slots",
         error: error.message,
@@ -154,18 +151,16 @@ export default class AppointmentController {
   };
 
   bookAppointment = async (req, res, next) => {
-
     try {
       const newAppointment = await this.appointmentRepository.bookAppointment(
         req.body,
         res
       );
-
       return res
         .status(201)
         .json({ message: "Appointment booked successfully", newAppointment });
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       return res.status(500).json({ message: "Error booking appointment" });
     }
   };
@@ -181,7 +176,7 @@ export default class AppointmentController {
         .status(200)
         .json({ appointment, message: "Appointment cancelled" });
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       return res.status(500).json({ message: "Error cancelling appointment" });
     }
   };
@@ -196,12 +191,11 @@ export default class AppointmentController {
         link,
         patient
       );
-      console.log("sendMail", sendMail);
       return res
         .status(200)
         .json({ message: "Email sent successfully", success: true });
     } catch (err) {
-      console.error(err);
+      // console.error(err);
       return res
         .status(500)
         .json({ message: "Error sending email", success: false });
@@ -218,32 +212,31 @@ export default class AppointmentController {
       }
       return res.status(200).json({ appointment });
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       return res.status(500).json({ message: "Error getting appointment" });
     }
   };
 
   lockAppointment = async (req) => {
-  
     try {
       const Lockappointment = await this.appointmentRepository.lockAppointment(
         req
       );
       return Lockappointment;
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       return res.status(500).json({ message: "Error locking appointment" });
     }
   };
 
   unlockAppointment = async (req) => {
-    console.log("req.body", req);
+    // console.log("req.body", req);
     try {
       const Unlockappointment =
         await this.appointmentRepository.unlockAppointment(req);
       return Unlockappointment;
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       return res.status(500).json({ message: "Error unlocking appointment" });
     }
   };
@@ -254,7 +247,7 @@ export default class AppointmentController {
         await this.appointmentRepository.getTotalRevenueByDoctorId(doctorId);
       return totalRevenue;
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       return error;
     }
   };

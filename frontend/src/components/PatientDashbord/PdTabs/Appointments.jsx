@@ -1,58 +1,3 @@
-//sample date for checking how it willl looks like.....
-
-// const appointmentshard = [
-//   {
-//     id: 1,
-//     name: "Emma Thompson",
-//     time: "09:00 AM",
-//     type: "General Checkup",
-//     image:
-//       "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&auto=format&fit=crop&q=80",
-//     status: "Upcoming",
-//     duration: "30 mins",
-//   },
-//   {
-//     id: 2,
-//     name: "Michael Chen",
-//     time: "10:30 AM",
-//     type: "Follow-up",
-//     image:
-//       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
-//     status: "In Progress",
-//     duration: "45 mins",
-//   },
-//   {
-//     id: 3,
-//     name: "Sofia Rodriguez",
-//     time: "02:00 PM",
-//     type: "Consultation",
-//     image:
-//       "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
-//     status: "Upcoming",
-//     duration: "1 hour",
-//   },
-//   {
-//     id: 4,
-//     name: "James Wilson",
-//     time: "03:30 PM",
-//     type: "Emergency",
-//     image:
-//       "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
-//     status: "Pending",
-//     duration: "1 hour",
-//   },
-//   {
-//     id: 5,
-//     name: "Olivia Brown",
-//     time: "04:45 PM",
-//     type: "Regular Checkup",
-//     image:
-//       "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80",
-//     status: "Confirmed",
-//     duration: "30 mins",
-//   },
-// ];
-
 import { useState, useEffect } from "react";
 import { gsap } from "gsap";
 import axios from "axios";
@@ -79,7 +24,7 @@ export default function Appointments({ patientappointments, patient }) {
   const [comment, setComment] = useState("");
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  console.log(patientappointments);
+  // console.log(patientappointments);
 
   useEffect(() => {
     gsap.fromTo(
@@ -99,13 +44,13 @@ export default function Appointments({ patientappointments, patient }) {
   };
 
   const handleReviewClick = (appointment) => {
-    console.log("Appointment selected:", appointment);
+    // console.log("Appointment selected:", appointment);
     setSelectedAppointment(appointment);
     setShowModal(true);
   };
 
   const onClose = () => {
-    console.log("Closing modal");
+    // console.log("Closing modal");
     setShowModal(false);
   };
 
@@ -126,17 +71,18 @@ export default function Appointments({ patientappointments, patient }) {
           comment,
           doctor: selectedAppointment.doctor,
           patient: selectedAppointment.patient,
-        }
+        },
+        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
 
-      console.log("Review submitted:", response.data);
+      // console.log("Review submitted:", response.data);
       toast.success("Review added successfully!");
       setShowModal(false);
 
       setRating(0);
       setComment("");
     } catch (error) {
-      console.error("Error submitting review:", error);
+      // console.error("Error submitting review:", error);
       toast.error("Error submitting review.");
     }
   };
@@ -167,7 +113,7 @@ export default function Appointments({ patientappointments, patient }) {
     const todayIST = istDate.format("YYYY-MM-DD");
     const currentTime = istDate.hours() * 100 + istDate.minutes(); // convert current time to 24-hour format
 
-    console.log("Today IST: ", todayIST);
+    // console.log("Today IST: ", todayIST);
     if (activeTab === "Today") {
       return appointmentDate === todayIST && appointmentTime >= currentTime; // Compare only the date part (date in IST)
     } else if (activeTab === "Upcoming") {
@@ -233,11 +179,7 @@ export default function Appointments({ patientappointments, patient }) {
           >
             Past
           </button>
-          <div className="flex-1"></div>
-          <input
-            type="date"
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
-          />
+          
         </div>
 
         <div className="appointments-list space-y-4">

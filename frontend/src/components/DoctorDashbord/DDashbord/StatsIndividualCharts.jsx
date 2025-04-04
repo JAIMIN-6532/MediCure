@@ -249,7 +249,7 @@ const IndividualStatChart = ({ doctorId }) => {
           types: processTypesData(typesRes.data),
         });
       } catch (error) {
-        console.error("Error fetching stats:", error);
+        // console.error("Error fetching stats:", error);
       }
     };
 

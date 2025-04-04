@@ -1,7 +1,6 @@
 import { FaStar, FaMapMarkerAlt, FaClock, FaStethoscope, FaDollarSign } from 'react-icons/fa';
 
 export default function DoctorInfo({ doctor }) {
-  console.log("doctor inside Info",doctor);
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 mb-8 animate-slide-up hover:shadow-xl transition-shadow">
       <div className="flex flex-col md:flex-row items-center gap-8">

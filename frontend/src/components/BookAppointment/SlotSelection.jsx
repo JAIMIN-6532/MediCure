@@ -10,10 +10,9 @@ export default function SlotSelection({
   setSelectedSlot,
   onNext,
 }) {
-  console.log("appointmentSlots: ", appointmentSlots);
 
   if (!appointmentSlots) {
-    console.error("appointmentSlots is undefined or null");
+    // console.error("appointmentSlots is undefined or null");
     return <div>Error: No available appointment slots.</div>;
   }
 

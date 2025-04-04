@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useDispatch } from "react-redux";
 import { ChevronRight, ChevronLeft, Loader } from "lucide-react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+
 import AuthLayout from "../../components/AuthLayout";
 import Step1 from "../../components/DoctorsForm/Step1";
 import Step2 from "../../components/DoctorsForm/Step2";
 import Step3 from "../../components/DoctorsForm/Step3";
-import axios from "axios";
-import { useDispatch } from "react-redux";
 import { fetchDoctorById } from "../../reduxToolkit/reducers/DoctorReducer";
 
 const DoctorSignUp = () => {
@@ -37,14 +38,14 @@ const DoctorSignUp = () => {
   let did;
   const did1 = JSON.parse(localStorage.getItem("did"));
   const did2 = doctor?._id;
-  console.log(did1, did2);
+  // console.log(did1, did2);
   if (did1) {
     did = did1;
   } else {
     did = did2;
   }
 
-  console.log(did);
+  // console.log(did);
 
   const navigate = useNavigate();
   const handleFileChange = (e, field) => {
@@ -61,9 +62,8 @@ const DoctorSignUp = () => {
     formDataToSend.append("images", formData.profileImage);
     formDataToSend.append("id", formData.idProof);
     formDataToSend.append("degree", formData.degreeProof);
-    console.log("Form Data to send:", formDataToSend);
+    // console.log("Form Data to send:", formDataToSend);
     try {
-      console.log("Form Data to send:", formDataToSend);
       const response = await axios.post(
         `${import.meta.env.VITE_APP_API_URL}/api/doctor/${doctorId}/uploaddoc1`,
         formDataToSend,
@@ -75,7 +75,7 @@ const DoctorSignUp = () => {
       );
       return response.data;
     } catch (error) {
-      console.error("Error uploading documents for Step 1", error);
+      // console.error("Error uploading documents for Step 1", error);
       throw error;
     }
   };
@@ -98,7 +98,7 @@ const DoctorSignUp = () => {
       );
       return response.data;
     } catch (error) {
-      console.error("Error uploading details for Step 2", error);
+      // console.error("Error uploading details for Step 2", error);
       throw error;
     }
   };
@@ -116,18 +116,17 @@ const DoctorSignUp = () => {
 
       return response.data;
     } catch (error) {
-      console.error("Error uploading details for Step 3", error);
+      // console.error("Error uploading details for Step 3", error);
       throw error;
     }
   };
 
   // handle form submission for each step
   const handleStepSubmit = async () => {
-    console.log("inside hadlestepsubmit", did, formData);
+    // console.log("inside hadlestepsubmit", did, formData);
     setLoading(true);
     try {
       if (step === 1) {
-        console.log("inside step 1", did, formData);
         await uploadStep1Documents(did, formData); // Step 1 API call
         setStep(2); // Move to Step 2
       } else if (step === 2) {
@@ -135,13 +134,12 @@ const DoctorSignUp = () => {
         setStep(3); // Move to Step 3
       } else if (step === 3) {
         const res = await uploadStep3Details(did, formData); // Step 3 API call
-        console.log("Doctor created:", res);
         localStorage.setItem("doctor", JSON.stringify(res));
         dispatch(fetchDoctorById(did));
         navigate(`/d-dashbord/${did}`);
       }
     } catch (error) {
-      console.error("Error during step submission", error);
+      // console.error("Error during step submission", error);
     } finally {
       setLoading(false);
     }

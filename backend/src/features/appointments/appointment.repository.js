@@ -1,13 +1,17 @@
+import mongoose from "mongoose";
+
 import AppointmentModel from "./appointments.model.js";
 import DoctorModel from "../doctor/doctor.model.js";
 import PatientModel from "../patient/patient.model.js";
 import PaymentModel from "../payment/payment.model.js";
-import mongoose from "mongoose";
+
 import { sendBookingConfirmationToPatient } from "../../utils/emails/bookingConfirmationPatient.js";
 import { sendBookingConfirmationToDoctor } from "../../utils/emails/bookingConfirmationDoctor.js";
 import { sendBookingCancelToPatient } from "../../utils/emails/bookingCancelPatient.js";
 import { sendVideoCallLink } from "../../utils/emails/sendVideoCallLink.js";
+
 export default class AppointmentRepository {
+  
   bookAppointment = async (appointmentData, res, next) => {
     try {
       const {
@@ -17,18 +21,10 @@ export default class AppointmentRepository {
         appointmentFees,
         paymentType,
         date,
+        phone,
         timeSlot,
         type,
       } = appointmentData;
-      console.log("Appointment Data:", appointmentData);
-      console.log("Appointment Data:", {
-        doctorId,
-        patientId,
-        paymentId,
-        date: new Date(date).toISOString(),
-        timeSlot,
-        type,
-      });
 
       let parsedDate;
       if (typeof date === "string") {
@@ -43,20 +39,12 @@ export default class AppointmentRepository {
         return "Date is required and must be a valid date";
       }
 
-      // Check if the appointment slot is already taken
+      // check if the appointment slot is already taken
       const existingAppointment = await AppointmentModel.findOne({
         doctor: doctorId,
         date: parsedDate,
         timeSlot,
         status: { $eq: "Confirmed" },
-      });
-
-      console.log("locked before", {
-        doctorId,
-        patientId,
-        date: parsedDate,
-        timeSlot,
-        type,
       });
 
       // Check if there's a locked appointment
@@ -67,8 +55,6 @@ export default class AppointmentRepository {
         status: { $eq: "Locked" },
       });
 
-      console.log("Locked Appointment:", lockedAppointment);
-
       if (existingAppointment) {
         return "Appointment slot is already taken";
       }
@@ -77,7 +63,6 @@ export default class AppointmentRepository {
         if (paymentType === "Offline") {
         }
         const payment = await PaymentModel.findOne({ orderId: paymentId });
-        console.log("Payment:", payment);
         let updatedAppointment;
         if (paymentType === "Online") {
           updatedAppointment = await AppointmentModel.updateOne(
@@ -126,11 +111,6 @@ export default class AppointmentRepository {
           findpatient.name
         );
 
-        console.log(
-          "Updated Locked Appointment to Confirmed:",
-          updatedAppointment
-        );
-
         return updatedAppointment;
       }
       const newAppointment = await AppointmentModel.create({
@@ -153,12 +133,11 @@ export default class AppointmentRepository {
         { new: true }
       );
 
-      console.log("New Appointment Booked:", newAppointment);
-
       return newAppointment;
     } catch (error) {
-      console.error("Error booking appointment:", error);
-      return "Error booking appointment: " + error.message;
+      // console.error("Error booking appointment:", error);
+      // return "Error booking appointment: " + error.message;
+      throw error;
     }
   };
 
@@ -167,7 +146,8 @@ export default class AppointmentRepository {
       const appointment = await AppointmentModel.findById(id);
       return appointment;
     } catch (error) {
-      console.error(error);
+      // console.error(error);
+      throw error;
     }
   };
 
@@ -177,8 +157,6 @@ export default class AppointmentRepository {
       const cancelappointment = await AppointmentModel.deleteOne({
         _id: new mongoose.Types.ObjectId(appointmentId),
       });
-      console.log("Cancel Appointment:", appointment);
-      console.log("date", appointment.date);
       const updateDoctor = await DoctorModel.findByIdAndUpdate(
         {
           _id: new mongoose.Types.ObjectId(appointment.doctor),
@@ -207,23 +185,22 @@ export default class AppointmentRepository {
 
       return appointment;
     } catch (error) {
-      console.error(error);
+      // console.error(error);
+      throw error;
     }
   };
 
   sendVideoCallLinkMail = async (aid, link, patient) => {
     try {
-      console.log("patient", patient);
       const sendMail = await sendVideoCallLink(patient, link);
-      console.log("sendMail in Repo:", sendMail);
       return sendMail;
     } catch (err) {
-      console.error(err);
+      // console.error(err);
+      throw err;
     }
   };
 
   lockAppointment = async (appointmentData, res) => {
-    console.log("Appointment Data for LOck:", appointmentData);
     const { doctorId, patientId, date, timeSlot } = appointmentData;
 
     try {
@@ -246,8 +223,6 @@ export default class AppointmentRepository {
 
       const istOffset = 5.5 * 60 * 60 * 1000;
       const istDate = new Date(parsedDate.getTime() + istOffset);
-
-      console.log("Converted IST Date:", istDate);
 
       const existingLockedAppointment = await AppointmentModel.findOne({
         doctor: doctorId,
@@ -282,16 +257,15 @@ export default class AppointmentRepository {
       );
 
       const savedAppointment = await lockedAppointment.save();
-      console.log("Saved Locked Appointment:", savedAppointment);
       return savedAppointment;
     } catch (error) {
-      console.error(error);
+      // console.error(error);
+      throw error;
     }
   };
 
   unlockAppointment = async (appointmentData) => {
     const { doctorId, patientId, date, timeSlot } = appointmentData;
-    console.log("Appointment Data for Unlock:", appointmentData);
     try {
       let parsedDate;
       if (typeof date === "string") {
@@ -307,7 +281,6 @@ export default class AppointmentRepository {
 
       const istOffset = 5.5 * 60 * 60 * 1000;
       const istDate = new Date(parsedDate.getTime() + istOffset);
-      console.log("Converted IST Date:", istDate);
 
       const lockedAppointment = await AppointmentModel.findOne({
         doctor: doctorId,
@@ -339,7 +312,8 @@ export default class AppointmentRepository {
 
       return lockedAppointment;
     } catch (error) {
-      console.error(error);
+      // console.error(error);
+      throw error;
     }
   };
 

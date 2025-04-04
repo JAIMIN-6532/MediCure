@@ -1,10 +1,11 @@
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+
 import PatientRepository from "./patient.repository.js";
 import OtpController from "../otp/otp.controller.js";
 import DoctorRepository from "../doctor/doctor.repository.js";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import { sendToken } from "../../utils/sendToken.js";
-// import sendToken from '../../utils/sendToken.js'
+
+// import { sendToken } from "../../utils/sendToken.js";
 
 export default class PatientController {
   constructor() {
@@ -20,8 +21,6 @@ export default class PatientController {
 
       let isVerified = false;
       isVerified = await this.otpController.verifyOtp(email, otp);
-      // console.log(consoleOtp);
-      console.log(isVerified);
       let newPatient;
       if (isVerified) {
         newPatient = await this.patientRepository.signUp(
@@ -32,41 +31,30 @@ export default class PatientController {
       } else {
         return res.status(400).send({ error: "Invalid OTP" });
       }
-      console.log(newPatient);
       if (newPatient) return res.status(201).send(newPatient);
       else
         return res.status(400).send("Something went wrong user is not created");
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       next(err);
     }
   };
 
   async signIn(req, res, next) {
     try {
-      // 1. Get the userType from the request body, default to 'patient'
       const { email, password } = req.body;
 
-      
-      
-      let user = await this.patientRepository.findByEmail(email); // Default is patient if not 'doctor'
-
-      console.log(user);
+      let user = await this.patientRepository.findByEmail(email);
 
       if (!user) {
         return res.status(400).send("Incorrect Credentials");
       } else {
-        // 3. Compare password with hashed password.
-        console.log(user.password);
-        console.log(password);
         const result = await bcrypt.compare(
           password.trim(),
           user.password.trim()
-        ); 
-        console.log("Password match result: ", result);
-
+        );
         if (result) {
-          // 4. Create token.
+          //create token.
           const token = jwt.sign(
             {
               userID: user._id,
@@ -79,25 +67,18 @@ export default class PatientController {
             }
           );
 
-          // 5. Send token.
-          console.log("Generated Token:", token);
-          const payload = token.split(".")[1];
-          console.log("Payload: ", payload);
-          const decodedPayload = atob(payload);
-
-          console.log("Decoded Payload: ", decodedPayload);
-          
+          //send token.
           // await sendToken(user, token, res, 200);
           // return res.status(200).cookie("token", token).send({ user, token });
           // console.log("User: ", req.cookies["token"]);
-          
-          return res.status(200).send({ user: user, token }); 
+
+          return res.status(200).send({ user: user, token });
         } else {
           return res.status(400).send("Incorrect Credentials");
         }
       }
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       return res.status(500).send("Something went wrong");
     }
   }
@@ -114,19 +95,16 @@ export default class PatientController {
 
   async getUserById(req, res, next) {
     try {
-      const userId = req.userID; 
-      const userType = req.userType; 
-      console.log("user type is : ", userType);
-      console.log("user id is : ", userId);
+      const userId = req.userID;
+      const userType = req.userType;
       const user = await this.patientRepository.getUserById(userId);
-      console.log(user);
       if (user) {
         res.status(200).send(user);
       } else {
         return res.status(400).send("user not found");
       }
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       return res.status(200).send("Something went wrong");
     }
   }
@@ -141,7 +119,7 @@ export default class PatientController {
       }
       return res.status(200).json(feedbacks.feedbacks);
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       return res.status(500).json({ message: "Error getting feedback" });
     }
   };
@@ -155,7 +133,7 @@ export default class PatientController {
       }
       return res.status(200).json(patient);
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       return res.status(500).json({ message: "Error getting patient" });
     }
   };
@@ -163,17 +141,15 @@ export default class PatientController {
   getAppointmentsByPatientId = async (req, res, next) => {
     try {
       const patientId = req.params.pid;
-      const appointments = await this.patientRepository.getAppointmentsByPatientId(
-        patientId
-      );
+      const appointments =
+        await this.patientRepository.getAppointmentsByPatientId(patientId);
       if (appointments === null) {
         return res.status(404).json({ message: "Appointments not found" });
       }
       return res.status(200).json(appointments);
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       return res.status(500).json({ message: "Error getting appointments" });
     }
   };
-
 }

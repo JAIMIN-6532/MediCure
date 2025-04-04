@@ -1,37 +1,9 @@
-const appointments = [
-  {
-    id: 1,
-    name: "Emma Thompson",
-    time: "09:00 AM",
-    type: "General Checkup",
-    image:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&auto=format&fit=crop&q=80",
-    status: "Confirmed",
-  },
-  {
-    id: 2,
-    name: "Michael Chen",
-    time: "10:30 AM",
-    type: "Follow-up",
-    image:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
-    status: "In Progress",
-  },
-  {
-    id: 3,
-    name: "Sofia Rodriguez",
-    time: "02:00 PM",
-    type: "Consultation",
-    image:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
-    status: "Scheduled",
-  },
-];
 import profileimg from "../../../assets/patient.png";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import moment from "moment-timezone";
 import gsap from "gsap";
-import AppointmentChart from "./AppointmentChart";
+
+import { convertTo24HourFormat } from "../../../Helpers/convertTo24HourFormat";
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -47,29 +19,16 @@ const getStatusColor = (status) => {
 };
 
 export default function AppointmentList({ appointments }) {
-  // console.log("Appointments: ", appointments);
 
-  const convertTo24HourFormat = (timeSlot) => {
-    const [time, period] = timeSlot.split(" ");
-    let [hours, minutes] = time.split(":").map(Number);
-
-    if (period === "PM" && hours !== 12) hours += 12;
-    if (period === "AM" && hours === 12) hours = 0;
-
-    return hours * 100 + minutes;
-  };
-
+  
   const istDate = moment().tz("Asia/Kolkata");
   const todayIST = istDate.format("YYYY-MM-DD");
   const currentTime = istDate.hours() * 100 + istDate.minutes();
 
-  console.log("Today IST: ", todayIST);
-  console.log("Current Time in IST: ", currentTime);
+  // console.log("Today IST: ", todayIST);
+  // console.log("Current Time in IST: ", currentTime);
   const filteredAppointments = appointments?.filter((appointment) => {
     const appointmentTime = convertTo24HourFormat(appointment.timeSlot);
-
-    console.log("currentTime", currentTime);
-    console.log("appointmentTime", appointmentTime);
     const appointmentDate = appointment.date.split("T")[0];
     return appointmentDate === todayIST && appointmentTime > currentTime;
   });

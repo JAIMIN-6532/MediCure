@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Loader } from "lucide-react";
-import AuthLayout from "./AuthLayout";
 import { useDispatch, useSelector } from "react-redux";
-import { patientSignIn } from "../reduxToolkit/reducers/AuthReducer.js";
+
+import AuthLayout from "../AuthLayout.jsx";
+import { patientSignIn } from "../../reduxToolkit/reducers/AuthReducer.js";
 
 const SignIn = () => {
   const [formData, setFormData] = useState({
@@ -41,7 +42,6 @@ const SignIn = () => {
         localStorage.removeItem("redirect");
       } else {
         localStorage.setItem("token", token); // save token to local storage
-
         navigate("/");
       }
     }
@@ -98,6 +98,7 @@ const SignIn = () => {
             <span>Sign In</span>
           )}
         </button>
+        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
       </form>
 
       <div className="mt-6 text-center">

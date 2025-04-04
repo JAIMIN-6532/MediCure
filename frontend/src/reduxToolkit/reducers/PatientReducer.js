@@ -4,11 +4,11 @@ import axios from "axios";
 export const fetchPatientById = createAsyncThunk(
   "patients/fetchPatientById",
   async (patientId) => {
-    console.log("Patient ID in fetchPatientById:", patientId);
+    // console.log("Patient ID in fetchPatientById:", patientId);
     const response = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}/api/patient/getpatient/${patientId}`
+      `${import.meta.env.VITE_APP_API_URL}/api/patient/${patientId}`
     );
-    console.log("Patient fetched by ID:", response.data);
+    // console.log("Patient fetched by ID:", response.data);
     return response.data;
   }
 );
@@ -16,13 +16,13 @@ export const fetchPatientById = createAsyncThunk(
 export const fetchAppointmentsByPatientId = createAsyncThunk(
   "patients/fetchAppointmentsByPatientId",
   async (patientId) => {
-    console.log("Patient ID in fetchAppointmentsByPatientId:", patientId);
+    // console.log("Patient ID in fetchAppointmentsByPatientId:", patientId);
     const response = await axios.get(
       `${
         import.meta.env.VITE_APP_API_URL
       }/api/patient/getappointment/${patientId}`
     );
-    console.log("Appointments fetched by Patient ID:", response.data);
+    // console.log("Appointments fetched by Patient ID:", response.data);
     return response.data;
   }
 );

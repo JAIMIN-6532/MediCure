@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { ClipLoader } from "react-spinners";
+
+
 import DoctorProfile from "../../components/PatientsPage/DoctorProfile";
 import TabNavigation from "../../components/PatientsPage/TabNavigation";
 import BusinessHours from "../../components/PatientsPage/BusinessHours";
@@ -10,7 +13,7 @@ import {
   fetchDoctorById,
   resetDoctorState,
 } from "../../reduxToolkit/reducers/DoctorReducer";
-import { ClipLoader } from "react-spinners";
+
 
 export default function DoctorProfilePage() {
   const { doctorId } = useParams();

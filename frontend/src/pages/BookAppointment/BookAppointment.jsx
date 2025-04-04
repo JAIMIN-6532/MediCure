@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { ClipLoader } from "react-spinners";
+import axios from "axios";
+import io from "socket.io-client";
+
 import { fetchDoctorById } from "../../reduxToolkit/reducers/DoctorReducer.js";
 import {
   fetchAppointmentSlots,
@@ -12,10 +16,7 @@ import PersonalInfo from "../../components/BookAppointment/PersonalInfo";
 import BookingConfirmation from "../../components/BookAppointment/BookingConfirmation";
 import Invoice from "../../components/BookAppointment/Invoice";
 import { lockSlot } from "../../reduxToolkit/reducers/BookingReducer.js";
-import io from "socket.io-client";
-import { ClipLoader } from "react-spinners";
 import { updateAvailableSlots } from "../../reduxToolkit/reducers/BookingReducer.js";
-import axios from "axios";
 
 let socket;
 //semple
@@ -69,8 +70,6 @@ const BookAppointment = () => {
     (state) => state.appointments
   );
 
-  console.log("appointments from state", appointments);
-
   const { bookappointmentStatus, bookappointmentError } = useSelector(
     (state) => state.appointments
   );
@@ -119,12 +118,12 @@ const BookAppointment = () => {
     });
 
     socket.on("connect", () => {
-      console.log("Socket connected:", socket.id);
+      // console.log("Socket connected:", socket.id);
     });
 
     socket.on("slotLocked", (lockedSlot) => {
-      console.log("Slot locked successfully: ", lockedSlot);
-      console.log("appointments after locking SLots", appointments);
+      // console.log("Slot locked successfully: ", lockedSlot);
+      // console.log("appointments after locking SLots", appointments);
       const lockedDate = new Date(lockedSlot.date).toISOString().split("T")[0];
 
       if (appointments && Array.isArray(appointments.availableSlots)) {
@@ -147,23 +146,24 @@ const BookAppointment = () => {
             return slotGroup;
           }),
         };
-        console.log(
-          "Updated Appointments after locking slot:",
-          updatedAppointments
-        );
+        // console.log(
+        //   "Updated Appointments after locking slot:",
+        //   updatedAppointments
+        // );
         dispatch(updateAvailableSlots(updatedAppointments));
 
-        console.log(updatedAppointments);
-      } else {
-        console.error(
-          "appointments is not structured as expected:",
-          appointments
-        );
+        // console.log(updatedAppointments);
       }
+      //  else {
+      //   console.error(
+      //     "appointments is not structured as expected:",
+      //     appointments
+      //   );
+      // }
     });
 
     socket.on("slotUnlocked", (unlockedSlot) => {
-      console.log("Slot unlocked successfully: ", unlockedSlot);
+      // console.log("Slot unlocked successfully: ", unlockedSlot);
 
       const unlockedDate = new Date(unlockedSlot.date)
         ?.toISOString()
@@ -194,17 +194,18 @@ const BookAppointment = () => {
         };
 
         dispatch(updateAvailableSlots(updatedAppointments));
-      } else {
-        console.error(
-          "appointments is not structured as expected:",
-          appointments
-        );
-      }
+      } 
+      // else {
+      //   // console.error(
+      //   //   "appointments is not structured as expected:",
+      //   //   appointments
+      //   );
+      // }
       setStep(1);
     });
 
     socket.on("appointmentBooked", (appointment) => {
-      console.log("Appointment booked successfully: ", appointment);
+      // console.log("Appointment booked successfully: ", appointment);
       setStep(3);
     });
 
@@ -242,7 +243,7 @@ const BookAppointment = () => {
             description: "Consultation with Doctor",
             order_id: order.orderId,
             handler: async function (response) {
-              console.log(response);
+              // console.log(response);
               const orderId = response.razorpay_order_id;
               const isPaymentCaptured = await axios.post(
                 `${import.meta.env.VITE_APP_API_URL}/api/payment/verify`,
@@ -250,7 +251,7 @@ const BookAppointment = () => {
                   orderId,
                 }
               );
-              console.log(isPaymentCaptured);
+              // console.log(isPaymentCaptured);
               if (isPaymentCaptured.data.success) {
                 dispatch(
                   bookAppointment({
@@ -282,7 +283,7 @@ const BookAppointment = () => {
           rezorpayInstance.open();
         }
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     } else {
       dispatch(

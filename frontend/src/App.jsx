@@ -1,13 +1,14 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
+
 import HomePage from "./pages/HomePage";
 import Navbar from "./components/Navbar";
 import DoctorsList from "./pages/Doctors/DoctorsList";
 import Footer from "./components/Footer";
-import SignIn from "./components/SignIn";
+import SignIn from "./components/Auth/SignIn";
 import PatientSignUp from "./pages/Patient/PatientSignUp";
 import DoctorSignUp from "./pages/Doctors/DoctorsSignUp";
-import DsignIn from "./components/DsignIn";
+import DsignIn from "./components/Auth/DsignIn";
 import DsignUp from "./components/DoctorsForm/DsignUp";
 import PrivateRoute from "./components/PrivateRoute";
 import DoctorDashbord from "./pages/DoctorDashbord/DoctorDashbord";
@@ -18,7 +19,6 @@ import PrivateRoutePatient from "./components/PrivateRoutePatient";
 import Room from "./zegocloud/Room";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
-
 
 const App = () => {
   return (
@@ -35,16 +35,10 @@ const App = () => {
             <Route path="/signup" element={<PatientSignUp />} />
             <Route path="dsignup" element={<DsignUp />} />
             <Route path="/doctor-signup" element={<DoctorSignUp />} />
-            {/* <Route path="/d-dashbord/:doctorId" element={<DoctorDashbord />} /> */}
-            {/* Protected Routes */}
             <Route
               path="/d-dashbord/:doctorId"
               element={<PrivateRoute element={<DoctorDashbord />} />}
             />
-            {/* <Route
-            path="/p-dashbord/:patientId"
-            element={<PatientDashbord />}
-          /> */}
             <Route
               path="/p-dashbord/:patientId"
               element={<PrivateRoutePatient element={<PatientDashbord />} />}

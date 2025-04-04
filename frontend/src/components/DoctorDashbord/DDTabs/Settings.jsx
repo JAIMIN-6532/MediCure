@@ -26,7 +26,7 @@ const Settings = ({ doctor }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log("Form data before appending:", formData);
+      // console.log("Form data before appending:", formData);
 
       const response = await axios.post(
         `${import.meta.env.VITE_APP_API_URL}/api/doctor/updateprofile/${
@@ -41,7 +41,7 @@ const Settings = ({ doctor }) => {
       }
     } catch (error) {
       toast.error("Failed to update profile. Please try again.");
-      console.error("Error updating profile:", error);
+      // console.error("Error updating profile:", error);
     }
   };
 
