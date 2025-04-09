@@ -32,7 +32,7 @@ app.use(cookieParser());
 app.use((req, res, next) => {
     res.header(
       'Access-Control-Allow-Origin',
-      'https://medi-cure-tau.vercel.app',     //https://medi-cure-tau.vercel.app
+      'http://mymedicurebucket.s3-website.ap-south-1.amazonaws.com/',     //https://medi-cure-tau.vercel.app
     );
     res.header('Access-Control-Allow-Headers', '*');
     res.header('Access-Control-Allow-Methods', '*');
