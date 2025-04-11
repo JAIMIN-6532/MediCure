@@ -95,7 +95,7 @@ const Room = () => {
       container: element,
       sharedLinks: [
         {
-          url: `http://mymedicurebucket.s3-website.ap-south-1.amazonaws.com/room/${appointmentId}`,
+          url: `https://www.medicure.help/room/${appointmentId}`,
         },
       ],
       scenario: {
