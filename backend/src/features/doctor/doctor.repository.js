@@ -116,7 +116,12 @@ export default class DoctorRepository {
 
   getAllDoctors = async () => {
     try {
-      const doctors = await DoctorModel.find().populate("feedbacks").exec();
+      const doctors = await DoctorModel.find()
+        .select(
+          "-email -password -totalRevenue -idproofUrl -degreeDocumentUrl -phone"
+        )
+        .populate("feedbacks")
+        .exec();
       return doctors;
     } catch (err) {
       // console.log("DR get all doctors", err);
