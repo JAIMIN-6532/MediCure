@@ -15,7 +15,7 @@ export const fetchAllDoctors = createAsyncThunk(
   async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/admin/getalldoctors",
+        `${import.meta.env.VITE_APP_API_URL}/api/admin/getalldoctors`,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
@@ -33,7 +33,7 @@ export const fetchAllPatients = createAsyncThunk(
   async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/admin/getallpatients",
+        `${import.meta.env.VITE_APP_API_URL}/api/admin/getallpatients`,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
@@ -50,7 +50,7 @@ export const deleteDoctor = createAsyncThunk(
   async (doctorId, { rejectWithValue }) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/admin/doctor/${doctorId}`,
+        `${import.meta.env.VITE_APP_API_URL}/api/admin/doctor/${doctorId}`,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
@@ -67,7 +67,7 @@ export const deletePatient = createAsyncThunk(
   async (patientId, { rejectWithValue }) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/admin/patient/${patientId}`,
+        `${import.meta.env.VITE_APP_API_URL}/api/admin/patient/${patientId}`,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
@@ -84,7 +84,9 @@ export const verifyDoctor = createAsyncThunk(
   async (doctorId, { rejectWithValue }) => {
     try {
       const response = await axios.put(
-        `http://localhost:3000/api/admin/doctor/verify/${doctorId}`
+        `${
+          import.meta.env.VITE_APP_API_URL
+        }/api/admin/doctor/verify/${doctorId}`
       );
       return response.data;
     } catch (error) {
