@@ -127,4 +127,14 @@ export default class PatientRepository {
       throw new ApplicationError("Something went wrong with database", 500);
     }
   }
+
+  getAllPatientsForAdmin = async () => {
+    try {
+      return await patientModel.find();
+    } catch (err) {
+      // console.log(err);
+      throw new ApplicationError("Something went wrong with database", 500);
+    }
+  }
+
 }

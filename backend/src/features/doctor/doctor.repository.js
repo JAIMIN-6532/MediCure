@@ -116,7 +116,7 @@ export default class DoctorRepository {
 
   getAllDoctors = async () => {
     try {
-      const doctors = await DoctorModel.find()
+      const doctors = await DoctorModel.find({verificationStatus:"Verified"})
         .select(
           "-email -password -totalRevenue -idproofUrl -degreeDocumentUrl -phone"
         )
@@ -128,6 +128,17 @@ export default class DoctorRepository {
       throw err;
     }
   };
+
+  getAllDoctorsForAdmin = async () => {
+    try{
+    const doctors = await DoctorModel.find();
+    return doctors;
+    } catch (err) {
+      // console.log("DR get all doctors", err);
+      throw err;
+    }
+  }
+
 
   getDoctorById = async (doctorId) => {
     try {

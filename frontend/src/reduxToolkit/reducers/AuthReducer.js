@@ -1,34 +1,33 @@
-
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
 // Initial state
 const initialState = {
-  user:JSON.parse(localStorage.getItem('user')) || null,
-  token: localStorage.getItem('token') || null,
+  user: JSON.parse(localStorage.getItem("user")) || null,
+  token: localStorage.getItem("token") || null,
   loading: false,
   error: null,
 };
 
 // 1. Doctor Sign-in
 export const doctorSignIn = createAsyncThunk(
-  'auth/doctorSignIn',
+  "auth/doctorSignIn",
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_APP_API_URL}/api/doctor/dsignin`,
         credentials
       );
-      return response.data; 
+      return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data); 
+      return rejectWithValue(error.response.data);
     }
   }
 );
 
 // 2. Doctor Sign-up
 export const doctorSignUp = createAsyncThunk(
-  'auth/doctorSignUp',
+  "auth/doctorSignUp",
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axios.post(
@@ -37,21 +36,21 @@ export const doctorSignUp = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data); 
+      return rejectWithValue(error.response.data);
     }
   }
 );
 
 // 3. Patient Sign-in
 export const patientSignIn = createAsyncThunk(
-  'auth/patientSignIn',
+  "auth/patientSignIn",
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_APP_API_URL}/api/patient/signin`,
         credentials
       );
-      return response.data; 
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
@@ -60,7 +59,7 @@ export const patientSignIn = createAsyncThunk(
 
 // 4. Patient Sign-up
 export const patientSignUp = createAsyncThunk(
-  'auth/patientSignUp',
+  "auth/patientSignUp",
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axios.post(
@@ -68,16 +67,31 @@ export const patientSignUp = createAsyncThunk(
         credentials
       );
 
-      return response.data; 
+      return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data); 
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const adminLogin = createAsyncThunk(
+  "auth/adminLogin",
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_APP_API_URL}/api/admin/signin`,
+        credentials
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
     }
   }
 );
 
 // auth slice
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     logout: (state) => {
@@ -85,8 +99,8 @@ const authSlice = createSlice({
       state.token = null;
       state.loading = false;
       state.error = null;
-      localStorage.removeItem('token'); 
-      localStorage.removeItem('user'); 
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
     },
   },
   extraReducers: (builder) => {
@@ -98,8 +112,8 @@ const authSlice = createSlice({
       state.user = action.payload.user;
       state.token = action.payload.token;
       state.error = null;
-      localStorage.setItem('user', JSON.stringify(action.payload.user)); 
-      localStorage.setItem('token', action.payload.token); 
+      localStorage.setItem("user", JSON.stringify(action.payload.user));
+      localStorage.setItem("token", action.payload.token);
     });
     builder.addCase(doctorSignIn.rejected, (state, action) => {
       state.loading = false;
@@ -127,8 +141,8 @@ const authSlice = createSlice({
       state.loading = false;
       state.user = action.payload.user;
       state.token = action.payload.token;
-      localStorage.setItem('user', JSON.stringify(action.payload.user)); 
-      localStorage.setItem('token', action.payload.token); 
+      localStorage.setItem("user", JSON.stringify(action.payload.user));
+      localStorage.setItem("token", action.payload.token);
       state.error = null;
     });
     builder.addCase(patientSignIn.rejected, (state, action) => {
@@ -146,6 +160,21 @@ const authSlice = createSlice({
       state.error = null;
     });
     builder.addCase(patientSignUp.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload || action.error.message;
+    });
+    builder.addCase(adminLogin.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(adminLogin.fulfilled, (state, action) => {
+      state.loading = false;
+      state.user = action.payload.user;
+      state.token = action.payload.token;
+      localStorage.setItem("user", JSON.stringify(action.payload.user));
+      localStorage.setItem("token", action.payload.token);
+      state.error = null;
+    });
+    builder.addCase(adminLogin.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload || action.error.message;
     });

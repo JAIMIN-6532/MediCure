@@ -19,6 +19,10 @@ import PrivateRoutePatient from "./components/PrivateRoutePatient";
 import Room from "./zegocloud/Room";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import AdminDashbord from "./pages/Admin/AdminDashboard";
+import PrivateRouteAdmin from "./components/PrivateRouteAdmin";
+import AdminLogin from "./pages/Admin/AdminLogin";
+
 
 const App = () => {
   return (
@@ -53,7 +57,8 @@ const App = () => {
             />
 
             <Route path="/room/:appointmentId" element={<Room />} />
-
+            <Route path="/admin" element={<PrivateRouteAdmin element={<AdminDashbord />} />} />
+            <Route path="admin/login" element={<AdminLogin />}/>
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
           </Routes>

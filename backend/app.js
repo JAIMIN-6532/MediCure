@@ -13,6 +13,7 @@ import appointmentRouter from "./src/features/appointments/appointment.routes.js
 import feedbackRouter from "./src/features/feedback/feedback.routes.js";
 import errorHandler from "./src/errorhandler/errorHandler.js";
 import paymentRouter from "./src/features/payment/payment.routes.js";
+import { adminRouter } from "./src/features/admin/admin.routes.js";
 
 const app = express();
 const __filename = url.fileURLToPath(import.meta.url);
@@ -32,7 +33,7 @@ app.use(cookieParser());
 app.use((req, res, next) => {
     res.header(
       'Access-Control-Allow-Origin',
-      'https://www.medicure.help',     //https://medi-cure-tau.vercel.app
+      'https://www.medicure.help',     //https://medi-cure-tau.vercel.app //https://www.medicure.help
     );
     res.header('Access-Control-Allow-Headers', '*');
     res.header('Access-Control-Allow-Methods', '*');
@@ -63,6 +64,7 @@ app.use("/api/feedback",feedbackRouter);
 
 app.use("/api/payment",paymentRouter);
 
+app.use("/api/admin",adminRouter);
 
 app.use(errorHandler);
 

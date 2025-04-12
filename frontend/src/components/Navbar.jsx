@@ -114,7 +114,7 @@ const Navbar = () => {
                     onClick={handleProfileClick}
                     className="w-8 h-8 flex items-center justify-center rounded-full bg-primary-blue text-white font-bold cursor-pointer"
                   >
-                    {user.name.slice(0, 2).toUpperCase() || "User"}
+                    {user?.name.slice(0, 2).toUpperCase() || "User"}
                   </span>
                 )}
               </div>

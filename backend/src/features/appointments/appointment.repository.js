@@ -11,7 +11,6 @@ import { sendBookingCancelToPatient } from "../../utils/emails/bookingCancelPati
 import { sendVideoCallLink } from "../../utils/emails/sendVideoCallLink.js";
 
 export default class AppointmentRepository {
-  
   bookAppointment = async (appointmentData, res, next) => {
     try {
       const {

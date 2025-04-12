@@ -7,7 +7,6 @@ const jwtAuth = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1] ;  // ensure the token is prefixed with "Bearer "
  
 
-  // console.log(token);
   // 2. if no token, return the error.
   if (!token) {
     return res.status(401).send('Unauthorized');
