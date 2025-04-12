@@ -24,6 +24,17 @@ export const fetchDoctorById = createAsyncThunk(
   }
 );
 
+export const fetchDoctorByIdforDoctor = createAsyncThunk(
+  "doctors/fetchDoctorById",
+  async (doctorId) => {
+    const response = await axios.get(
+      `${import.meta.env.VITE_APP_API_URL}/api/doctor/dd/${doctorId}`
+    );
+    // console.log("Doctor fetched by ID:", response.data);
+    return response.data;
+  }
+);
+
 export const fetchDoctorAvgRatingByDoctorId = createAsyncThunk(
   "doctors/fetchDoctorAvgRatingByDoctorId",
   async (doctorId) => {

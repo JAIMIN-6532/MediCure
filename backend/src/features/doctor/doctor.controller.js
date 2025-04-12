@@ -233,6 +233,17 @@ export default class DoctorController {
     }
   };
 
+  getDoctorByIdForDoctor = async (req, res, next) => {
+    try {
+      const doctorId = req.params.doctorId;
+      const doctor = await this.doctorRepository.getDoctorByIdForDoctor(doctorId);
+      return res.status(200).json(doctor);
+    } catch (err) {
+      // console.log("inside DC getDoctorById", err);
+      next(err);
+    }
+  };
+
   getFeedbackByDoctorId = async (req, res, next) => {
     try {
       const doctorId = req.params.doctorId;

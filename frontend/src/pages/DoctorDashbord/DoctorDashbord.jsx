@@ -12,7 +12,7 @@ import AppointmentList from "../../components/DoctorDashbord/DDashbord/Appointme
 import Appointments from "../../components/DoctorDashbord/DDTabs/Appointments";
 import Patients from "../../components/DoctorDashbord/DDTabs/Patients";
 import AvailableTimings from "../../components/DoctorDashbord/DDTabs/AvailableTimings";
-import { fetchDoctorById } from "../../reduxToolkit/reducers/DoctorReducer";
+import { fetchDoctorByIdforDoctor } from "../../reduxToolkit/reducers/DoctorReducer";
 import Settings from "../../components/DoctorDashbord/DDTabs/Settings";
 import IndividualStatChart from "../../components/DoctorDashbord/DDashbord/StatsIndividualCharts";
 import ConvertToIST from "../../Helpers/ConvertToIST";
@@ -30,7 +30,7 @@ const DoctorDashbord = () => {
 
   useEffect(() => {
     dispatch(fetchAppointmentsByDoctorId(doctorId));
-    dispatch(fetchDoctorById(doctorId));
+    dispatch(fetchDoctorByIdforDoctor(doctorId));
   }, [dispatch, doctorId]);
 
 

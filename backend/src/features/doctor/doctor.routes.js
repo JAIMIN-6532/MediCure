@@ -45,6 +45,12 @@ doctorRouter.get("/:doctorId", (req, res, next) => {
   doctorController.getDoctorById(req, res, next);
 });
 
+doctorRouter.get("/dd/:doctorId", (req, res, next) => {
+  doctorController.getDoctorByIdForDoctor(req, res, next);
+});
+
+
+
 doctorRouter.get("/getfeedback/:doctorId", (req, res, next) => {
   doctorController.getFeedbackByDoctorId(req, res, next);
 });

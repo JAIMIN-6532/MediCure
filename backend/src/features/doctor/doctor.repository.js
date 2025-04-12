@@ -131,6 +131,27 @@ export default class DoctorRepository {
 
   getDoctorById = async (doctorId) => {
     try {
+      const doctor = await DoctorModel.findById(doctorId).select(
+        "-email -password -totalRevenue -idproofUrl -degreeDocumentUrl -phone")
+        .populate({
+          path: "feedbacks",
+          populate: {
+            path: "patient",
+            select: "name",
+          },
+        })
+        .exec();
+
+      // console.log("doctor",doctor);
+      return doctor;
+    } catch (err) {
+      // console.log("DR get doctor by id", err);
+      throw err;
+    }
+  };
+
+  getDoctorByIdForDoctor = async (doctorId) => {
+    try {
       const doctor = await DoctorModel.findById(doctorId)
         .populate({
           path: "feedbacks",
