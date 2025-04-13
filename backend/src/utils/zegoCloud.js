@@ -56,7 +56,7 @@ export default async function zegoCloud(req, res, next) {
       effectiveTimeInSeconds,
       payload
     );
-    return res.status(200).json({ token, appId });
+    return res.status(200).json({ token, appId,success: true });
   } catch (error) {
     console.error("Error generating token:", error);
     res.status(500).json({ error: "Internal Server Error" });
