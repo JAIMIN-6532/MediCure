@@ -1,5 +1,5 @@
 // const { generateToken04 } = require('../server/zegoServerAssistant');
-
+import mongoose from "mongoose";
 import generateToken04 from "./server/zegoServerAssistant.js";
 import dotenv from "dotenv";
 dotenv.config();
