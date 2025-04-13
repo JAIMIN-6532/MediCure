@@ -21,6 +21,7 @@ export default async function zegoCloud(req, res, next) {
     const isAppointmentIdValid = await AppointmentModel.exists({
       _id: mongoose.Types.ObjectId(appointmentId),
     });
+    console.log("isAppointmentIdValid", isAppointmentIdValid);
 
     if (!isAppointmentIdValid) {
       return res
@@ -34,6 +35,11 @@ export default async function zegoCloud(req, res, next) {
         { patient: mongoose.Types.ObjectId(userId) },
       ],
     });
+    console.log(
+      "isAppointmentContainsDoctorOrPatient",
+      isAppointmentContainsDoctorOrPatient
+    );
+
     if (!isAppointmentContainsDoctorOrPatient) {
       return res
         .status(403)
@@ -57,6 +63,7 @@ export default async function zegoCloud(req, res, next) {
       stream_id_list: null,
     };
     const payload = JSON.stringify(payloadObject);
+    console.log("payload", payload);
     const token = generateToken04(
       appId,
       userId,
