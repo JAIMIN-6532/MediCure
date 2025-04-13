@@ -19,10 +19,10 @@ export default async function zegoCloud(req, res, next) {
     console.log("appointmentId", appointmentId);
     console.log("userId", userId);
     const appointment = await AppointmentModel.findOne({
-      _id: mongoose.Types.ObjectId(appointmentId),
+      _id: new mongoose.Types.ObjectId(appointmentId),
       $or: [
-        { doctor: mongoose.Types.ObjectId(userId) },
-        { patient: mongoose.Types.ObjectId(userId) },
+        { doctor: new mongoose.Types.ObjectId(userId) },
+        { patient: new mongoose.Types.ObjectId(userId) },
       ],
     });
 
