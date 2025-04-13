@@ -3,12 +3,11 @@
 import generateToken04 from "./server/zegoServerAssistant.js";
 import dotenv from "dotenv";
 dotenv.config();
-import DoctorModel from "../features/doctor/doctor.model.js";
 import AppointmentModel from "../features/appointments/appointments.model.js";
 // Please modify appID to your own appId. appid is a number.
 export default async function zegoCloud(req, res, next) {
   try {
-    const { appointmentId,userId } = req.body;
+    const { appointmentId, userId } = req.body;
     // let aid;
     // if(appointmentId){
     //     aid = appointmentId.toString();
@@ -19,19 +18,29 @@ export default async function zegoCloud(req, res, next) {
     console.log("req.body", req.body);
     console.log("appointmentId", appointmentId);
     console.log("userId", userId);
-    const isAppointmentIdValid = await AppointmentModel.exists({ _id: appointmentId });
+    const isAppointmentIdValid = await AppointmentModel.exists({
+      _id: mongoose.Types.ObjectId(appointmentId),
+    });
+
     if (!isAppointmentIdValid) {
-      return res.status(404).json({success:false ,message: "Appointment not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Appointment not found" });
     }
     const isAppointmentContainsDoctorOrPatient = await AppointmentModel.exists({
-      _id: appointmentId,
+      _id: mongoose.Types.ObjectId(appointmentId),
       $or: [
-        { doctor: userId },
-        { patient: userId }
-      ]
+        { doctor: mongoose.Types.ObjectId(userId) },
+        { patient: mongoose.Types.ObjectId(userId) },
+      ],
     });
     if (!isAppointmentContainsDoctorOrPatient) {
-      return res.status(403).json({success:false ,message: "You are not authorized to access this appointment" });
+      return res
+        .status(403)
+        .json({
+          success: false,
+          message: "You are not authorized to access this appointment",
+        });
     }
 
     const appId = Number(process.env.APP_ID);
@@ -42,12 +51,12 @@ export default async function zegoCloud(req, res, next) {
       // The token generated in this example allows loginRoom.
       // The token generated in this example does not allow publishStream.
       privilege: {
-          1: 1,   // loginRoom: 1 pass , 0 not pass
-          2: 1    // publishStream: 1 pass , 0 not pass
+        1: 1, // loginRoom: 1 pass , 0 not pass
+        2: 1, // publishStream: 1 pass , 0 not pass
       },
-      stream_id_list: null
-  }; 
-  const payload = JSON.stringify(payloadObject);
+      stream_id_list: null,
+    };
+    const payload = JSON.stringify(payloadObject);
     const token = generateToken04(
       appId,
       userId,
