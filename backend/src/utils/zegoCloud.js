@@ -18,37 +18,22 @@ export default async function zegoCloud(req, res, next) {
     console.log("req.body", req.body);
     console.log("appointmentId", appointmentId);
     console.log("userId", userId);
-    const isAppointmentIdValid = await AppointmentModel.exists({
-      _id: mongoose.Types.ObjectId(appointmentId),
-    });
-    console.log("isAppointmentIdValid", isAppointmentIdValid);
-
-    if (!isAppointmentIdValid) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Appointment not found" });
-    }
-    const isAppointmentContainsDoctorOrPatient = await AppointmentModel.exists({
+    const appointment = await AppointmentModel.findOne({
       _id: mongoose.Types.ObjectId(appointmentId),
       $or: [
         { doctor: mongoose.Types.ObjectId(userId) },
         { patient: mongoose.Types.ObjectId(userId) },
       ],
     });
-    console.log(
-      "isAppointmentContainsDoctorOrPatient",
-      isAppointmentContainsDoctorOrPatient
-    );
 
-    if (!isAppointmentContainsDoctorOrPatient) {
-      return res
-        .status(403)
-        .json({
-          success: false,
-          message: "You are not authorized to access this appointment",
-        });
+    if (!appointment) {
+      return res.status(404).json({
+        success: false,
+        message: "Appointment not found or you are not authorized to access this appointment",
+      });
     }
 
+    console.log("appointment");
     const appId = Number(process.env.APP_ID);
     const serverSecret = String(process.env.APP_SERVERSECRET);
     const effectiveTimeInSeconds = 3600;
@@ -73,7 +58,7 @@ export default async function zegoCloud(req, res, next) {
     );
     return res.status(200).json({ token, appId });
   } catch (error) {
-    // console.error("Error generating token:", error);
+    console.error("Error generating token:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
