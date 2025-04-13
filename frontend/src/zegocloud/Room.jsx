@@ -7,7 +7,11 @@ import axios from "axios";
 const Room = () => {
   const { appointmentId } = useParams();
   const user = JSON.parse(localStorage?.getItem("user")); 
-  const userId = user?._id || "123456789" ;
+  const userId = user?._id; 
+  if(!userId){
+    alert("Please login to access the room then join the session again By link");
+    window.location.href = "/signin";
+  }
   
   // console.log("appointmentId In ROOM:", appointmentId);
   const navigate = useNavigate();
@@ -75,6 +79,11 @@ const Room = () => {
         userId: userId.toString(),
       }
     );
+    if(!res.data.success){
+      alert(res.data.message);
+      return;
+    }
+    
     // console.log("zego res:", res);
     // console.log("appoinmentId in ROom function:", appointmentId);
     const { token } = res.data;

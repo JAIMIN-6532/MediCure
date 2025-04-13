@@ -3,6 +3,8 @@
 import generateToken04 from "./server/zegoServerAssistant.js";
 import dotenv from "dotenv";
 dotenv.config();
+import DoctorModel from "../features/doctor/doctor.model.js";
+import AppointmentModel from "../features/appointments/appointments.model.js";
 // Please modify appID to your own appId. appid is a number.
 export default async function zegoCloud(req, res, next) {
   try {
@@ -14,6 +16,21 @@ export default async function zegoCloud(req, res, next) {
     // else{
     //     aid = appointmentId.toString();
     // }
+    const isAppointmentIdValid = await AppointmentModel.exists({ _id: appointmentId });
+    if (!isAppointmentIdValid) {
+      return res.status(404).json({success:false ,message: "Appointment not found" });
+    }
+    const isAppointmentContainsDoctorOrPatient = await AppointmentModel.exists({
+      _id: appointmentId,
+      $or: [
+        { doctor: userId },
+        { patient: userId }
+      ]
+    });
+    if (!isAppointmentContainsDoctorOrPatient) {
+      return res.status(403).json({success:false ,message: "You are not authorized to access this appointment" });
+    }
+
     const appId = Number(process.env.APP_ID);
     const serverSecret = String(process.env.APP_SERVERSECRET);
     const effectiveTimeInSeconds = 3600;
