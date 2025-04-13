@@ -65,8 +65,6 @@ const Room = () => {
 
   // initialize and join the room
   const myMeeting = async (element) => {
-    const userStream = await getUserMedia();
-    if (!userStream) return;
 
     const appID = Number(`${import.meta.env.VITE_APP_ID}`);
     const serverSecret = `${import.meta.env.VITE_APP_SERVERSECRET}`;
@@ -83,7 +81,10 @@ const Room = () => {
       alert(res.data.message);
       return;
     }
-    
+
+
+    const userStream = await getUserMedia();
+    if (!userStream) return;
     // console.log("zego res:", res);
     // console.log("appoinmentId in ROom function:", appointmentId);
     const { token } = res.data;
