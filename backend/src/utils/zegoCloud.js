@@ -16,6 +16,9 @@ export default async function zegoCloud(req, res, next) {
     // else{
     //     aid = appointmentId.toString();
     // }
+    console.log("req.body", req.body);
+    console.log("appointmentId", appointmentId);
+    console.log("userId", userId);
     const isAppointmentIdValid = await AppointmentModel.exists({ _id: appointmentId });
     if (!isAppointmentIdValid) {
       return res.status(404).json({success:false ,message: "Appointment not found" });
