@@ -105,7 +105,7 @@ const Room = () => {
       container: element,
       sharedLinks: [
         {
-          url: `https://www.medicure.help/room/${appointmentId}`,
+          url: `https://https://medi-cure-tau.vercel.app/room/${appointmentId}`,
         },
       ],
       scenario: {
