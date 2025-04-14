@@ -185,7 +185,7 @@ export default class AppointmentController {
     try {
       const aid = req.params.aid;
       const { patient } = req.body;
-      const link = `https://www.medicure.help/room/${aid}`;
+      const link = `https://medi-cure-tau.vercel.app/room/${aid}`;
       const sendMail = await this.appointmentRepository.sendVideoCallLinkMail(
         aid,
         link,

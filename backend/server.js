@@ -15,7 +15,7 @@ const httpServer = createServer(server);
 
 const io = new Server(httpServer, {
   cors: {
-    origin: "https://www.medicure.help", //https://medicure-frontend-qii7.onrender.com    //https://www.medicure.help
+    origin: "https://medi-cure-tau.vercel.app",
     methods: ["GET", "POST"],
     transports: ["websocket", "polling"],
   },
