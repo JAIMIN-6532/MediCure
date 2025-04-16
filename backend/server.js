@@ -15,7 +15,7 @@ const httpServer = createServer(server);
 
 const io = new Server(httpServer, {
   cors: {
-    origin: "https://medi-cure-tau.vercel.app",
+    origin: "*",
     methods: ["GET", "POST"],
     transports: ["websocket", "polling"],
   },
