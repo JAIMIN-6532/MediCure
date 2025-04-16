@@ -35,10 +35,6 @@ export default function BookingConfirmation({ booking,patient, onViewInvoice }) 
             </div>
           </div>
           
-          <div className="flex items-center justify-center gap-2 text-gray-600">
-            <FaMapMarkerAlt className="text-primary" />
-            <span>Newyork, USA</span>
-          </div>
         </div>
         
         <button
